@@ -1,0 +1,111 @@
+body {
+  font-family: "Calibri", sans-serif;
+  font-weight: 500;
+}
+
+.hidden {
+  display: none;
+}
+
+#view {
+  display: flex;
+}
+
+#contentView {
+  width: 79vw;
+}
+
+#wrapper {
+  border: 3px solid #000;
+  border-radius: 8px;
+}
+
+.createButton {
+  font-size: larger;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.centerItems {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+hr.vertical {
+  width: 1px;
+  height: auto;
+  margin-left: 2px;
+  margin-right: 2px;
+  border: none;
+  background-color: #000;
+}
+
+.dropdown {
+  background-color: #eeeeee;
+  padding: 2px;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+.dropdownOption:hover {
+  padding: 2px;
+  cursor: pointer;
+  background-color: #3cb372cc;
+  border-radius: 3px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: fit-content;
+  height: fit-content;
+  background-color: #eeeeee;
+  border: 2px solid #6d6d6d;
+  border-radius: 10px;
+  z-index: 11;
+  padding: 10px;
+}
+
+.inputField {
+  margin: 5px;
+  background-color: #dddddd;
+  width: 90%;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.modalButton {
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.modalTextButton {
+  cursor: pointer;
+  vertical-align: middle;
+  border: 1px solid #000;
+  border-radius: 3px;
+  margin: 3px;
+  padding: 2px;
+}
+
+.clickable {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000aa;
+  z-index: 10;
+}

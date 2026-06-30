@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/editor.css" />
+  <link rel="stylesheet" href="css/sidebar.css" />
+  <script type="module" src="js/sidebar.js" defer></script>
+  <script type="module" src="js/editor.js" defer></script>
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <title id="pageTitle">Homepage</title>
+</head>
+
+<body>
+  <div id="view">
+    <div id="sidebar">
+      <div id="folderStructure"></div>
+      <button id="rootButton">Create new Notebook</button>
+    </div>
+    <div id="contentView">
+      <div id="editorView">
+        <div style="display: flex; align-items: center;">
+          <h1 id="documentTitle">No Document selected</h1>
+          <img id="editTitleButton" src="assets/function/edit.svg" class="renameButton">
+        </div>
+        <div id="wrapper">
+          <div id="toolbar">
+            <div id="format">
+              <button class="toolbarButton" id="undo">
+                <img class="toolbarIcon" src="assets/function/undo.svg" alt="Undo" />
+              </button>
+              <button class="toolbarButton" id="redo">
+                <img class="toolbarIcon" src="assets/function/redo.svg" alt="Redo" />
+              </button>
+              <hr class="vertical" />
+              <button class="toolbarButton" id="headings">
+                <img class="toolbarIcon" src="assets/format/heading.svg" alt="Headings" />
+              </button>
+              <button class="toolbarButton" id="lists">
+                <img class="toolbarIcon" src="assets/format/list-unordered.svg" alt="Lists" />
+              </button>
+              <button class="toolbarButton" id="codeBlock">
+                <img class="toolbarIcon" src="assets/format/code-block.svg" alt="Code Block" />
+              </button>
+              <hr class="vertical" />
+              <button class="toolbarButton" id="bold">
+                <img class="toolbarIcon" src="assets/format/bold.svg" alt="Bold" />
+              </button>
+              <button class="toolbarButton" id="italic">
+                <img class="toolbarIcon" src="assets/format/italic.svg" alt="Italic" />
+              </button>
+              <button class="toolbarButton" id="underline">
+                <img class="toolbarIcon" src="assets/format/underline.svg" alt="Underline" />
+              </button>
+              <button class="toolbarButton" id="code">
+                <img class="toolbarIcon" src="assets/format/code.svg" alt="Code" />
+              </button>
+              <hr class="vertical" />
+              <button class="toolbarButton" id="tableCreate">
+                <img class="toolbarIcon" src="assets/format/table-create.svg" alt="Table Creation" />
+              </button>
+              <button class="toolbarButton" id="tableDelete">
+                <img class="toolbarIcon" src="assets/format/table-delete.svg" alt="Table Deletion" />
+              </button>
+              <hr class="vertical" />
+              <button class="toolbarButton" id="link">
+                <img class="toolbarIcon" src="assets/format/link.svg" alt="Link" />
+              </button>
+            </div>
+            <div id="function">
+              <button class="toolbarButton" id="export">
+                <img class="toolbarIcon" src="assets/function/export.svg" alt="Export" />
+              </button>
+              <button class="toolbarButton" id="save">
+                <img class="toolbarIcon" src="assets/function/save.svg" alt="Save" />
+              </button>
+              <button class="toolbarButton" id="discard">
+                <img class="toolbarIcon" src="assets/function/discard.svg" alt="Discard" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+#toolbar {
+  border-bottom: 3px solid #000;
+  padding: 3px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#format {
+  display: flex;
+}
+
+#function {
+  display: flex;
+}
+
+#editTitleButton {
+  margin-left: 20px;
+}
+
+.renameInput {
+  border: none;
+  outline: none;
+  background-color: #fff;
+  font-size: x-large;
+  font-weight: bold;
+  color: #000;
+}
+
+.renameButton {
+  vertical-align: middle;
+  height: 10%;
+  padding: 3px;
+  border-radius: 25%;
+}
+
+.renameButton:hover {
+  height: 12%;
+  background-color: #3cb372cc;
+}
+
+.toolbarButton {
+  width: 35px;
+  height: 35px;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eeeeee;
+  cursor: pointer;
+}
+
+.toolbarIcon {
+  width: 25px;
+  height: 25px;
+}
+
+.toolbarButton:hover {
+  background-color: #3cb372cc;
+}
+
+.toolbarButton:hover > .toolbarIcon {
+  width: 31px;
+  height: 31px;
+}
+
+.selectMenu {
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #e1e1e1;
+  padding: 2px;
+}
+
+.activeButton {
+  background-color: #84ecb3;
+}
+
+.ProseMirror {
+  max-width: 794px;
+  padding: 75px;
+  margin: 0 auto;
+  border: none;
+  outline: none;
+  height: 60vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 2px solid #bababa;
+}
+
+.ProseMirror h1 {
+  margin: 5px;
+}
+
+.ProseMirror h2 {
+  margin: 3px;
+}
+
+.ProseMirror h3 {
+  margin: 1px;
+}
+
+.ProseMirror p {
+  margin: 0;
+}
+
+.ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.ProseMirror th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.ProseMirror code {
+  background-color: #cdcdcd;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.ProseMirror pre {
+  background-color: #222222;
+  border-radius: 1px;
+}
+
+.ProseMirror pre code {
+  background-color: inherit;
+  color: #a5dad9;
+  padding: 0;
+}
+
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+ul[data-type="taskList"] li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+ul[data-type="taskList"] li > label {
+  display: flex;
+  align-items: center;
+}
