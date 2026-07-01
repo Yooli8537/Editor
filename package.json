@@ -1,25 +1,25 @@
 {
   "name": "lerndokumentationseditor",
   "version": "1.0.0",
-  "description": "Dieses Projekt ist eine Webapp welche spezifisch für das einfache erstellen & verwalten von meiner Lerndokumentation gemacht ist.",
+  "description": "This Project is a Text Editor Webapp.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"vite --port 6769\" \"node server/server.js\"",
+    "dev": "concurrently \"vite --port 8511\" \"node server/server.js\"",
     "build": "vite build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ebholi/Lerndokumentationseditor.git"
+    "url": "git+https://github.com/Yooli8537/Editor.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/ebholi/Lerndokumentationseditor/issues"
+    "url": "https://github.com/Yooli8537/Editor/issues"
   },
-  "homepage": "https://github.com/ebholi/Lerndokumentationseditor#readme",
+  "homepage": "https://github.com/Yooli8537/Editor#readme",
   "dependencies": {
     "@tiptap/core": "^3.22.4",
     "@tiptap/extension-code": "^3.22.4",

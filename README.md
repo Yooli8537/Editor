@@ -4,10 +4,10 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Contents
 
-- [Features](#Features)
-- [Installation](#Installation)
-- [Known Issues](#Known-Issues)
-- [Planned Features](#Planned-Features)
+- [Features](#features)
+- [Installation](#installation)
+- [Known Issues](#known-issues)
+- [Planned Features](#planned-features)
 
 ## Features
 
@@ -29,7 +29,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 1. Clone the Repo using `git clone https://github.com/Yooli8537/Editor`.
 2. Run `npm install`.
-3. Run `npm run dev` and open `http://localhost:6769/`.
+3. Run `npm run dev` and open `http://localhost:8511/`.
 
 ## Known Issues
 
