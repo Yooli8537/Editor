@@ -68,3 +68,4 @@ This is a Web-based Editor which can run locally or on a home server.
 - "No Results" message when searching and no results come up.
 - Swap Discard button for Close Button if the Document is saved.
 - Colors: Add a spalsh of life to the editor.
+- Document URL support so you can always continue from where you left off.
