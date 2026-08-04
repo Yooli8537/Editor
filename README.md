@@ -58,7 +58,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Renaming a Folder does not carry over its current name into the renaming field.
 - Link styling can't be removed properly as it creates an empty Link / `<a>` Tag. Removing a link is very conveluted, requiring a specific setup to get rid of one.
 - Renaming a File but not making any changes still sends a request to make an update.
--
 
 ## Planned Features
 
@@ -70,11 +69,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Enter Key should function as confirmation for basically anything.
 - Page separation
 - A4 Toggle
-- Dedicated Notebook Icon
 - Highlighting the current Document
 - Backups of previous 5 versions of a document
 - Settings Menu
 - "No Results" message when searching and no results come up.
-- Swap Discard button for Close Button if the Document is saved.
 - Colors: Add a spalsh of life to the editor.
 - Document URL support so you can always continue from where you left off.
