@@ -405,11 +405,20 @@ function onFirstStart() {
   editorView.classList.add("hidden");
 }
 
-// Autosaving
+const discardIcon = document.querySelector("#discardIcon");
+const discardIconPath = "assets/function/discard.svg";
+const closeIconPath = "assets/function/cancel.svg";
+let isDiscardIcon = true;
+
+// Autosaving including swapping Discard Button for Close Button
 setInterval(async () => {
   const saveData = editor.getJSON();
 
   if (editorIsSaved === false) {
+    if (!isDiscardIcon) {
+      discardIcon.src = discardIconPath;
+      isDiscardIcon = true;
+    }
     console.log(saveData);
     /*
     const autosave = await fetch("api/documents/autosave", {
@@ -425,6 +434,11 @@ setInterval(async () => {
     if (autosave.ok) {
       console.log("SUCCESS");
     }*/
+  } else {
+    if (isDiscardIcon) {
+      discardIcon.src = closeIconPath;
+      isDiscardIcon = false;
+    }
   }
 }, 1000);
 
