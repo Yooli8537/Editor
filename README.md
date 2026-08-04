@@ -49,8 +49,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
 - Empty Links style as links and link to the root of the app.
 - Syntax Highlighting Extensions from TipTap do not work.
-- Renaming a Folder does not carry over its current name into the renaming field.
 - Renaming a File but not making any changes still sends a request to make an update.
+- The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 
 ## Planned Features
 

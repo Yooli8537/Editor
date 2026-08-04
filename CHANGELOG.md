@@ -17,6 +17,7 @@
 - `.json` is no longer at the end of every file.
 - Creating a File with the same name as a file which is already present no longer overwrites it.
 - Too long Names gave out a (500) at times and other times they went past the sidebar, not allowing themselves to be deleted until renamed because the button was in the Backrooms.
+- Renaming a Folder now carries over its current name into the renaming field.
 
 ## v0.1.0-beta - First Release
 

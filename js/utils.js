@@ -41,7 +41,7 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   document.body.appendChild(modal);
 }
 
-export function createPromptModal(prompt, onSubmit) {
+export function createPromptModal(prompt, onSubmit, inputContent) {
   const clickable = document.createElement("div");
   clickable.classList.add("clickable");
   clickable.addEventListener("click", () => {
@@ -58,6 +58,7 @@ export function createPromptModal(prompt, onSubmit) {
   inputField.classList.add("inputField");
   inputField.type = "text";
   inputField.maxLength = 30;
+  inputField.value = inputContent;
 
   const modalButtons = document.createElement("div");
   modalButtons.classList.add("modalButtons");
