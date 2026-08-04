@@ -96,7 +96,7 @@ export async function buildSidebar() {
   function createFile(entry, previousEntry) {
     const file = document.createElement("div");
     file.classList.add("file");
-    file.textContent = entry.name;
+    file.textContent = entry.name.slice(0, -5);
 
     file.addEventListener("click", async (e) => {
       const response = await fetch(
