@@ -73,8 +73,13 @@ export function createPromptModal(prompt, onSubmit) {
   submitButton.src = "../assets/function/checkmark.svg";
 
   submitButton.addEventListener("click", () => {
-    onSubmit(inputField.value);
-    destroyModal();
+    if (!inputField.value) {
+      destroyModal();
+      createErrorModal("The Input is empty. Try again.");
+    } else {
+      onSubmit(inputField.value);
+      destroyModal();
+    }
   });
 
   modalButtons.appendChild(cancelButton);
