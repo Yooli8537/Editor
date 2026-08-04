@@ -249,7 +249,12 @@ export async function buildSidebar() {
         const wrapper = createWrapper();
         const folder = createFolder(entries[i]);
         folder.appendChild(createFolderActions(entries[i].name, previousEntry));
-        wrapper.appendChild(createIcon("../assets/function/folder.svg"));
+
+        if (indentlevel === 0) {
+          wrapper.appendChild(createIcon("../assets/function/notebook.svg"));
+        } else {
+          wrapper.appendChild(createIcon("../assets/function/folder.svg"));
+        }
         wrapper.appendChild(folder);
         wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
         folderStructure.appendChild(wrapper);
