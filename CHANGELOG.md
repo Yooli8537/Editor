@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- No Pointer Cursor for borderless Buttons.
+
 ## v0.1.0-beta - First Release
 
 ### Added
