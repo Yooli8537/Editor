@@ -141,7 +141,7 @@ router.post("/api/documents/newFile", async (req, res) => {
   try {
     if (name && folderPath) {
       const location = path.join(__dirname, "../../data", folderPath, name);
-      await fs.promises.writeFile(location + ".json", defaultContent, "utf8");
+      fs.writeFileSync(location + ".json", defaultContent, "utf8");
       res.json({ success: true });
     } else if (name) {
       console.error("No Folder Path found.");
@@ -239,7 +239,7 @@ router.post("/api/documents/renameFile", async (req, res) => {
       const fileContent = await fs.promises.readFile(newFilePath, "utf-8");
       const fileData = JSON.parse(fileContent);
       fileData[0].title = newName;
-      await fs.promises.writeFile(
+      fs.writeFileSync(
         newFilePath,
         JSON.stringify(fileData, null, 2),
         "utf-8",
@@ -315,7 +315,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
   const fileData = JSON.parse(file);
   fileData[0].content = saveData;
 
-  await fs.promises.writeFile(
+  fs.writeFileSync(
     filePath,
     JSON.stringify(fileData, null, 2),
     "utf8",
@@ -340,7 +340,7 @@ router.post("/api/documents/autosave", async (req, res) => {
   try {
     if (name && folderPath) {
       const location = path.join(__dirname, "../../data", folderPath, name);
-      await fs.promises.writeFile(location, defaultContent, "utf8");
+      fs.writeFileSync(location, defaultContent, "utf8");
       res.json({ success: true });
     } else if (name) {
       console.error("No Folder Path found.");
