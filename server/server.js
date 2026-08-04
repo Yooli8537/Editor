@@ -6,10 +6,19 @@ const app = express();
 const port = 8510;
 
 const dataFolder = path.join(__dirname, "../data");
+const noteBookFile = path.join(dataFolder, "/notebooks.json"); // This file controls which folders get a notebook icon
 
 if (!fs.existsSync(dataFolder)) {
   fs.mkdirSync(dataFolder);
   console.warn("Created missing Data Folder.");
+  console.log(
+    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+  );
+}
+
+if (!fs.existsSync(noteBookFile)) {
+  fs.writeFileSync(noteBookFile, "[]", "utf-8");
+  console.warn("Created missing notebooks.json file.");
   console.log("This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.");
 }
 
