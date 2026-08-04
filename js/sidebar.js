@@ -123,7 +123,7 @@ export async function buildSidebar() {
 
   // Action Buttons (Delete, Rename, Create)
   // Path is saved for API call
-  function createActions(path, previousEntry) {
+  function createFolderActions(path, previousEntry) {
     const buttons = document.createElement("div");
     buttons.classList.add("hoverField");
 
@@ -248,7 +248,7 @@ export async function buildSidebar() {
         // Creating Folder view
         const wrapper = createWrapper();
         const folder = createFolder(entries[i]);
-        folder.appendChild(createActions(entries[i].name, previousEntry));
+        folder.appendChild(createFolderActions(entries[i].name, previousEntry));
         wrapper.appendChild(createIcon("../assets/function/folder.svg"));
         wrapper.appendChild(folder);
         wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";

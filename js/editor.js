@@ -110,7 +110,7 @@ async function renameHandler() {
 
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
-  confirmButton.classList.add("renameButton");
+  confirmButton.classList.add("borderlessButton");
 
   confirmButton.addEventListener("click", async () => {
     const response = await fetch("api/documents/renameFile", {
@@ -146,7 +146,7 @@ async function renameHandler() {
 
   const cancelButton = document.createElement("img");
   cancelButton.src = "../assets/function/cancel.svg";
-  cancelButton.classList.add("renameButton");
+  cancelButton.classList.add("borderlessButton");
 
   cancelButton.addEventListener("click", () => {
     div.remove();

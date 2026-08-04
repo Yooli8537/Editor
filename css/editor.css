@@ -26,14 +26,15 @@
   color: #000;
 }
 
-.renameButton {
+.borderlessButton {
   vertical-align: middle;
   height: 10%;
   padding: 3px;
   border-radius: 25%;
+  cursor: pointer;
 }
 
-.renameButton:hover {
+.borderlessButton:hover {
   height: 12%;
   background-color: #3cb372cc;
 }
