@@ -15,6 +15,7 @@
 - Discard Warning Modal no longer appears when closing a saved editor.
 - Closing a saved Editor no longer logs out "Changes Discarded.".
 - `.json` is no longer at the end of every file.
+- Creating a File with the same name as a file which is already present no longer overwrites it.
 
 ## v0.1.0-beta - First Release
 

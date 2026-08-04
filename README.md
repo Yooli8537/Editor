@@ -44,7 +44,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image resize doesn't work.
 - When creating a new File / Folder, the Input Field isn't automatically focused.
 - Can't search with `Enter` :(
-- Creating a File with the same name as a file which is already present, it is completely overwritten.
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.

@@ -137,12 +137,23 @@ router.post("/api/documents/newFile", async (req, res) => {
     null,
     2,
   );
+  let location;
 
   try {
     if (name && folderPath) {
-      const location = path.join(__dirname, "../../data", folderPath, name);
-      fs.writeFileSync(location + ".json", defaultContent, "utf8");
-      res.json({ success: true });
+      location = path.join(
+        __dirname,
+        "../../data",
+        folderPath,
+        name + ".json",
+      );
+      // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
+      // If it doesn't fail, the file already exists and isn't overwritten.
+      if (await fs.promises.readFile(location)) {
+        res
+          .status(409)
+          .json({ error: "A File with that name already exists." });
+      }
     } else if (name) {
       console.error("No Folder Path found.");
     } else if (folderPath) {
@@ -151,8 +162,14 @@ router.post("/api/documents/newFile", async (req, res) => {
       console.error("Required values not found for operation.");
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create File" });
+    if (err.code === "ENOENT") {
+      fs.writeFileSync(location, defaultContent, "utf8");
+      console.log("Successfully created File.");
+      res.json({ success: true });
+    } else {
+      console.error(err);
+      res.status(500).json({ error: "Failed to create File." });
+    }
   }
 });
 
