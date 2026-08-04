@@ -312,17 +312,30 @@ const tableDeleteItems = [
 tableDelete.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-
   createSubmenu(tableDelete, tableDeleteItems);
 });
 
-document.querySelector("#link").addEventListener("click", (e) => {
+const linkButton = document.querySelector("#link");
+const linkEditButtons = [
+  {
+    icon: "link.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .toggleLink({ href: prompt("Please Input your Link below.") })
+        .run(),
+  },
+  {
+    icon: "unlink.svg",
+    action: () => editor.chain().focus().toggleLink().run(),
+  },
+];
+
+linkButton.addEventListener("click", (e) => {
   e.preventDefault();
-  editor
-    .chain()
-    .focus()
-    .toggleLink({ href: prompt("Please Input your Link below.") })
-    .run();
+  e.stopPropagation();
+  createSubmenu(linkButton, linkEditButtons);
 });
 
 // Functional Buttons

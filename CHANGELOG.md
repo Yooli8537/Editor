@@ -5,6 +5,7 @@
 ### Added
 
 - Dedicated Notebook Icon
+- New Submenu for Links which makes removing them a lot easier.
 
 ### Fixed
 
