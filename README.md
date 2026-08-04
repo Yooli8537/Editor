@@ -46,7 +46,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Can't search with `Enter` :(
 - No Error Message when a Filename already exists after trying to create a new file.
 - `.json` is at the end of every File.
-- No Folder Priority over Files.
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.

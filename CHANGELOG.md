@@ -6,6 +6,7 @@
 
 - Dedicated Notebook Icon
 - New Submenu for Links which makes removing them a lot easier.
+- Folders are now prioritized in Sidebar rendering.
 
 ### Fixed
 

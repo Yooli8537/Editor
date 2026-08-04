@@ -243,6 +243,17 @@ export async function buildSidebar() {
 
   // Rendering items
   function renderEntries(entries, indentlevel, previousEntry) {
+    // Sorts entires alphabetically whilst prioritizing Folders
+    entries.sort((a, b) => {
+      const boolDiff = Number(b.isFolder) - Number(a.isFolder);
+
+      if (boolDiff !== 0) {
+        return boolDiff;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+
     for (let i = 0; i < entries.length; i++) {
       if (entries[i].isFolder === true) {
         // Creating Folder view
