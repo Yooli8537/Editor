@@ -44,13 +44,11 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image resize doesn't work.
 - When creating a new File / Folder, the Input Field isn't automatically focused.
 - Can't search with `Enter` :(
-- No Error Message when a Filename already exists after trying to create a new file.
+- Creating a File with the same name as a file which is already present, it is completely overwritten.
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
-- Empty Notebook name gives out a (409 - Conflict) error, which is just weird.
 - Too long Names give out a (500) at times and other times they go past the sidebar, not allowing themselves to be deleted until renamed because the button is in the Backrooms.
-- Empty Name errors have no error handling.
 - Empty Links style as links and link to the root of the app.
 - Syntax Highlighting Extensions from TipTap do not work.
 - Renaming a Folder does not carry over its current name into the renaming field.

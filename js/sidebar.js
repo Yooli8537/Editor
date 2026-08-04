@@ -1,5 +1,10 @@
 // Importing Required functions
-import { createConfirmModal, destroyModal, createPromptModal } from "./utils";
+import {
+  createConfirmModal,
+  destroyModal,
+  createPromptModal,
+  createErrorModal,
+} from "./utils";
 import { loadDocument } from "./editor";
 
 const sidebar = document.querySelector("#sidebar");
@@ -108,6 +113,12 @@ export async function buildSidebar() {
       if (response.ok) {
         const fileData = await response.json();
         loadDocument(fileData, entry, previousEntry);
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A file with that name already exists at the current directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
       }
     });
 
@@ -162,6 +173,10 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully renamed Folder.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find Folder to be renamed.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
       );
@@ -190,6 +205,10 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully deleted Folder.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find Folder to delete.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
       );
@@ -228,6 +247,10 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully deleted File.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find File to be deleted.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
       );
@@ -315,6 +338,12 @@ function createFileDropdown(parent, path, previousEntry) {
       if (response.ok) {
         console.log("Successfully created File.");
         buildSidebar();
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A file with that name already exists in the current directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
       }
     });
   });
@@ -333,6 +362,12 @@ function createFileDropdown(parent, path, previousEntry) {
       if (response.ok) {
         buildSidebar();
         console.log("Folder added successfully.");
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A Folder with that name already exists in the current Directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
       }
     });
   });
@@ -364,10 +399,13 @@ rootButton.addEventListener("click", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: notebookName }),
     });
+
     if (response.ok) {
       buildSidebar();
     } else if (response.status === 409) {
-      alert("A Notebook with that name already exists!");
+      createErrorModal("A Notebook with that name already exists!");
+    } else {
+      createErrorModal("Something went wrong.");
     }
   });
 });

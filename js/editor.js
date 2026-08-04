@@ -12,6 +12,7 @@ import {
   destroyModal,
   createSubmenu,
   removeSubmenus,
+  createErrorModal,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
 
@@ -147,6 +148,14 @@ async function renameHandler() {
       console.log("Current Entry: ", currentEntry);
       console.log("Current Document: ", currentDocument);
       console.log("Current previous Entry: ", currentPreviousEntry);
+    } else if (response.status === 409) {
+      createErrorModal(
+        "A File with that name already exists within the same Directory!",
+      );
+    } else if (response.status === 404) {
+      createErrorModal("File wasn't found.");
+    } else {
+      createErrorModal("Something went wrong.");
     }
   });
 
@@ -379,7 +388,13 @@ document.querySelector("#export").addEventListener("click", async (e) => {
           downloadElement.click();
           URL.revokeObjectURL(downloadURL);
           console.log("Succsessfully exported File.");
+        } else {
+          createErrorModal("Something went wrong.");
         }
+      } else if (saveDocument.status === 404) {
+        createErrorModal("Couldn't find File to save.");
+      } else {
+        createErrorModal("Something went wrong.");
       }
     },
   );
@@ -402,6 +417,10 @@ document.querySelector("#save").addEventListener("click", async (e) => {
   if (response.ok) {
     console.log("Successfully saved Document.");
     editorIsSaved = true;
+  } else if (response.status === 404) {
+    createErrorModal("Couldn't find File to save.");
+  } else {
+    createErrorModal("Something went wrong.");
   }
 });
 
