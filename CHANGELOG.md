@@ -9,6 +9,7 @@
 ### Fixed
 
 - No Pointer Cursor for borderless Buttons.
+- Discard Warning Modal no longer appears when closing a saved editor.
 
 ## v0.1.0-beta - First Release
 

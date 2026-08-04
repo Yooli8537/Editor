@@ -7,7 +7,12 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import { ListKit } from "@tiptap/extension-list";
 
-import { createConfirmModal, destroyModal, createSubmenu, removeSubmenus } from "./utils";
+import {
+  createConfirmModal,
+  destroyModal,
+  createSubmenu,
+  removeSubmenus,
+} from "./utils";
 import { buildSidebar } from "./sidebar";
 
 const wrapper = document.querySelector("#wrapper");
@@ -84,6 +89,7 @@ export function loadDocument(data, entry, previousEntry) {
 
     editorIsSaved = true;
   }
+
   if (editorIsSaved === false) {
     createConfirmModal(
       "Leaving this Document will discard Changes!",
@@ -386,19 +392,27 @@ document.querySelector("#save").addEventListener("click", async (e) => {
   }
 });
 
+function closeEditor() {
+  editorView.classList.add("hidden");
+  console.log("Changes Discarded.");
+  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+}
+
 document.querySelector("#discard").addEventListener("click", (e) => {
   e.preventDefault();
 
-  createConfirmModal(
-    "Discard Changes? This cannot be undone.",
-    "Cancel",
-    "Discard Changes",
-    () => {
-      editorView.classList.add("hidden");
-      console.log("Changes Discarded.");
-      editorIsSaved = true; // True cus you're closing the editor so it's technically saved. Either way the logic relies on it.
-    },
-  );
+  if (!editorIsSaved) {
+    createConfirmModal(
+      "Discard Changes? This cannot be undone.",
+      "Cancel",
+      "Discard Changes",
+      () => {
+        closeEditor();
+      },
+    );
+  } else {
+    closeEditor();
+  }
 });
 
 function onFirstStart() {
@@ -419,7 +433,7 @@ setInterval(async () => {
       discardIcon.src = discardIconPath;
       isDiscardIcon = true;
     }
-    console.log(saveData);
+    //console.log(saveData);
     /*
     const autosave = await fetch("api/documents/autosave", {
       method: "POST",
