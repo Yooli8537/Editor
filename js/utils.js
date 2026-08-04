@@ -11,7 +11,6 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   modal.classList.add("modal");
 
   const text = document.createElement("p");
-  text.classList.add("modalText");
   text.textContent = prompt;
 
   const modalButtons = document.createElement("div");
@@ -53,7 +52,6 @@ export function createPromptModal(prompt, onSubmit) {
   modal.classList.add("modal");
 
   const text = document.createElement("p");
-  text.classList.add("modalText");
   text.textContent = prompt;
 
   const inputField = document.createElement("input");
@@ -83,6 +81,38 @@ export function createPromptModal(prompt, onSubmit) {
   modalButtons.appendChild(submitButton);
   modal.appendChild(text);
   modal.appendChild(inputField);
+  modal.appendChild(modalButtons);
+  document.body.appendChild(clickable);
+  document.body.appendChild(modal);
+}
+
+export function createErrorModal(errorMsg) {
+  const clickable = document.createElement("div");
+  clickable.classList.add("clickable");
+  clickable.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  const text = document.createElement("p");
+  text.classList.add("errorMsg");
+  text.textContent = errorMsg;
+
+  const modalButtons = document.createElement("div");
+  modalButtons.classList.add("modalButtons");
+
+  const okButton = document.createElement("div");
+  okButton.classList.add("modalTextButton");
+  okButton.textContent = "Ok";
+
+  okButton.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  modalButtons.appendChild(okButton);
+  modal.appendChild(text);
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);

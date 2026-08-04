@@ -17,6 +17,10 @@
   margin-left: 20px;
 }
 
+.errorMsg {
+  color: #ff0000;
+}
+
 .renameInput {
   border: none;
   outline: none;
