@@ -255,6 +255,7 @@ export async function buildSidebar() {
         } else {
           wrapper.appendChild(createIcon("../assets/function/folder.svg"));
         }
+
         wrapper.appendChild(folder);
         wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
         folderStructure.appendChild(wrapper);

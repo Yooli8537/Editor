@@ -394,7 +394,7 @@ document.querySelector("#save").addEventListener("click", async (e) => {
 
 function closeEditor() {
   editorView.classList.add("hidden");
-  console.log("Changes Discarded.");
+  console.log("Editor Closed.");
   editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
@@ -408,6 +408,7 @@ document.querySelector("#discard").addEventListener("click", (e) => {
       "Discard Changes",
       () => {
         closeEditor();
+        console.log("Changes Discarded.");
       },
     );
   } else {
