@@ -7,7 +7,7 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import { ListKit } from "@tiptap/extension-list";
 
-import { createConfirmModal, destroyModal } from "./utils";
+import { createConfirmModal, destroyModal, createSubmenu, removeSubmenus } from "./utils";
 import { buildSidebar } from "./sidebar";
 
 const wrapper = document.querySelector("#wrapper");
@@ -57,52 +57,6 @@ function toBase64(file) {
     reader.onerror = () => reject("Failed to load File.");
     reader.readAsDataURL(file);
   });
-}
-
-// Function to create Submenus
-function createSubmenu(triggerButton, items) {
-  const isOpen = triggerButton.classList.contains("activeButton");
-
-  removeSubmenus();
-
-  const selector = document.createElement("div");
-  selector.classList.add("selectMenu");
-
-  for (let i = 0; i < items.length; i++) {
-    const button = document.createElement("button");
-    button.classList.add("toolbarButton");
-    const buttonIcon = document.createElement("img");
-    buttonIcon.classList.add("toolbarIcon");
-    buttonIcon.src = `assets/format/${items[i].icon}`;
-    button.appendChild(buttonIcon);
-    selector.appendChild(button);
-
-    button.addEventListener("click", items[i].action);
-  }
-
-  if (!isOpen) {
-    triggerButton.classList.add("activeButton");
-
-    const position = triggerButton.getBoundingClientRect();
-    selector.style.position = "absolute";
-    selector.style.top = position.bottom + "px";
-    selector.style.left = position.left - 6 + "px";
-
-    document.body.appendChild(selector);
-
-    document.addEventListener("click", () => {
-      removeSubmenus();
-    });
-  } else {
-    removeSubmenus();
-  }
-}
-
-function removeSubmenus() {
-  document.querySelectorAll(".selectMenu").forEach((menu) => menu.remove());
-  document
-    .querySelectorAll(".activeButton")
-    .forEach((el) => el.classList.remove("activeButton"));
 }
 
 let currentDocument;
