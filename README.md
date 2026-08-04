@@ -42,7 +42,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
 - When deleting the opened file itself or a parent the editor doesn't close.
 - Image resize doesn't work.
-- When a prompt modal is created, the Input Field isn't automatically focused.
 - Can't search with `Enter` :(
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.

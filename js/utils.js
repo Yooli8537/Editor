@@ -92,6 +92,8 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);
+
+  inputField.focus();
 }
 
 export function createErrorModal(errorMsg) {

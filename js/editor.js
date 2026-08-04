@@ -175,6 +175,8 @@ async function renameHandler() {
   div.appendChild(confirmButton);
   div.appendChild(cancelButton);
   documentTitle.appendChild(div);
+
+  titleRenameInput.focus();
 }
 
 // Toolbar Buttons
