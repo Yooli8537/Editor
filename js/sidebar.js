@@ -35,6 +35,7 @@ export async function buildSidebar() {
 
     const input = document.createElement("input");
     input.classList.add("searchField");
+    input.type = "text";
 
     const icon = document.createElement("img");
     icon.classList.add("sidebarButton");

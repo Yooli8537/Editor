@@ -56,6 +56,8 @@ export function createPromptModal(prompt, onSubmit) {
 
   const inputField = document.createElement("input");
   inputField.classList.add("inputField");
+  inputField.type = "text";
+  inputField.maxLength = 30;
 
   const modalButtons = document.createElement("div");
   modalButtons.classList.add("modalButtons");

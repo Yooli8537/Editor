@@ -40,14 +40,13 @@ This is a Web-based Editor which can run locally or on a home server.
 
 - Only images added via a direct link are supported. Images should be able to be dropped into the Editor via Drag & Drop or Copy & Paste.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
-- When deleting the opened file itself or a parent the editor should close.
+- When deleting the opened file itself or a parent the editor doesn't close.
 - Image resize doesn't work.
-- When creating a new File / Folder, the Input Field isn't automatically focused.
+- When a prompt modal is created, the Input Field isn't automatically focused.
 - Can't search with `Enter` :(
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
-- Too long Names give out a (500) at times and other times they go past the sidebar, not allowing themselves to be deleted until renamed because the button is in the Backrooms.
 - Empty Links style as links and link to the root of the app.
 - Syntax Highlighting Extensions from TipTap do not work.
 - Renaming a Folder does not carry over its current name into the renaming field.

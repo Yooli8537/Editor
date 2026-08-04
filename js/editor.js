@@ -114,6 +114,8 @@ async function renameHandler() {
   const titleRenameInput = document.createElement("input");
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
+  titleRenameInput.type = "text";
+  titleRenameInput.maxLength = 30;
 
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
