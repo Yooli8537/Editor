@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Using the close Button to close the Editor still shows the Discard confirmation modal, even though everything is saved.
+
 ### Fixed
 
 - No Pointer Cursor for borderless Buttons.

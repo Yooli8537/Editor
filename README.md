@@ -58,6 +58,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Renaming a Folder does not carry over its current name into the renaming field.
 - Link styling can't be removed properly as it creates an empty Link / `<a>` Tag. Removing a link is very conveluted, requiring a specific setup to get rid of one.
 - Renaming a File but not making any changes still sends a request to make an update.
+-
 
 ## Planned Features
 
