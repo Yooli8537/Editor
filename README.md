@@ -24,6 +24,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sidebar allowing for easy navigation of the Folder Structure
 - Search Bar
 - Undo / Redo
+- Exporting Documents as .pdf files.
 
 ## Installation
 
@@ -32,6 +33,10 @@ This is a Web-based Editor which can run locally or on a home server.
 3. Run `npm run dev` and open `http://localhost:8511/`.
 
 ## Known Issues
+
+- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead.
+
+### To be fixed
 
 - Only images added via a direct link are supported. Images should be able to be dropped into the Editor via Drag & Drop or Copy & Paste.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
@@ -49,7 +54,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Too long Names give out a (500) at times and other times they go past the sidebar, not allowing themselves to be deleted until renamed because the button is in the Backrooms.
 - Empty Name errors have no error handling.
 - Empty Links style as links and link to the root of the app.
-- Syntax Highlighting Extensions do not work.
+- Syntax Highlighting Extensions from TipTap do not work.
+- Renaming a Folder does not carry over its current name into the renaming field.
+- Link styling can't be removed properly as it creates an empty Link / `<a>` Tag. Removing a link is very conveluted, requiring a specific setup to get rid of one.
 
 ## Planned Features
 
