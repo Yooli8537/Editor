@@ -239,11 +239,7 @@ router.post("/api/documents/renameFile", async (req, res) => {
       const fileContent = await fs.promises.readFile(newFilePath, "utf-8");
       const fileData = JSON.parse(fileContent);
       fileData[0].title = newName;
-      fs.writeFileSync(
-        newFilePath,
-        JSON.stringify(fileData, null, 2),
-        "utf-8",
-      );
+      fs.writeFileSync(newFilePath, JSON.stringify(fileData, null, 2), "utf-8");
 
       res.json({ success: true });
     } else if (!newName || newName == "") {
@@ -315,11 +311,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
   const fileData = JSON.parse(file);
   fileData[0].content = saveData;
 
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(fileData, null, 2),
-    "utf8",
-  );
+  fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf8");
   res.json({ success: true });
 });
 
