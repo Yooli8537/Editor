@@ -57,13 +57,14 @@ This is a Web-based Editor which can run locally or on a home server.
 - Syntax Highlighting Extensions from TipTap do not work.
 - Renaming a Folder does not carry over its current name into the renaming field.
 - Link styling can't be removed properly as it creates an empty Link / `<a>` Tag. Removing a link is very conveluted, requiring a specific setup to get rid of one.
+- File Rename Button has no Pointer Cursor
 
 ## Planned Features
 
 - Autosaving
 - Full Image support
 - Collapsing / Expanding Folders
-- Hover shows short explanation of the Editor Function
+- Hover shows short explanation of an Editor Toolbar Function
 - Moving folders & files using drag & drop.
 - Enter Key should function as confirmation for basically anything.
 - Page separation
