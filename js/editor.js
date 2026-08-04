@@ -24,7 +24,7 @@ let editorIsSaved;
 // Creating new TipTap Editor
 const editor = new Editor({
   element: wrapper,
-  extensions: [StarterKit, TableKit, Image, FileHandler, Emoji, ListKit],
+  extensions: [StarterKit, TableKit, Image, FileHandler, Emoji],
   content: "<p></p>",
   autofocus: true,
   injectCSS: true,

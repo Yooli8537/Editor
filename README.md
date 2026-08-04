@@ -34,7 +34,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Known Issues
 
-- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead.
+- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
 
 ### To be fixed
 
