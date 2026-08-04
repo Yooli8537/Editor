@@ -109,3 +109,7 @@ hr.vertical {
   background-color: #000000aa;
   z-index: 10;
 }
+
+.highlight {
+  background-color: #55c788cc;
+}

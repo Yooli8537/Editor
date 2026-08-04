@@ -1,4 +1,7 @@
 // Utilities
+
+import { buildSidebar } from "./sidebar";
+
 // Modals
 export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   const clickable = document.createElement("div");
@@ -26,6 +29,7 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
 
   const submitButton = document.createElement("div");
   submitButton.classList.add("modalTextButton");
+  submitButton.classList.add("highlight");
   submitButton.textContent = confirm;
 
   submitButton.addEventListener("click", () => {
@@ -33,12 +37,34 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
     destroyModal();
   });
 
+  function handleEnter(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSubmit();
+      document.removeEventListener("keydown");
+      buildSidebar();
+      destroyModal();
+    }
+  }
+
+  document.addEventListener("keydown", handleEnter(e));
+
   modalButtons.appendChild(cancelButton);
   modalButtons.appendChild(submitButton);
   modal.appendChild(text);
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);
+}
+
+function verifyInput(inputField, onSubmit) {
+  if (!inputField.value) {
+    destroyModal();
+    createErrorModal("The Input is empty. Try again.");
+  } else {
+    onSubmit(inputField.value);
+    destroyModal();
+  }
 }
 
 export function createPromptModal(prompt, onSubmit, inputContent) {
@@ -60,6 +86,13 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   inputField.maxLength = 30;
   inputField.value = inputContent;
 
+  inputField.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      verifyInput(inputField, onSubmit);
+    }
+  });
+
   const modalButtons = document.createElement("div");
   modalButtons.classList.add("modalButtons");
 
@@ -73,16 +106,11 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
 
   const submitButton = document.createElement("img");
   submitButton.classList.add("modalButton");
+  submitButton.classList.add("highlight");
   submitButton.src = "../assets/function/checkmark.svg";
 
   submitButton.addEventListener("click", () => {
-    if (!inputField.value) {
-      destroyModal();
-      createErrorModal("The Input is empty. Try again.");
-    } else {
-      onSubmit(inputField.value);
-      destroyModal();
-    }
+    verifyInput(inputField, onSubmit);
   });
 
   modalButtons.appendChild(cancelButton);

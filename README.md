@@ -58,7 +58,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Collapsing / Expanding Folders
 - Hover shows short explanation of an Editor Toolbar Function
 - Moving folders & files using drag & drop.
-- Enter Key should function as confirmation for basically anything.
 - Page separation
 - A4 Toggle
 - Highlighting the current Document
