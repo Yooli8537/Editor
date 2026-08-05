@@ -152,7 +152,6 @@ export function destroyModal() {
 
 // Submenus (mainly for Editor Toolbar)
 export function createSubmenu(triggerButton, items) {
-  console.log(triggerButton);
   const isOpen = triggerButton.classList.contains("activeButton");
 
   removeSubmenus();
@@ -166,10 +165,14 @@ export function createSubmenu(triggerButton, items) {
     const buttonIcon = document.createElement("img");
     buttonIcon.classList.add("toolbarIcon");
     buttonIcon.src = `assets/format/${items[i].icon}`;
-    button.appendChild(buttonIcon);
-    selector.appendChild(button);
+
+    // Setting Helptext for Submenu Items
+    setHelpText(button, items[i].helpText);
 
     button.addEventListener("click", items[i].action);
+
+    button.appendChild(buttonIcon);
+    selector.appendChild(button);
   }
 
   if (!isOpen) {
@@ -200,7 +203,6 @@ export function removeSubmenus() {
 // Function descriptions (when hovering)
 // Creates the Help Text after 2s
 export function setHelpText(hoverButton, helpText) {
-  console.log(hoverButton);
   let time = 0;
   let hoverInterval = null;
 
@@ -217,7 +219,7 @@ export function setHelpText(hoverButton, helpText) {
         boundingBox.textContent = helpText;
         const position = hoverButton.getBoundingClientRect();
         boundingBox.style.position = "absolute";
-        boundingBox.style.top = position.bottom + "px"; // position.top - (position.top - position.bottom) / 2 + "px";
+        boundingBox.style.top = position.bottom + "px"; // position.top - (position.top - position.bottom) / 2 + "px"; alternative position which leads to bugs
         boundingBox.style.left = position.left + "px"; // position.left + (position.left - position.right) / 2 + "px";
 
         document.body.appendChild(boundingBox);

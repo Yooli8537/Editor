@@ -206,14 +206,17 @@ const headingItems = [
   {
     icon: "heading-1.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    helpText: "Heading 1",
   },
   {
     icon: "heading-2.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    helpText: "Heading 2",
   },
   {
     icon: "heading-3.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+    helpText: "Heading 3",
   },
 ];
 
