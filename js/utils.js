@@ -217,15 +217,12 @@ export function setHelpText(hoverButton, helpText) {
         boundingBox.textContent = helpText;
         const position = hoverButton.getBoundingClientRect();
         boundingBox.style.position = "absolute";
-        boundingBox.style.top =
-          position.top - (position.top - position.bottom) / 2 + "px";
-        boundingBox.style.left =
-          position.left + (position.left - position.right) / 2 + "px";
+        boundingBox.style.top = position.bottom + "px"; // position.top - (position.top - position.bottom) / 2 + "px";
+        boundingBox.style.left = position.left + "px"; // position.left + (position.left - position.right) / 2 + "px";
 
         document.body.appendChild(boundingBox);
       } else {
         time++;
-        console.log(time);
       }
     }, 1000);
   }
