@@ -115,6 +115,7 @@ export function loadDocument(data, entry, previousEntry) {
   }
 }
 
+setHelpText(editTitleButton, "Rename Document");
 async function renameHandler() {
   documentTitle.innerHTML = "";
   editTitleButton.style.display = "none";
@@ -311,22 +312,27 @@ const tableCreateItems = [
         .focus()
         .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
         .run(),
+    helpText: "Create Table",
   },
   {
     icon: "column-before.svg",
     action: () => editor.chain().focus().addColumnBefore().run(),
+    helpText: "Add column before current",
   },
   {
     icon: "column-after.svg",
     action: () => editor.chain().focus().addColumnAfter().run(),
+    helpText: "Add column after current",
   },
   {
     icon: "row-before.svg",
     action: () => editor.chain().focus().addRowBefore().run(),
+    helpText: "Add row before current",
   },
   {
     icon: "row-after.svg",
     action: () => editor.chain().focus().addRowAfter().run(),
+    helpText: "Add row after current",
   },
 ];
 
@@ -342,14 +348,17 @@ const tableDeleteItems = [
   {
     icon: "table-delete.svg",
     action: () => editor.chain().focus().deleteTable().run(),
+    helpText: "Delete full table",
   },
   {
     icon: "columns.svg",
     action: () => editor.chain().focus().deleteColumn().run(),
+    helpText: "Delete current column",
   },
   {
     icon: "rows.svg",
     action: () => editor.chain().focus().deleteRow().run(),
+    helpText: "Delete current row",
   },
 ];
 
@@ -369,10 +378,12 @@ const linkEditButtons = [
         .focus()
         .toggleLink({ href: prompt("Please Input your Link below.") })
         .run(),
+    helpText: "Add new Link",
   },
   {
     icon: "unlink.svg",
     action: () => editor.chain().focus().toggleLink().run(),
+    helpText: "Delete Link",
   },
 ];
 

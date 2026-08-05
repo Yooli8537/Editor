@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- Helptexts for Editor functions
+
+### Fixed
+
+- Table Action Icons are no longer mixed up
+
 ## v0.1.1-beta - Many Bug Fixes & small Improvements
 
 ### Added
