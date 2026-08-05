@@ -190,18 +190,35 @@ async function renameHandler() {
 }
 
 // Toolbar Buttons
-document.querySelector("#undo").addEventListener("click", (e) => {
+const undoButton = document.querySelector("#undo");
+const redoButton = document.querySelector("#redo");
+const headingsButton = document.querySelector("#headings");
+const listsButton = document.querySelector("#lists");
+const codeBlockButton = document.querySelector("#codeBlock");
+const boldButton = document.querySelector("#bold");
+const italicButton = document.querySelector("#italic");
+const underlineButton = document.querySelector("#underline");
+const inlineCodeButton = document.querySelector("#code");
+const tableCreateButton = document.querySelector("#tableCreate");
+const tableDeleteButton = document.querySelector("#tableDelete");
+const linkButton = document.querySelector("#link");
+const exportButton = document.querySelector("#export");
+const saveButton = document.querySelector("#save");
+const discardButton = document.querySelector("#discard");
+
+setHelpText(undoButton, "Undo");
+undoButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().undo().run();
 });
 
-document.querySelector("#redo").addEventListener("click", (e) => {
+setHelpText(redoButton, "Redo");
+redoButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().redo().run();
 });
 
-// Submenu to choose between different Headings
-const headings = document.querySelector("#headings");
+// Items for the Headings Submenu
 const headingItems = [
   {
     icon: "heading-1.svg",
@@ -221,63 +238,70 @@ const headingItems = [
 ];
 
 setHelpText(headings, "Headings");
-headings.addEventListener("click", (e) => {
+headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  createSubmenu(headings, headingItems);
+  createSubmenu(headingsButton, headingItems);
 });
 
-// Submenu to choose between different Lists
-const lists = document.querySelector("#lists");
+// Items for the Lists Submenu
 const listItems = [
   {
     icon: "list-unordered.svg",
     action: () => editor.chain().focus().toggleBulletList().run(),
+    helpText: "Bullet List",
   },
   {
     icon: "list-ordered.svg",
     action: () => editor.chain().focus().toggleOrderedList().run(),
+    helpText: "Ordered List",
   },
   {
     icon: "list-task.svg",
     action: () => editor.chain().focus().toggleTaskList().run(),
+    helpText: "Task List",
   },
 ];
 
-lists.addEventListener("click", (e) => {
+setHelpText(listsButton, "Lists");
+listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  createSubmenu(lists, listItems);
+  createSubmenu(listsButton, listItems);
 });
 
-document.querySelector("#codeBlock").addEventListener("click", (e) => {
+setHelpText(codeBlockButton, "Code Block");
+codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleCodeBlock().run();
 });
 
-document.querySelector("#bold").addEventListener("click", (e) => {
+setHelpText(boldButton, "Bold");
+boldButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleBold().run();
 });
 
-document.querySelector("#italic").addEventListener("click", (e) => {
+setHelpText(italicButton, "Italic");
+italicButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleItalic().run();
 });
 
-document.querySelector("#underline").addEventListener("click", (e) => {
+setHelpText(underlineButton, "Underline");
+underlineButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleUnderline().run();
 });
 
-document.querySelector("#code").addEventListener("click", (e) => {
+setHelpText(inlineCodeButton, "Inline Code");
+inlineCodeButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleCode().run();
 });
 
-const tableCreate = document.querySelector("#tableCreate");
 const tableCreateItems = [
   {
     icon: "table-create.svg",
@@ -306,14 +330,14 @@ const tableCreateItems = [
   },
 ];
 
-tableCreate.addEventListener("click", (e) => {
+setHelpText(tableCreateButton, "Table Actions");
+tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  createSubmenu(tableCreate, tableCreateItems);
+  createSubmenu(tableCreateButton, tableCreateItems);
 });
 
-const tableDelete = document.querySelector("#tableDelete");
 const tableDeleteItems = [
   {
     icon: "table-delete.svg",
@@ -329,13 +353,13 @@ const tableDeleteItems = [
   },
 ];
 
-tableDelete.addEventListener("click", (e) => {
+setHelpText(tableDeleteButton, "Table delete Actions");
+tableDeleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(tableDelete, tableDeleteItems);
+  createSubmenu(tableDeleteButton, tableDeleteItems);
 });
 
-const linkButton = document.querySelector("#link");
 const linkEditButtons = [
   {
     icon: "link.svg",
@@ -352,6 +376,7 @@ const linkEditButtons = [
   },
 ];
 
+setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -359,7 +384,8 @@ linkButton.addEventListener("click", (e) => {
 });
 
 // Functional Buttons
-document.querySelector("#export").addEventListener("click", async (e) => {
+setHelpText(exportButton, "Export Document as PDF");
+exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
   const exportDocument = editor.getJSON();
 
@@ -411,7 +437,8 @@ document.querySelector("#export").addEventListener("click", async (e) => {
   );
 });
 
-document.querySelector("#save").addEventListener("click", async (e) => {
+setHelpText(saveButton, "Save Document");
+saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
   const saveData = editor.getJSON();
 
@@ -441,7 +468,8 @@ function closeEditor() {
   editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
-document.querySelector("#discard").addEventListener("click", (e) => {
+// Discard Button's helptext is set within the autosave.
+discardButton.addEventListener("click", (e) => {
   e.preventDefault();
 
   if (!editorIsSaved) {
@@ -475,6 +503,7 @@ setInterval(async () => {
   if (editorIsSaved === false) {
     if (!isDiscardIcon) {
       discardIcon.src = discardIconPath;
+      setHelpText(discardButton, "Discard Changes");
       isDiscardIcon = true;
     }
     //console.log(saveData);
@@ -495,6 +524,7 @@ setInterval(async () => {
   } else {
     if (isDiscardIcon) {
       discardIcon.src = closeIconPath;
+      setHelpText(discardButton, "Close Document");
       isDiscardIcon = false;
     }
   }
