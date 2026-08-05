@@ -112,6 +112,8 @@ export async function buildSidebar() {
         },
       );
       if (response.ok) {
+        history.pushState(null, "", `?document=${previousEntry}${entry.name}`);
+        document.title = entry.name;
         const fileData = await response.json();
         loadDocument(fileData, entry, previousEntry);
       } else if (response.status === 409) {
