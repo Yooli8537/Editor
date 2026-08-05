@@ -6,6 +6,7 @@ import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import { ListKit } from "@tiptap/extension-list";
+import { renderToHTMLString } from "@tiptap/static-renderer/pm/html-string";
 
 import {
   createConfirmModal,
@@ -23,9 +24,10 @@ const editTitleButton = document.querySelector("#editTitleButton");
 let editorIsSaved;
 
 // Creating new TipTap Editor
+const extensions = [StarterKit, TableKit, Image, FileHandler, Emoji];
 const editor = new Editor({
   element: wrapper,
-  extensions: [StarterKit, TableKit, Image, FileHandler, Emoji],
+  extensions: extensions,
   content: "<p></p>",
   autofocus: true,
   injectCSS: true,
@@ -398,6 +400,13 @@ linkButton.addEventListener("click", (e) => {
 setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
+
+  const html = renderToHTMLString({
+    extensions: extensions,
+    content: editor.getJSON(),
+  });
+  console.log(html);
+
   const exportDocument = editor.getJSON();
 
   createConfirmModal(
@@ -432,7 +441,7 @@ exportButton.addEventListener("click", async (e) => {
           let downloadElement = document.createElement("a");
           let downloadURL = await URL.createObjectURL(blobResponse);
           downloadElement.href = downloadURL;
-          downloadElement.download = currentEntry.name.replace(".json", "");
+          downloadElement.download = currentEntry.name.replace(".json", ".pdf");
           downloadElement.click();
           URL.revokeObjectURL(downloadURL);
           console.log("Succsessfully exported File.");
