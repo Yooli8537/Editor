@@ -64,7 +64,7 @@ export async function buildSidebar() {
           file.appendChild(
             createFileActions(result.name, result.folderPath + "/"),
           );
-          wrapper.appendChild(createIcon("../assets/function/file.svg"));
+          wrapper.appendChild(setIcon("../assets/function/file.svg"));
           wrapper.appendChild(file);
           folderStructure.appendChild(wrapper);
         });
@@ -92,6 +92,7 @@ export async function buildSidebar() {
     }
   }
 
+  // Creating Folder to be rendered on the Sidebar
   function createFolder(entry) {
     const folder = document.createElement("div");
     folder.classList.add("folder");
@@ -99,6 +100,7 @@ export async function buildSidebar() {
     return folder;
   }
 
+  // Creating File to be rendered on the Sidebar
   function createFile(entry, previousEntry) {
     const file = document.createElement("div");
     file.classList.add("file");
@@ -116,10 +118,6 @@ export async function buildSidebar() {
         document.title = entry.name;
         const fileData = await response.json();
         loadDocument(fileData, entry, previousEntry);
-      } else if (response.status === 409) {
-        createErrorModal(
-          "A file with that name already exists at the current directory!",
-        );
       } else {
         createErrorModal("Something went wrong.");
       }
@@ -128,7 +126,7 @@ export async function buildSidebar() {
     return file;
   }
 
-  function createIcon(iconPath) {
+  function setIcon(iconPath) {
     const icon = document.createElement("img");
     icon.classList.add("sidebarIcon");
     icon.src = iconPath;
@@ -288,9 +286,9 @@ export async function buildSidebar() {
         folder.appendChild(createFolderActions(entries[i].name, previousEntry));
 
         if (indentlevel === 0) {
-          wrapper.appendChild(createIcon("../assets/function/notebook.svg"));
+          wrapper.appendChild(setIcon("../assets/function/notebook.svg"));
         } else {
-          wrapper.appendChild(createIcon("../assets/function/folder.svg"));
+          wrapper.appendChild(setIcon("../assets/function/folder.svg"));
         }
 
         wrapper.appendChild(folder);
@@ -309,7 +307,7 @@ export async function buildSidebar() {
         const wrapper = createWrapper();
         const file = createFile(entries[i], previousEntry);
         file.appendChild(createFileActions(entries[i].name, previousEntry));
-        wrapper.appendChild(createIcon("../assets/function/file.svg"));
+        wrapper.appendChild(setIcon("../assets/function/file.svg"));
         wrapper.appendChild(file);
         wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
         folderStructure.appendChild(wrapper);
