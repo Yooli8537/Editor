@@ -81,6 +81,7 @@ let currentPreviousEntry;
 
 // Applying File Data
 export function loadDocument(data, entry, previousEntry) {
+  document.title = entry.name.slice(0, -5);
   function continueLoading() {
     currentDocument = data;
     currentEntry = entry;
@@ -499,10 +500,6 @@ discardButton.addEventListener("click", (e) => {
   }
 });
 
-function onFirstStart() {
-  editorView.classList.add("hidden");
-}
-
 const discardIcon = document.querySelector("#discardIcon");
 const discardIconPath = "assets/function/discard.svg";
 const closeIconPath = "assets/function/cancel.svg";
@@ -541,5 +538,38 @@ setInterval(async () => {
     }
   }
 }, 1000);
+
+// Opens Document from URL if one is present.
+async function onFirstStart() {
+  const params = new URLSearchParams(window.location.search);
+  const path = params.get("path");
+  const document = params.get("document");
+  console.log(path);
+  console.log(document);
+
+  // Stops auto-open if the URL is the base URL.
+  if (document === null) {
+    console.log("Editor ready!");
+    return;
+  } else {
+    const response = await fetch(
+      `api/documents/getFile?folderPath=${path}&name=${document}`,
+      {
+        method: "GET",
+      },
+    );
+
+    if (response.ok) {
+      // Mimics the data expected by the loadDocument function
+      const adjustedName = {
+        name: document,
+        isFolder: false,
+      }
+      const fileData = await response.json();
+      loadDocument(fileData, adjustedName, path);
+    }
+  }
+  console.log("Editor ready!");
+}
 
 onFirstStart();

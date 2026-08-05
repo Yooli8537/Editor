@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Full URL support, you can now continue from where you left off.
+
 ### Changed
 
 - Codeblock styling changed to Hackermode while we wait for Syntax Highlighting

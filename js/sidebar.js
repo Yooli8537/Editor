@@ -114,8 +114,7 @@ export async function buildSidebar() {
         },
       );
       if (response.ok) {
-        history.pushState(null, "", `?document=${previousEntry}${entry.name}`);
-        document.title = entry.name;
+        history.pushState(null, "", `?path=${previousEntry}&document=${entry.name}`);
         const fileData = await response.json();
         loadDocument(fileData, entry, previousEntry);
       } else {
