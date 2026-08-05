@@ -13,7 +13,7 @@ import {
   createSubmenu,
   removeSubmenus,
   createErrorModal,
-  createHelpText,
+  setHelpText,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
 
@@ -217,7 +217,7 @@ const headingItems = [
   },
 ];
 
-createHelpText(headings, "Headings");
+setHelpText(headings, "Headings");
 headings.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();

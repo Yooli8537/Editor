@@ -197,12 +197,43 @@ export function removeSubmenus() {
 }
 
 // Function descriptions (when hovering)
-export function createHelpText(element, helpText) {
-  element.addEventListener("mouseenter", (e) => {
-    console.log(element);
-  });
+// Creates the Help Text after 3s
+export function setHelpText(hoverButton, helpText) {
+  let time = 0;
+  let hoverInterval = null;
 
-  element.addEventListener("mouseleave", (e) => {
-    console.log(helpText);
+  function createHelpText() {
+    time = 0;
+
+    hoverInterval = setInterval(() => {
+      if (time >= 2) {
+        clearInterval(hoverInterval);
+        hoverInterval = null;
+
+        const boundingBox = document.createElement("div");
+        boundingBox.classList.add("helpText");
+
+        const text = document.createElement("p");
+        text.textContent = helpText;
+
+        const position = hoverButton.getBoundingClientRect();
+        boundingBox.style.position = "absolute";
+        boundingBox.style.top = (position.top - position.bottom) / 2 + "px";
+        boundingBox.style.left = (position.left - position.right) / 2 + "px";
+
+        boundingBox.appendChild(text);
+        document.body.appendChild(boundingBox);
+      } else {
+        time++;
+        console.log(time);
+      }
+    }, 1000);
+  }
+
+  hoverButton.addEventListener("mouseenter", createHelpText);
+
+  hoverButton.addEventListener("mouseleave", (e) => {
+    clearInterval(hoverInterval);
+    hoverInterval = null;
   });
 }
