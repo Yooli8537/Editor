@@ -58,7 +58,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Autosaving
 - Full Image support
 - Collapsing / Expanding Folders
-- Hover shows short explanation of an Editor Toolbar Function
 - Moving folders & files using drag & drop.
 - Page separation
 - A4 Toggle
@@ -68,3 +67,4 @@ This is a Web-based Editor which can run locally or on a home server.
 - "No Results" message when searching and no results come up.
 - Colors: Add a spalsh of life to the editor.
 - Document URL support so you can always continue from where you left off.
+- Dark Mode

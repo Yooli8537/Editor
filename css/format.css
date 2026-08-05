@@ -1,0 +1,84 @@
+/* Format styling for the Editor & Export */
+.export-content,
+.Prosemirror {
+  font-family: "Calibri", sans-serif;
+  font-weight: 500;
+}
+
+.export-content h1,
+.ProseMirror h1 {
+  margin: 5px;
+}
+
+.export-content h2,
+.ProseMirror h2 {
+  margin: 3px;
+}
+
+.export-content h3,
+.ProseMirror h3 {
+  margin: 1px;
+}
+
+.export-content p,
+.ProseMirror p {
+  margin: 0;
+}
+
+.export-content table,
+.ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.export-content th,
+.export-content td,
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.export-content th,
+.ProseMirror th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.export-content code,
+.ProseMirror code {
+  background-color: #cdcdcd;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.export-content pre,
+.ProseMirror pre {
+  background-color: #222222;
+  border-radius: 1px;
+}
+
+.export-content pre code,
+.ProseMirror pre code {
+  background-color: inherit;
+  color: #dbf7f6;
+  padding: 0;
+}
+
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+ul[data-type="taskList"] li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+ul[data-type="taskList"] li > label {
+  display: flex;
+  align-items: center;
+}

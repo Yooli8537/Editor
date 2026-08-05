@@ -165,10 +165,14 @@ export function createSubmenu(triggerButton, items) {
     const buttonIcon = document.createElement("img");
     buttonIcon.classList.add("toolbarIcon");
     buttonIcon.src = `assets/format/${items[i].icon}`;
-    button.appendChild(buttonIcon);
-    selector.appendChild(button);
+
+    // Setting Helptext for Submenu Items
+    setHelpText(button, items[i].helpText);
 
     button.addEventListener("click", items[i].action);
+
+    button.appendChild(buttonIcon);
+    selector.appendChild(button);
   }
 
   if (!isOpen) {
@@ -194,4 +198,51 @@ export function removeSubmenus() {
   document
     .querySelectorAll(".activeButton")
     .forEach((el) => el.classList.remove("activeButton"));
+}
+
+// Function descriptions (when hovering)
+// Creates the Help Text after 2s
+export function setHelpText(hoverButton, helpText) {
+  let time = 0;
+  let hoverInterval = null;
+
+  function createHelpText() {
+    console.log(helpText);
+
+    // Stops an empty helptext from generating
+    if (helpText === undefined) {
+      return;
+    }
+
+    time = 0;
+
+    hoverInterval = setInterval(() => {
+      if (time >= 1) {
+        clearInterval(hoverInterval);
+        hoverInterval = null;
+
+        const boundingBox = document.createElement("div");
+        boundingBox.classList.add("helpText");
+        boundingBox.textContent = helpText;
+        const position = hoverButton.getBoundingClientRect();
+        boundingBox.style.position = "absolute";
+        boundingBox.style.top = position.bottom + "px"; // position.top - (position.top - position.bottom) / 2 + "px"; alternative position which leads to bugs
+        boundingBox.style.left = position.left + "px"; // position.left + (position.left - position.right) / 2 + "px";
+
+        document.body.appendChild(boundingBox);
+      } else {
+        time++;
+      }
+    }, 1000);
+  }
+
+  hoverButton.addEventListener("mouseenter", createHelpText);
+
+  hoverButton.addEventListener("mouseleave", (e) => {
+    clearInterval(hoverInterval);
+    hoverInterval = null;
+    document
+      .querySelectorAll(".helpText")
+      .forEach((helpText) => helpText.remove());
+  });
 }
