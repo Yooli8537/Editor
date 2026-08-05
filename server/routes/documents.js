@@ -324,7 +324,6 @@ router.put("/api/documents/updateFile", async (req, res) => {
   const filePath = path.join(__dirname, "../../data", folderPath, name);
   const file = await fs.promises.readFile(filePath, "utf-8");
 
-  console.log(saveData.content);
   const fileData = JSON.parse(file);
   fileData[0].content = saveData;
 

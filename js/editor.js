@@ -5,8 +5,6 @@ import { TableKit } from "@tiptap/extension-table";
 import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
-import { ListKit } from "@tiptap/extension-list";
-import { renderToHTMLString } from "@tiptap/static-renderer/pm/html-string";
 
 import {
   createConfirmModal,
@@ -400,12 +398,6 @@ linkButton.addEventListener("click", (e) => {
 setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
-
-  const html = renderToHTMLString({
-    extensions: extensions,
-    content: editor.getJSON(),
-  });
-  console.log(html);
 
   const exportDocument = editor.getJSON();
 
