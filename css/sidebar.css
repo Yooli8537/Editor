@@ -44,6 +44,8 @@
   height: 100%;
   justify-content: space-between;
   cursor: pointer;
+  color: #000;
+  text-decoration: none;
 }
 
 .hoverfield {
