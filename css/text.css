@@ -1,0 +1,85 @@
+/* Text for the Editor & Export */
+
+.export-content,
+.Prosemirror {
+  font-family: "Calibri", sans-serif;
+  font-weight: 500;
+}
+
+.export-content,
+.ProseMirror h1 {
+  margin: 5px;
+}
+
+.export-content,
+.ProseMirror h2 {
+  margin: 3px;
+}
+
+.export-content,
+.ProseMirror h3 {
+  margin: 1px;
+}
+
+.export-content,
+.ProseMirror p {
+  margin: 0;
+}
+
+.export-content,
+.ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.export-content,
+
+.export-content,.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.export-content,
+.ProseMirror th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.export-content,
+.ProseMirror code {
+  background-color: #cdcdcd;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.export-content,
+.ProseMirror pre {
+  background-color: #222222;
+  border-radius: 1px;
+}
+
+.export-content,
+.ProseMirror pre code {
+  background-color: inherit;
+  color: #dbf7f6;
+  padding: 0;
+}
+
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+ul[data-type="taskList"] li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+ul[data-type="taskList"] li > label {
+  display: flex;
+  align-items: center;
+}
