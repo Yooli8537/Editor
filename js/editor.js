@@ -13,6 +13,7 @@ import {
   createSubmenu,
   removeSubmenus,
   createErrorModal,
+  createHelpText,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
 
@@ -64,6 +65,15 @@ function toBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+// Warns before unloading
+window.addEventListener("beforeunload", (e) => {
+  if (editorIsSaved == false) {
+    e.preventDefault();
+    e.returnValue = "";
+    console.log("WARN");
+  }
+});
 
 let currentDocument;
 let currentEntry;
@@ -207,13 +217,7 @@ const headingItems = [
   },
 ];
 
-window.addEventListener("beforeunload", (e) => {
-  if (editorIsSaved == false) {
-    e.preventDefault();
-    e.returnValue = "";
-  }
-});
-
+createHelpText(headings, "Headings");
 headings.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();

@@ -195,3 +195,14 @@ export function removeSubmenus() {
     .querySelectorAll(".activeButton")
     .forEach((el) => el.classList.remove("activeButton"));
 }
+
+// Function descriptions (when hovering)
+export function createHelpText(element, helpText) {
+  element.addEventListener("mouseenter", (e) => {
+    console.log(element);
+  });
+
+  element.addEventListener("mouseleave", (e) => {
+    console.log(helpText);
+  });
+}

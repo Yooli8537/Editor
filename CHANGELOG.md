@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## v0.1.1-beta - Many Bug Fixes & small Improvements
 
 ### Added
