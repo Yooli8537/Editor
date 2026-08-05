@@ -159,6 +159,7 @@ async function renameHandler() {
       div.remove();
       editTitleButton.style.display = "flex";
       loadDocument(currentDocument, currentEntry, currentPreviousEntry);
+
       console.log("Current Entry: ", currentEntry);
       console.log("Current Document: ", currentDocument);
       console.log("Current previous Entry: ", currentPreviousEntry);
@@ -493,10 +494,12 @@ discardButton.addEventListener("click", (e) => {
       () => {
         closeEditor();
         console.log("Changes Discarded.");
+        history.pushState(null, "", "/");
       },
     );
   } else {
     closeEditor();
+    history.pushState(null, "", "/");
   }
 });
 
@@ -544,8 +547,6 @@ async function onFirstStart() {
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
   const document = params.get("document");
-  console.log(path);
-  console.log(document);
 
   // Stops auto-open if the URL is the base URL.
   if (document === null) {
@@ -564,7 +565,7 @@ async function onFirstStart() {
       const adjustedName = {
         name: document,
         isFolder: false,
-      }
+      };
       const fileData = await response.json();
       loadDocument(fileData, adjustedName, path);
     }

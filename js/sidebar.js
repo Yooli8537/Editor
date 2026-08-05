@@ -114,9 +114,9 @@ export async function buildSidebar() {
         },
       );
       if (response.ok) {
-        history.pushState(null, "", `?path=${previousEntry}&document=${entry.name}`);
-        const fileData = await response.json();
-        loadDocument(fileData, entry, previousEntry);
+        history.pushState(null, "", `?path=${previousEntry}&document=${entry.name}`); // Sets the Query Parameters into the URL
+        const fileData = await response.json(); // Data from GET request
+        loadDocument(fileData, entry, previousEntry); // Sends the Document to be loaded
       } else {
         createErrorModal("Something went wrong.");
       }
