@@ -152,6 +152,7 @@ export function destroyModal() {
 
 // Submenus (mainly for Editor Toolbar)
 export function createSubmenu(triggerButton, items) {
+  console.log(triggerButton);
   const isOpen = triggerButton.classList.contains("activeButton");
 
   removeSubmenus();
@@ -197,8 +198,9 @@ export function removeSubmenus() {
 }
 
 // Function descriptions (when hovering)
-// Creates the Help Text after 3s
+// Creates the Help Text after 2s
 export function setHelpText(hoverButton, helpText) {
+  console.log(hoverButton);
   let time = 0;
   let hoverInterval = null;
 
@@ -206,22 +208,20 @@ export function setHelpText(hoverButton, helpText) {
     time = 0;
 
     hoverInterval = setInterval(() => {
-      if (time >= 2) {
+      if (time >= 1) {
         clearInterval(hoverInterval);
         hoverInterval = null;
 
         const boundingBox = document.createElement("div");
         boundingBox.classList.add("helpText");
-
-        const text = document.createElement("p");
-        text.textContent = helpText;
-
+        boundingBox.textContent = helpText;
         const position = hoverButton.getBoundingClientRect();
         boundingBox.style.position = "absolute";
-        boundingBox.style.top = (position.top - position.bottom) / 2 + "px";
-        boundingBox.style.left = (position.left - position.right) / 2 + "px";
+        boundingBox.style.top =
+          position.top - (position.top - position.bottom) / 2 + "px";
+        boundingBox.style.left =
+          position.left + (position.left - position.right) / 2 + "px";
 
-        boundingBox.appendChild(text);
         document.body.appendChild(boundingBox);
       } else {
         time++;
@@ -235,5 +235,8 @@ export function setHelpText(hoverButton, helpText) {
   hoverButton.addEventListener("mouseleave", (e) => {
     clearInterval(hoverInterval);
     hoverInterval = null;
+    document
+      .querySelectorAll(".helpText")
+      .forEach((helpText) => helpText.remove());
   });
 }
