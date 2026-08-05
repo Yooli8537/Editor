@@ -27,7 +27,7 @@ router.post("/api/export", async (req, res) => {
   const exportHTML = `
   <html>
   <head>
-    <link rel="stylesheet" href="http://localhost:8511/css/text.css" />
+    <link rel="stylesheet" href="http://localhost:8511/css/format.css" />
   </head>
   <body>
     <div class="export-content">
