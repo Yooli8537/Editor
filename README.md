@@ -52,13 +52,14 @@ This is a Web-based Editor which can run locally or on a home server.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
 - Confirmation Modals can't be confirmed with the Enter Key.
+- Somehow, a Document Export with a period in its name has all the text after the period duplicated upon export and the .pdf file extension is removed.
+- Styling in Exports is slightly different from within the app. Most noticeable with the font weight & paragraph separation.
 
 ## Planned Features
 
 - Autosaving
 - Full Image support
 - Collapsing / Expanding Folders
-- Hover shows short explanation of an Editor Toolbar Function
 - Moving folders & files using drag & drop.
 - Page separation
 - A4 Toggle
@@ -68,3 +69,4 @@ This is a Web-based Editor which can run locally or on a home server.
 - "No Results" message when searching and no results come up.
 - Colors: Add a spalsh of life to the editor.
 - Document URL support so you can always continue from where you left off.
+- Dark Mode
