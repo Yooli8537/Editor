@@ -29,25 +29,12 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
 
   const submitButton = document.createElement("div");
   submitButton.classList.add("modalTextButton");
-  submitButton.classList.add("highlight");
   submitButton.textContent = confirm;
 
   submitButton.addEventListener("click", () => {
     onSubmit();
     destroyModal();
   });
-
-  function handleEnter(e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      onSubmit();
-      document.removeEventListener("keydown");
-      buildSidebar();
-      destroyModal();
-    }
-  }
-
-  document.addEventListener("keydown", handleEnter(e));
 
   modalButtons.appendChild(cancelButton);
   modalButtons.appendChild(submitButton);
