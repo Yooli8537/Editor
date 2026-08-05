@@ -1,4 +1,7 @@
 // Utilities
+
+import { buildSidebar } from "./sidebar";
+
 // Modals
 export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   const clickable = document.createElement("div");
@@ -11,7 +14,6 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   modal.classList.add("modal");
 
   const text = document.createElement("p");
-  text.classList.add("modalText");
   text.textContent = prompt;
 
   const modalButtons = document.createElement("div");
@@ -42,7 +44,17 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   document.body.appendChild(modal);
 }
 
-export function createPromptModal(prompt, onSubmit) {
+function verifyInput(inputField, onSubmit) {
+  if (!inputField.value) {
+    destroyModal();
+    createErrorModal("The Input is empty. Try again.");
+  } else {
+    onSubmit(inputField.value);
+    destroyModal();
+  }
+}
+
+export function createPromptModal(prompt, onSubmit, inputContent) {
   const clickable = document.createElement("div");
   clickable.classList.add("clickable");
   clickable.addEventListener("click", () => {
@@ -53,11 +65,20 @@ export function createPromptModal(prompt, onSubmit) {
   modal.classList.add("modal");
 
   const text = document.createElement("p");
-  text.classList.add("modalText");
   text.textContent = prompt;
 
   const inputField = document.createElement("input");
   inputField.classList.add("inputField");
+  inputField.type = "text";
+  inputField.maxLength = 30;
+  inputField.value = inputContent;
+
+  inputField.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      verifyInput(inputField, onSubmit);
+    }
+  });
 
   const modalButtons = document.createElement("div");
   modalButtons.classList.add("modalButtons");
@@ -72,17 +93,51 @@ export function createPromptModal(prompt, onSubmit) {
 
   const submitButton = document.createElement("img");
   submitButton.classList.add("modalButton");
+  submitButton.classList.add("highlight");
   submitButton.src = "../assets/function/checkmark.svg";
 
   submitButton.addEventListener("click", () => {
-    onSubmit(inputField.value);
-    destroyModal();
+    verifyInput(inputField, onSubmit);
   });
 
   modalButtons.appendChild(cancelButton);
   modalButtons.appendChild(submitButton);
   modal.appendChild(text);
   modal.appendChild(inputField);
+  modal.appendChild(modalButtons);
+  document.body.appendChild(clickable);
+  document.body.appendChild(modal);
+
+  inputField.focus();
+}
+
+export function createErrorModal(errorMsg) {
+  const clickable = document.createElement("div");
+  clickable.classList.add("clickable");
+  clickable.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  const text = document.createElement("p");
+  text.classList.add("errorMsg");
+  text.textContent = errorMsg;
+
+  const modalButtons = document.createElement("div");
+  modalButtons.classList.add("modalButtons");
+
+  const okButton = document.createElement("div");
+  okButton.classList.add("modalTextButton");
+  okButton.textContent = "Ok";
+
+  okButton.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  modalButtons.appendChild(okButton);
+  modal.appendChild(text);
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);

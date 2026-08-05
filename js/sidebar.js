@@ -1,5 +1,10 @@
 // Importing Required functions
-import { createConfirmModal, destroyModal, createPromptModal } from "./utils";
+import {
+  createConfirmModal,
+  destroyModal,
+  createPromptModal,
+  createErrorModal,
+} from "./utils";
 import { loadDocument } from "./editor";
 
 const sidebar = document.querySelector("#sidebar");
@@ -30,6 +35,7 @@ export async function buildSidebar() {
 
     const input = document.createElement("input");
     input.classList.add("searchField");
+    input.type = "text";
 
     const icon = document.createElement("img");
     icon.classList.add("sidebarButton");
@@ -96,7 +102,7 @@ export async function buildSidebar() {
   function createFile(entry, previousEntry) {
     const file = document.createElement("div");
     file.classList.add("file");
-    file.textContent = entry.name;
+    file.textContent = entry.name.slice(0, -5);
 
     file.addEventListener("click", async (e) => {
       const response = await fetch(
@@ -108,6 +114,12 @@ export async function buildSidebar() {
       if (response.ok) {
         const fileData = await response.json();
         loadDocument(fileData, entry, previousEntry);
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A file with that name already exists at the current directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
       }
     });
 
@@ -123,7 +135,7 @@ export async function buildSidebar() {
 
   // Action Buttons (Delete, Rename, Create)
   // Path is saved for API call
-  function createActions(path, previousEntry) {
+  function createFolderActions(path, previousEntry) {
     const buttons = document.createElement("div");
     buttons.classList.add("hoverField");
 
@@ -144,7 +156,6 @@ export async function buildSidebar() {
     const renameButton = document.createElement("img");
     renameButton.classList.add("hoverButton", "sidebarIcon");
     renameButton.src = "../assets/function/edit.svg";
-
     renameButton.addEventListener("click", async (e) => {
       createPromptModal(
         "Please Input the new Folder Name.",
@@ -162,8 +173,13 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully renamed Folder.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find Folder to be renamed.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
+        path,
       );
     });
 
@@ -190,6 +206,10 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully deleted Folder.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find Folder to delete.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
       );
@@ -228,6 +248,10 @@ export async function buildSidebar() {
           if (response.ok) {
             console.log("Successfully deleted File.");
             buildSidebar();
+          } else if (response.status === 404) {
+            createErrorModal("Couldn't find File to be deleted.");
+          } else {
+            createErrorModal("Something went wrong.");
           }
         },
       );
@@ -243,13 +267,30 @@ export async function buildSidebar() {
 
   // Rendering items
   function renderEntries(entries, indentlevel, previousEntry) {
+    // Sorts entires alphabetically whilst prioritizing Folders
+    entries.sort((a, b) => {
+      const boolDiff = Number(b.isFolder) - Number(a.isFolder);
+
+      if (boolDiff !== 0) {
+        return boolDiff;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+
     for (let i = 0; i < entries.length; i++) {
       if (entries[i].isFolder === true) {
         // Creating Folder view
         const wrapper = createWrapper();
         const folder = createFolder(entries[i]);
-        folder.appendChild(createActions(entries[i].name, previousEntry));
-        wrapper.appendChild(createIcon("../assets/function/folder.svg"));
+        folder.appendChild(createFolderActions(entries[i].name, previousEntry));
+
+        if (indentlevel === 0) {
+          wrapper.appendChild(createIcon("../assets/function/notebook.svg"));
+        } else {
+          wrapper.appendChild(createIcon("../assets/function/folder.svg"));
+        }
+
         wrapper.appendChild(folder);
         wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
         folderStructure.appendChild(wrapper);
@@ -289,17 +330,30 @@ function createFileDropdown(parent, path, previousEntry) {
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
-    createPromptModal("Please Name your File.", async (name) => {
-      const response = await fetch("api/documents/newFile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, folderPath: previousEntry + path }),
-      });
-      if (response.ok) {
-        console.log("Successfully created File.");
-        buildSidebar();
-      }
-    });
+    createPromptModal(
+      "Please Name your File.",
+      async (name) => {
+        const response = await fetch("api/documents/newFile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name,
+            folderPath: previousEntry + path,
+          }),
+        });
+        if (response.ok) {
+          console.log("Successfully created File.");
+          buildSidebar();
+        } else if (response.status === 409) {
+          createErrorModal(
+            "A file with that name already exists in the current directory!",
+          );
+        } else {
+          createErrorModal("Something went wrong.");
+        }
+      },
+      "",
+    );
   });
 
   const folderButton = document.createElement("div");
@@ -307,17 +361,30 @@ function createFileDropdown(parent, path, previousEntry) {
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
-    createPromptModal("Please Name your Folder.", async (name) => {
-      const response = await fetch("api/documents/newFolder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, folderPath: previousEntry + path }),
-      });
-      if (response.ok) {
-        buildSidebar();
-        console.log("Folder added successfully.");
-      }
-    });
+    createPromptModal(
+      "Please Name your Folder.",
+      async (name) => {
+        const response = await fetch("api/documents/newFolder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name,
+            folderPath: previousEntry + path,
+          }),
+        });
+        if (response.ok) {
+          buildSidebar();
+          console.log("Folder added successfully.");
+        } else if (response.status === 409) {
+          createErrorModal(
+            "A Folder with that name already exists in the current Directory!",
+          );
+        } else {
+          createErrorModal("Something went wrong.");
+        }
+      },
+      "",
+    );
   });
 
   dropdown.appendChild(fileButton);
@@ -341,16 +408,23 @@ function removeDropdowns() {
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  createPromptModal("Please name your Notebook.", async (notebookName) => {
-    const response = await fetch("api/documents/newNotebook", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: notebookName }),
-    });
-    if (response.ok) {
-      buildSidebar();
-    } else if (response.status === 409) {
-      alert("A Notebook with that name already exists!");
-    }
-  });
+  createPromptModal(
+    "Please name your Notebook.",
+    async (notebookName) => {
+      const response = await fetch("api/documents/newNotebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: notebookName }),
+      });
+
+      if (response.ok) {
+        buildSidebar();
+      } else if (response.status === 409) {
+        createErrorModal("A Notebook with that name already exists!");
+      } else {
+        createErrorModal("Something went wrong.");
+      }
+    },
+    "",
+  );
 });

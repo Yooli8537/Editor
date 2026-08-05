@@ -34,30 +34,24 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Known Issues
 
-- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead.
+- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
 
 ### To be fixed
 
 - Only images added via a direct link are supported. Images should be able to be dropped into the Editor via Drag & Drop or Copy & Paste.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
-- When deleting the opened file itself or a parent the editor should close.
+- When deleting the opened file itself or a parent the editor doesn't close.
 - Image resize doesn't work.
-- When creating a new File / Folder, the Input Field isn't automatically focused.
 - Can't search with `Enter` :(
-- No Error Message when a Filename already exists after trying to create a new file.
-- `.json` is at the end of every File.
-- No Folder Priority over Files.
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
-- Empty Notebook name gives out a (409 - Conflict) error, which is just weird.
-- Too long Names give out a (500) at times and other times they go past the sidebar, not allowing themselves to be deleted until renamed because the button is in the Backrooms.
-- Empty Name errors have no error handling.
 - Empty Links style as links and link to the root of the app.
 - Syntax Highlighting Extensions from TipTap do not work.
-- Renaming a Folder does not carry over its current name into the renaming field.
-- Link styling can't be removed properly as it creates an empty Link / `<a>` Tag. Removing a link is very conveluted, requiring a specific setup to get rid of one.
-- File Rename Button has no Pointer Cursor
+- Renaming a File but not making any changes still sends a request to make an update.
+- The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
+- Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
+- Confirmation Modals can't be confirmed with the Enter Key.
 
 ## Planned Features
 
@@ -66,14 +60,11 @@ This is a Web-based Editor which can run locally or on a home server.
 - Collapsing / Expanding Folders
 - Hover shows short explanation of an Editor Toolbar Function
 - Moving folders & files using drag & drop.
-- Enter Key should function as confirmation for basically anything.
 - Page separation
 - A4 Toggle
-- Dedicated Notebook Icon
 - Highlighting the current Document
 - Backups of previous 5 versions of a document
 - Settings Menu
 - "No Results" message when searching and no results come up.
-- Swap Discard button for Close Button if the Document is saved.
 - Colors: Add a spalsh of life to the editor.
 - Document URL support so you can always continue from where you left off.

@@ -10,7 +10,9 @@ const dataFolder = path.join(__dirname, "../data");
 if (!fs.existsSync(dataFolder)) {
   fs.mkdirSync(dataFolder);
   console.warn("Created missing Data Folder.");
-  console.log("This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.");
+  console.log(
+    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+  );
 }
 
 const exportRoute = require("./routes/export");

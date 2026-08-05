@@ -7,7 +7,13 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import { ListKit } from "@tiptap/extension-list";
 
-import { createConfirmModal, destroyModal, createSubmenu, removeSubmenus } from "./utils";
+import {
+  createConfirmModal,
+  destroyModal,
+  createSubmenu,
+  removeSubmenus,
+  createErrorModal,
+} from "./utils";
 import { buildSidebar } from "./sidebar";
 
 const wrapper = document.querySelector("#wrapper");
@@ -18,7 +24,7 @@ let editorIsSaved;
 // Creating new TipTap Editor
 const editor = new Editor({
   element: wrapper,
-  extensions: [StarterKit, TableKit, Image, FileHandler, Emoji, ListKit],
+  extensions: [StarterKit, TableKit, Image, FileHandler, Emoji],
   content: "<p></p>",
   autofocus: true,
   injectCSS: true,
@@ -84,6 +90,7 @@ export function loadDocument(data, entry, previousEntry) {
 
     editorIsSaved = true;
   }
+
   if (editorIsSaved === false) {
     createConfirmModal(
       "Leaving this Document will discard Changes!",
@@ -107,10 +114,12 @@ async function renameHandler() {
   const titleRenameInput = document.createElement("input");
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
+  titleRenameInput.type = "text";
+  titleRenameInput.maxLength = 30;
 
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
-  confirmButton.classList.add("renameButton");
+  confirmButton.classList.add("borderlessButton");
 
   confirmButton.addEventListener("click", async () => {
     const response = await fetch("api/documents/renameFile", {
@@ -141,12 +150,20 @@ async function renameHandler() {
       console.log("Current Entry: ", currentEntry);
       console.log("Current Document: ", currentDocument);
       console.log("Current previous Entry: ", currentPreviousEntry);
+    } else if (response.status === 409) {
+      createErrorModal(
+        "A File with that name already exists within the same Directory!",
+      );
+    } else if (response.status === 404) {
+      createErrorModal("File wasn't found.");
+    } else {
+      createErrorModal("Something went wrong.");
     }
   });
 
   const cancelButton = document.createElement("img");
   cancelButton.src = "../assets/function/cancel.svg";
-  cancelButton.classList.add("renameButton");
+  cancelButton.classList.add("borderlessButton");
 
   cancelButton.addEventListener("click", () => {
     div.remove();
@@ -158,6 +175,8 @@ async function renameHandler() {
   div.appendChild(confirmButton);
   div.appendChild(cancelButton);
   documentTitle.appendChild(div);
+
+  titleRenameInput.focus();
 }
 
 // Toolbar Buttons
@@ -306,17 +325,30 @@ const tableDeleteItems = [
 tableDelete.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-
   createSubmenu(tableDelete, tableDeleteItems);
 });
 
-document.querySelector("#link").addEventListener("click", (e) => {
+const linkButton = document.querySelector("#link");
+const linkEditButtons = [
+  {
+    icon: "link.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .toggleLink({ href: prompt("Please Input your Link below.") })
+        .run(),
+  },
+  {
+    icon: "unlink.svg",
+    action: () => editor.chain().focus().toggleLink().run(),
+  },
+];
+
+linkButton.addEventListener("click", (e) => {
   e.preventDefault();
-  editor
-    .chain()
-    .focus()
-    .toggleLink({ href: prompt("Please Input your Link below.") })
-    .run();
+  e.stopPropagation();
+  createSubmenu(linkButton, linkEditButtons);
 });
 
 // Functional Buttons
@@ -360,7 +392,13 @@ document.querySelector("#export").addEventListener("click", async (e) => {
           downloadElement.click();
           URL.revokeObjectURL(downloadURL);
           console.log("Succsessfully exported File.");
+        } else {
+          createErrorModal("Something went wrong.");
         }
+      } else if (saveDocument.status === 404) {
+        createErrorModal("Couldn't find File to save.");
+      } else {
+        createErrorModal("Something went wrong.");
       }
     },
   );
@@ -383,34 +421,56 @@ document.querySelector("#save").addEventListener("click", async (e) => {
   if (response.ok) {
     console.log("Successfully saved Document.");
     editorIsSaved = true;
+  } else if (response.status === 404) {
+    createErrorModal("Couldn't find File to save.");
+  } else {
+    createErrorModal("Something went wrong.");
   }
 });
+
+function closeEditor() {
+  editorView.classList.add("hidden");
+  console.log("Editor Closed.");
+  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+}
 
 document.querySelector("#discard").addEventListener("click", (e) => {
   e.preventDefault();
 
-  createConfirmModal(
-    "Discard Changes? This cannot be undone.",
-    "Cancel",
-    "Discard Changes",
-    () => {
-      editorView.classList.add("hidden");
-      console.log("Changes Discarded.");
-      editorIsSaved = true; // True cus you're closing the editor so it's technically saved. Either way the logic relies on it.
-    },
-  );
+  if (!editorIsSaved) {
+    createConfirmModal(
+      "Discard Changes? This cannot be undone.",
+      "Cancel",
+      "Discard Changes",
+      () => {
+        closeEditor();
+        console.log("Changes Discarded.");
+      },
+    );
+  } else {
+    closeEditor();
+  }
 });
 
 function onFirstStart() {
   editorView.classList.add("hidden");
 }
 
-// Autosaving
+const discardIcon = document.querySelector("#discardIcon");
+const discardIconPath = "assets/function/discard.svg";
+const closeIconPath = "assets/function/cancel.svg";
+let isDiscardIcon = true;
+
+// Autosaving including swapping Discard Button for Close Button
 setInterval(async () => {
   const saveData = editor.getJSON();
 
   if (editorIsSaved === false) {
-    console.log(saveData);
+    if (!isDiscardIcon) {
+      discardIcon.src = discardIconPath;
+      isDiscardIcon = true;
+    }
+    //console.log(saveData);
     /*
     const autosave = await fetch("api/documents/autosave", {
       method: "POST",
@@ -425,6 +485,11 @@ setInterval(async () => {
     if (autosave.ok) {
       console.log("SUCCESS");
     }*/
+  } else {
+    if (isDiscardIcon) {
+      discardIcon.src = closeIconPath;
+      isDiscardIcon = false;
+    }
   }
 }, 1000);
 
