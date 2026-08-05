@@ -31,7 +31,9 @@ router.post("/api/export", async (req, res) => {
     <link rel="stylesheet" href="http://localhost:8511/css/editor.css" />
   </head>
   <body>
-    ${editorHTML}
+    <div class="export-content">
+      ${editorHTML}
+    </div>
   </body>
   </html>
   `
