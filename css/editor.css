@@ -68,7 +68,8 @@
   height: 31px;
 }
 
-.selectMenu {
+.selectMenu,
+.helpText {
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #e1e1e1;
@@ -77,13 +78,6 @@
 
 .activeButton {
   background-color: #84ecb3;
-}
-
-.helpText {
-  border: 2px solid #000;
-  border-radius: 5px;
-  background-color: #e1e1e1;
-  padding: 2px;
 }
 
 .ProseMirror {
@@ -145,7 +139,7 @@
 
 .ProseMirror pre code {
   background-color: inherit;
-  color: #a5dad9;
+  color: #dbf7f6;
   padding: 0;
 }
 
