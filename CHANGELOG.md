@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- Editor no longer flashes for a split second after reloading the app
+- Editor no longer flashes for a split second after reloading the app.
 
 ## v0.1.2-beta - Editor help & fixed Exports
 
