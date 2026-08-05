@@ -52,7 +52,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
 - Confirmation Modals can't be confirmed with the Enter Key.
-- Styling in Exports is slightly different from within the app. Most noticeable with the font weight & paragraph separation.
 
 ## Planned Features
 

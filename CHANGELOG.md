@@ -8,8 +8,9 @@
 
 ### Fixed
 
-- Table Action Icons are no longer mixed up
-- A Document Export with a period in its name will no longer have all the text after the period duplicated upon export and the .pdf file extension removed, instead exporting normally
+- Table Action Icons are no longer mixed up.
+- A Document Export with a period in its name will no longer have all the text after the period duplicated upon export and the .pdf file extension removed, instead exporting normally.
+- Styling in Exports is no longer slightly different from within the app.
 
 ## v0.1.1-beta - Many Bug Fixes & small Improvements
 

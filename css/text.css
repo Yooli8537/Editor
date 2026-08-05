@@ -6,62 +6,62 @@
   font-weight: 500;
 }
 
-.export-content,
+.export-content h1,
 .ProseMirror h1 {
   margin: 5px;
 }
 
-.export-content,
+.export-content h2,
 .ProseMirror h2 {
   margin: 3px;
 }
 
-.export-content,
+.export-content h3,
 .ProseMirror h3 {
   margin: 1px;
 }
 
-.export-content,
+.export-content p,
 .ProseMirror p {
   margin: 0;
 }
 
-.export-content,
+.export-content table,
 .ProseMirror table {
   border-collapse: collapse;
   width: 100%;
   table-layout: fixed;
 }
 
-.export-content,
-
-.export-content,.ProseMirror th,
+.export-content th,
+.export-content td,
+.ProseMirror th,
 .ProseMirror td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
 
-.export-content,
+.export-content th,
 .ProseMirror th {
   background-color: #f5f5f5;
   font-weight: bold;
 }
 
-.export-content,
+.export-content code,
 .ProseMirror code {
   background-color: #cdcdcd;
   padding: 2px 4px;
   border-radius: 4px;
 }
 
-.export-content,
+.export-content pre,
 .ProseMirror pre {
   background-color: #222222;
   border-radius: 1px;
 }
 
-.export-content,
+.export-content pre code,
 .ProseMirror pre code {
   background-color: inherit;
   color: #dbf7f6;
