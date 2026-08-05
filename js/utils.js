@@ -207,6 +207,13 @@ export function setHelpText(hoverButton, helpText) {
   let hoverInterval = null;
 
   function createHelpText() {
+    console.log(helpText);
+
+    // Stops an empty helptext from generating
+    if (helpText === undefined) {
+      return;
+    }
+
     time = 0;
 
     hoverInterval = setInterval(() => {
