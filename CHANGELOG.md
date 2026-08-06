@@ -7,14 +7,11 @@
 - Full URL support, you can now continue from where you left off.
 - Fully functional Syntax Highlighting.
 
-### Changed
-
-- Codeblock styling changed to Hackermode while we wait for Syntax Highlighting
-
 ### Fixed
 
 - Editor no longer flashes for a split second after reloading the app.
-- Fixed Toggle Lists not working
+- Fixed Toggle Lists not working.
+- Renaming a File but not making any changes no longer sends a request to make an update.
 
 ## v0.1.2-beta - Editor help & fixed Exports
 

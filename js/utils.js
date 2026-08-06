@@ -44,10 +44,13 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   document.body.appendChild(modal);
 }
 
-function verifyInput(inputField, onSubmit) {
+function verifyInput(inputField, onSubmit, prevValue) {
   if (!inputField.value) {
     destroyModal();
     createErrorModal("The Input is empty. Try again.");
+  } else if (inputField.value) {
+    destroyModal();
+    createErrorModal("The Input and Output are the same. Try again.");
   } else {
     onSubmit(inputField.value);
     destroyModal();
@@ -76,7 +79,7 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   inputField.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      verifyInput(inputField, onSubmit);
+      verifyInput(inputField, onSubmit, inputContent);
     }
   });
 
@@ -97,7 +100,7 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   submitButton.src = "../assets/function/checkmark.svg";
 
   submitButton.addEventListener("click", () => {
-    verifyInput(inputField, onSubmit);
+    verifyInput(inputField, onSubmit, inputContent);
   });
 
   modalButtons.appendChild(cancelButton);
