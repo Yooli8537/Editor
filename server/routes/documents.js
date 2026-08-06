@@ -141,12 +141,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      location = path.join(
-        __dirname,
-        "../../data",
-        folderPath,
-        name + ".json",
-      );
+      location = path.join(__dirname, "../../data", folderPath, name + ".json");
       // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
@@ -224,9 +219,18 @@ router.delete("/api/documents/deletePath", async (req, res) => {
 router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
 
-  const fullFolderPath = path.join(__dirname, "../../data", folderPath, name);
-  const file = await fs.promises.readFile(fullFolderPath);
-  res.send(JSON.parse(file));
+  try {
+    const fullFolderPath = path.join(__dirname, "../../data", folderPath, name);
+    const file = await fs.promises.readFile(fullFolderPath);
+    res.send(JSON.parse(file));
+  } catch (err) {
+    console.error(err);
+    if (err.code === "ENOENT") {
+      res.status(404).json({ error: "Couldn't find file." });
+    } else {
+      res.status(500).json({ error: "Something went wrong." });
+    }
+  }
 });
 
 // Rename single File
