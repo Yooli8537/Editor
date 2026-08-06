@@ -7,10 +7,10 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
-import { createLowlight, common } from "lowlight";
-import "highlight.js/styles/github.css";
+import { createLowlight, all } from "lowlight";
 
-const lowlight = createLowlight(common);
+const lowlight = createLowlight(all);
+const lowlightLanguages = lowlight.listLanguages();
 
 import {
   createConfirmModal,

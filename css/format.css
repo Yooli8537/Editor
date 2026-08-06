@@ -49,7 +49,7 @@
 
 .export-content code,
 .ProseMirror code {
- /* background-color: #cdcdcd;*/
+  background-color: #cdcdcd;
   padding: 2px 4px;
   border-radius: 4px;
 }
