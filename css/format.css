@@ -82,3 +82,9 @@ ul[data-type="taskList"] li > label {
   display: flex;
   align-items: center;
 }
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
