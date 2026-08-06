@@ -38,7 +38,6 @@ const extensions = [
   TableKit,
   ListKit,
   Image.configure({
-    allowBase64: true,
     resize: {
       enabled: true,
       directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
@@ -101,15 +100,6 @@ async function uploadImage(file) {
 
   const { url } = await response.json();
   return url;
-}
-
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject("Failed to load File.");
-    reader.readAsDataURL(file);
-  });
 }
 
 // Warns before unloading

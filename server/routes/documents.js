@@ -369,24 +369,22 @@ router.post("/api/documents/autosave", async (req, res) => {
 
 router.post(
   "/api/uploadImageFile",
-  express.raw({ type: "image/*" }),
+  express.raw({ type: "image/*", limit: "10mb" }),
   async (req, res) => {
     const imgType = req.headers["content-type"];
-    console.log(imgType);
 
     let fileEnding;
     if (imgType === "image/png") {
-      fileEnding = ".png"
+      fileEnding = ".png";
     } else if (imgType === "image/jpg") {
-      fileEnding = ".jpg"
+      fileEnding = ".jpg";
     } else if (imgType === "image/gif") {
-      fileEnding = ".gif"
+      fileEnding = ".gif";
     }
 
     const fileName = imageName() + fileEnding;
     location = path.join(__dirname, "../../images", fileName);
     fs.writeFileSync(location, req.body);
-
 
     res.json({
       url: `/images/${fileName}`,
@@ -404,5 +402,3 @@ function imageName() {
   }
   return name;
 }
-
-console.log(imageName());
