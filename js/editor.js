@@ -430,46 +430,28 @@ exportButton.addEventListener("click", async (e) => {
   console.log(exportDocument);
 
   createConfirmModal(
-    "You must save your Document before Exporting.",
+    `Are you sure you want to Export the current Document?`,
     "Back to Editor",
-    "Save Document & Export",
+    "Export as PDF",
     async () => {
-      const saveDocument = await fetch("api/documents/updateFile", {
-        method: "PUT",
+      const response = await fetch("api/export", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          saveData: exportDocument,
-          name: currentEntry.name,
-          folderPath: currentPreviousEntry,
+          exportDocument: exportDocument,
+          name: currentEntry.name.replace(".json", ""),
         }),
       });
 
-      if (saveDocument.ok) {
-        editorIsSaved = true;
-        console.log("Successfully saved File.");
-        const response = await fetch("api/export", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exportDocument: exportDocument,
-            name: currentEntry.name.replace(".json", ""),
-          }),
-        });
-
-        if (response.ok) {
-          const blobResponse = await response.blob();
-          let downloadElement = document.createElement("a");
-          let downloadURL = await URL.createObjectURL(blobResponse);
-          downloadElement.href = downloadURL;
-          downloadElement.download = currentEntry.name.replace(".json", ".pdf");
-          downloadElement.click();
-          URL.revokeObjectURL(downloadURL);
-          console.log("Succsessfully exported File.");
-        } else {
-          createErrorModal("Something went wrong.");
-        }
-      } else if (saveDocument.status === 404) {
-        createErrorModal("Couldn't find File to save.");
+      if (response.ok) {
+        const blobResponse = await response.blob();
+        let downloadElement = document.createElement("a");
+        let downloadURL = await URL.createObjectURL(blobResponse);
+        downloadElement.href = downloadURL;
+        downloadElement.download = currentEntry.name.replace(".json", ".pdf");
+        downloadElement.click();
+        URL.revokeObjectURL(downloadURL);
+        console.log("Succsessfully exported File.");
       } else {
         createErrorModal("Something went wrong.");
       }
@@ -601,6 +583,10 @@ async function onFirstStart() {
       const fileData = await response.json();
       setState("currentDocument", path + document);
       loadDocument(fileData, adjustedName, path);
+    } else if (response.status === 404) {
+      createErrorModal("Couldn't find the File you were looking for.");
+    } else {
+      createErrorModal(`${response.status}; Something went wrong.`);
     }
   }
   console.log("Editor ready!");
