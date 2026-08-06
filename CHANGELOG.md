@@ -5,6 +5,7 @@
 ### Added
 
 - Full URL support, you can now continue from where you left off.
+- Fully functional Syntax Highlighting.
 
 ### Changed
 

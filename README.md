@@ -47,7 +47,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
 - Empty Links style as links and link to the root of the app.
-- Syntax Highlighting Extensions from TipTap do not work.
 - Renaming a File but not making any changes still sends a request to make an update.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.

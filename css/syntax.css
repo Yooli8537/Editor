@@ -17,11 +17,8 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
   color: #ddd
 }
 .hljs-tag,
-.hljs-keyword,
 .hljs-selector-tag,
-.hljs-literal,
 .hljs-strong,
-.hljs-number,
 .hljs-name {
   color: #fe1e5d
 }
@@ -46,14 +43,16 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-addition,
-.hljs-variable,
 .hljs-template-tag,
 .hljs-template-variable {
   color: #a6e22e
 }
 .hljs-title.class_,
-.hljs-class .hljs-title {
-  color: rgb(122, 126, 254)
+.hljs-class .hljs-title,
+.hljs-literal,
+.hljs-keyword,
+.hljs-number {
+  color: rgb(141, 145, 255)
 }
 .hljs-comment,
 .hljs-quote,
@@ -61,15 +60,9 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 .hljs-meta {
   color: #a1a1a1
 }
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-doctag,
-.hljs-title,
-.hljs-section,
-.hljs-type,
-.hljs-selector-id {
-  font-weight: bold
+
+.hljs-keyword {
+  font-style: italic;
 }
 
 .hljs-string {

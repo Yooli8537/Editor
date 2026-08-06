@@ -63,7 +63,7 @@
 .export-content pre code,
 .ProseMirror pre code {
   background-color: inherit;
-  color: #ffffff;
+  color: #ededed;
   padding: 0;
 }
 

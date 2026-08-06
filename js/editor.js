@@ -1,4 +1,4 @@
-// Importing TipTap Components
+// Importing TipTap Extensions
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
@@ -6,12 +6,13 @@ import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-
 import { createLowlight, all } from "lowlight";
 
+// Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
 
+// Importing custom functions
 import {
   createConfirmModal,
   destroyModal,
@@ -27,7 +28,7 @@ const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
 let editorIsSaved;
 
-// Creating new TipTap Editor
+// Defining and configuring extensions
 const extensions = [
   StarterKit.configure({
     codeBlock: false,
@@ -62,7 +63,7 @@ const extensions = [
 ];
 
 const editor = new Editor({
-  element: wrapper,
+  element: wrapper, // Parent Element
   extensions: extensions,
   content: "<p></p>",
   autofocus: true,
