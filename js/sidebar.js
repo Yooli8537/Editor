@@ -51,8 +51,6 @@ function createSearch() {
       folderStructure.appendChild(createSearch());
 
       results.forEach((result) => {
-        console.log(result);
-        //checkForSelectedFile(result.path);
         const wrapper = createWrapper();
         const file = createFile(
           { name: result.name, isFolder: false },
@@ -119,6 +117,8 @@ function createFile(entry, previousEntry) {
       const fileData = await response.json(); // Data from GET request
       loadDocument(fileData, entry, previousEntry); // Sends the Document to be loaded
       setState("currentDocument", previousEntry + entry.name);
+    } else if (response.status === 404) {
+      createErrorModal("Couldn't find the File you were looking for.");
     } else {
       createErrorModal("Something went wrong.");
     }
