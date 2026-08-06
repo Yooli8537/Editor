@@ -52,6 +52,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
 - Confirmation Modals can't be confirmed with the Enter Key.
 - Pasting in Code from Word which was pasted in from VSC makes the line spacing very big.
+- Sometimes, most of a Code Block will just be defined as a String by the Syntax highlighting.
+- Helptexts within submenus do no disappear when you click on the function, they just stick around.
+- Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 
 ## Planned Features
 

@@ -2,6 +2,7 @@
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
+import { ListKit } from "@tiptap/extension-list";
 import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
@@ -34,6 +35,7 @@ const extensions = [
     codeBlock: false,
   }),
   TableKit,
+  ListKit,
   Image.configure({
     allowBase64: true,
     resize: {
