@@ -48,13 +48,27 @@ const extensions = [
     },
   }),
   FileHandler.configure({
+    allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
+    consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
-      const base64 = await toBase64(files[0]);
-      editor.commands.setImage({ src: base64 });
+      for (const file of files) {
+        const url = await uploadImage(file);
+        editor.chain().setImage({ src: url }).run();
+      }
     },
     onDrop: async (editor, files, pos) => {
-      const base64 = await toBase64(files[0]);
-      editor.commands.setImage({ src: base64 });
+      for (const file of files) {
+        const url = await uploadImage(file);
+        editor
+          .chain()
+          .insertContentAt(pos, {
+            type: "Image",
+            attrs: {
+              src: url,
+            },
+          })
+          .run();
+      }
     },
   }),
   Emoji,
@@ -75,6 +89,19 @@ const editor = new Editor({
     editorIsSaved = false;
   },
 });
+
+async function uploadImage(file) {
+  const response = await fetch("/api/uploadImageFile", {
+    method: "POST",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
+  });
+
+  const { url } = await response.json();
+  return url;
+}
 
 function toBase64(file) {
   return new Promise((resolve, reject) => {

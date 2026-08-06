@@ -367,4 +367,42 @@ router.post("/api/documents/autosave", async (req, res) => {
   }
 });
 
+router.post(
+  "/api/uploadImageFile",
+  express.raw({ type: "image/*" }),
+  async (req, res) => {
+    const imgType = req.headers["content-type"];
+    console.log(imgType);
+
+    let fileEnding;
+    if (imgType === "image/png") {
+      fileEnding = ".png"
+    } else if (imgType === "image/jpg") {
+      fileEnding = ".jpg"
+    } else if (imgType === "image/gif") {
+      fileEnding = ".gif"
+    }
+
+    const fileName = imageName() + fileEnding;
+    location = path.join(__dirname, "../../images", fileName);
+    fs.writeFileSync(location, req.body);
+
+
+    res.json({
+      url: `/images/${fileName}`,
+    });
+  },
+);
+
 module.exports = router;
+function imageName() {
+  let name = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+  for (let i = 0; i < 20; i++) {
+    name += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return name;
+}
+
+console.log(imageName());

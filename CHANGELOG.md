@@ -14,6 +14,7 @@
 - Fixed Toggle Lists not working.
 - Renaming a Folder but not making any changes no longer sends a request to make an update.
 - Bloated Image widths
+- Images can be dropped into the Editor via Drag & Drop or Copy & Paste.
 
 ## v0.1.2-beta - Editor help & fixed Exports
 

@@ -38,7 +38,6 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ### To be fixed
 
-- Only images added via a direct link are supported. Images should be able to be dropped into the Editor via Drag & Drop or Copy & Paste.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
 - When deleting the opened file itself or a parent the editor doesn't close.
 - Image resize doesn't work.
@@ -67,6 +66,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Backups of previous 5 versions of a document
 - Settings Menu
 - "No Results" message when searching and no results come up.
-- Colors: Add a spalsh of life to the editor.
 - Dark Mode
 - Containerization
+- Extension: Audio
+- Some kind of highlighting
