@@ -11,7 +11,7 @@
 
 - Editor no longer flashes for a split second after reloading the app.
 - Fixed Toggle Lists not working.
-- Renaming a File but not making any changes no longer sends a request to make an update.
+- Renaming a Folder but not making any changes no longer sends a request to make an update.
 
 ## v0.1.2-beta - Editor help & fixed Exports
 
