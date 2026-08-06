@@ -497,6 +497,8 @@ saveButton.addEventListener("click", async (e) => {
     editorIsSaved = true;
   } else if (response.status === 404) {
     createErrorModal("Couldn't find File to save.");
+  } else if (response.status === 413) {
+    createErrorModal("Save File too large.");
   } else {
     createErrorModal("Something went wrong.");
   }
@@ -520,11 +522,15 @@ discardButton.addEventListener("click", (e) => {
       () => {
         closeEditor();
         console.log("Changes Discarded.");
+        setState("currentDocument", null);
+        buildSidebar();
         history.pushState(null, "", "/");
       },
     );
   } else {
     closeEditor();
+    setState("currentDocument", null);
+    buildSidebar();
     history.pushState(null, "", "/");
   }
 });

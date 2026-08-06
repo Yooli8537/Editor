@@ -6,12 +6,14 @@
 
 - Full URL support, you can now continue from where you left off.
 - Fully functional Syntax Highlighting.
+- Currently opened Document is highlighted on the Sidebar.
 
 ### Fixed
 
 - Editor no longer flashes for a split second after reloading the app.
 - Fixed Toggle Lists not working.
 - Renaming a Folder but not making any changes no longer sends a request to make an update.
+- Bloated Image widths
 
 ## v0.1.2-beta - Editor help & fixed Exports
 
