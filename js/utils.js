@@ -48,7 +48,7 @@ function verifyInput(inputField, onSubmit, prevValue) {
   if (!inputField.value) {
     destroyModal();
     createErrorModal("The Input is empty. Try again.");
-  } else if (inputField.value) {
+  } else if (inputField.value === prevValue) {
     destroyModal();
     createErrorModal("The Input and Output are the same. Try again.");
   } else {
