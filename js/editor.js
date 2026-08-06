@@ -416,7 +416,10 @@ setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const exportDocument = editor.getJSON();
+  // Location of the Editor within the Webapp
+  const editorLocation = document.querySelectorAll(".ProseMirror");
+  const exportDocument = editorLocation[0].outerHTML; // Selects the first result, which should always be the Editor if things are working properly.
+  console.log(exportDocument);
 
   createConfirmModal(
     "You must save your Document before Exporting.",

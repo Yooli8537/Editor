@@ -12,30 +12,64 @@ const { renderToHTMLString } = require("@tiptap/static-renderer");
 const FileHandler = require("@tiptap/extension-file-handler").default;
 const Emoji = require("@tiptap/extension-emoji").default;
 
-const extensions = [StarterKit, TableKit, Image, FileHandler, Emoji];
+async function setExtensions() {
+  // Importing Extensions which cannot be imported (no commonjs version)
+  const { default: CodeBlockLowlight } =
+    await import("@tiptap/extension-code-block-lowlight");
+  const { createLowlight, all } = await import("lowlight");
+
+  const lowlight = createLowlight(all);
+
+  return [
+    StarterKit.configure({
+      codeBlock: false,
+    }),
+    TableKit,
+    Image.configure({
+      allowBase64: true,
+      resize: {
+        enabled: true,
+        directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
+        minWidth: 50,
+        minHeight: 50,
+        alwaysPreserveAspectRatio: true,
+      },
+    }),
+    FileHandler.configure({
+      onPaste: async (editor, files, htmlContent) => {
+        const base64 = await toBase64(files[0]);
+        editor.commands.setImage({ src: base64 });
+      },
+      onDrop: async (editor, files, pos) => {
+        const base64 = await toBase64(files[0]);
+        editor.commands.setImage({ src: base64 });
+      },
+    }),
+    Emoji,
+    CodeBlockLowlight.configure({
+      lowlight,
+      enableTabIndentation: true,
+      tabSize: 2,
+    }),
+  ];
+}
 
 router.post("/api/export", async (req, res) => {
   const { exportDocument, name } = req.body;
-
-  const editorHTML = renderToHTMLString({
-    extensions,
-    content: exportDocument,
-  });
-
-  console.log(editorHTML);
 
   const exportHTML = `
   <html>
   <head>
     <link rel="stylesheet" href="http://localhost:8511/css/format.css" />
+    <link rel="stylesheet" href="http://localhost:8511/css/syntax.css" />
   </head>
   <body>
     <div class="export-content">
-      ${editorHTML}
+      ${exportDocument}
     </div>
   </body>
   </html>
-  `
+  `;
 
   const browser = await puppeteer.launch({
     args: ["--allow-file-access-from-files"],
