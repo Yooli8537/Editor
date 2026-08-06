@@ -23,6 +23,7 @@ import {
   setHelpText,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
+import { setState } from "./state";
 
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
@@ -396,7 +397,11 @@ const linkEditButtons = [
       editor
         .chain()
         .focus()
-        .toggleLink({ href: prompt('Please Input your Link below. Make sure it begins with "http://" or "https://", otherwise it will not work.') })
+        .toggleLink({
+          href: prompt(
+            'Please Input your Link below. Make sure it begins with "http://" or "https://", otherwise it will not work.',
+          ),
+        })
         .run(),
     helpText: "Add new Link",
   },
@@ -588,6 +593,7 @@ async function onFirstStart() {
         isFolder: false,
       };
       const fileData = await response.json();
+      setState("currentDocument", path + document);
       loadDocument(fileData, adjustedName, path);
     }
   }

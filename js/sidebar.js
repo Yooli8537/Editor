@@ -6,6 +6,7 @@ import {
   createErrorModal,
 } from "./utils";
 import { loadDocument } from "./editor";
+import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
@@ -102,6 +103,17 @@ export async function buildSidebar() {
 
   // Creating File to be rendered on the Sidebar
   function createFile(entry, previousEntry) {
+    // Checks if the current file is selected and highlights it if true.
+    function checkForSelectedFile() {
+      if (getState("currentDocument") === previousEntry + entry.name) {
+        const selectedDocs = document.querySelectorAll(".selected");
+        for (let i = 0; i < selectedDocs.length; i++) {
+          selectedDocs[i].classList.remove("selected");
+        }
+        file.classList.add("selected");
+      }
+    }
+
     const file = document.createElement("div");
     file.classList.add("file");
     file.textContent = entry.name.slice(0, -5);
@@ -114,13 +126,21 @@ export async function buildSidebar() {
         },
       );
       if (response.ok) {
-        history.pushState(null, "", `?path=${previousEntry}&document=${entry.name}`); // Sets the Query Parameters into the URL
+        history.pushState(
+          null,
+          "",
+          `?path=${previousEntry}&document=${entry.name}`,
+        ); // Sets the Query Parameters into the URL
         const fileData = await response.json(); // Data from GET request
         loadDocument(fileData, entry, previousEntry); // Sends the Document to be loaded
+        setState("currentDocument", previousEntry + entry.name);
       } else {
         createErrorModal("Something went wrong.");
       }
+      checkForSelectedFile();
     });
+
+    checkForSelectedFile();
 
     return file;
   }

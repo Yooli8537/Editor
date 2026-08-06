@@ -76,3 +76,7 @@
   background-color: #3cb372cc;
   display: inline;
 }
+
+.selected {
+  background-color: #62f7a5;
+}
