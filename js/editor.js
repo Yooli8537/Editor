@@ -396,7 +396,7 @@ const linkEditButtons = [
       editor
         .chain()
         .focus()
-        .toggleLink({ href: prompt("Please Input your Link below.") })
+        .toggleLink({ href: prompt('Please Input your Link below. Make sure it begins with "http://" or "https://", otherwise it will not work.') })
         .run(),
     helpText: "Add new Link",
   },
