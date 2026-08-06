@@ -24,6 +24,7 @@
     "@tiptap/core": "^3.22.4",
     "@tiptap/extension-code": "^3.22.4",
     "@tiptap/extension-code-block": "^3.22.4",
+    "@tiptap/extension-code-block-lowlight": "^3.22.4",
     "@tiptap/extension-emoji": "^3.22.4",
     "@tiptap/extension-file-handler": "^3.22.4",
     "@tiptap/extension-image": "^3.22.4",
@@ -33,6 +34,7 @@
     "@tiptap/starter-kit": "^3.22.4",
     "@tiptap/static-renderer": "^3.22.4",
     "express": "^5.2.1",
+    "lowlight": "^3.3.0",
     "puppeteer": "^24.42.0",
     "uninstall": "^0.0.0"
   },

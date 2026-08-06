@@ -5,6 +5,12 @@ import { TableKit } from "@tiptap/extension-table";
 import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+
+import { createLowlight, common } from "lowlight";
+import "highlight.js/styles/github.css";
+
+const lowlight = createLowlight(common);
 
 import {
   createConfirmModal,
@@ -22,7 +28,39 @@ const editTitleButton = document.querySelector("#editTitleButton");
 let editorIsSaved;
 
 // Creating new TipTap Editor
-const extensions = [StarterKit, TableKit, Image, FileHandler, Emoji];
+const extensions = [
+  StarterKit.configure({
+    codeBlock: false,
+  }),
+  TableKit,
+  Image.configure({
+    allowBase64: true,
+    resize: {
+      enabled: true,
+      directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
+      minWidth: 50,
+      minHeight: 50,
+      alwaysPreserveAspectRatio: true,
+    },
+  }),
+  FileHandler.configure({
+    onPaste: async (editor, files, htmlContent) => {
+      const base64 = await toBase64(files[0]);
+      editor.commands.setImage({ src: base64 });
+    },
+    onDrop: async (editor, files, pos) => {
+      const base64 = await toBase64(files[0]);
+      editor.commands.setImage({ src: base64 });
+    },
+  }),
+  Emoji,
+  CodeBlockLowlight.configure({
+    lowlight,
+    enableTabIndentation: true,
+    tabSize: 2,
+  }),
+];
+
 const editor = new Editor({
   element: wrapper,
   extensions: extensions,
@@ -31,29 +69,6 @@ const editor = new Editor({
   injectCSS: true,
   onUpdate: () => {
     editorIsSaved = false;
-  },
-});
-
-// Config
-Image.configure({
-  allowBase64: true,
-  resize: {
-    enabled: true,
-    directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
-    minWidth: 50,
-    minHeight: 50,
-    alwaysPreserveAspectRatio: true,
-  },
-});
-
-FileHandler.configure({
-  onPaste: async (editor, files, htmlContent) => {
-    const base64 = await toBase64(files[0]);
-    editor.commands.setImage({ src: base64 });
-  },
-  onDrop: async (editor, files, pos) => {
-    const base64 = await toBase64(files[0]);
-    editor.commands.setImage({ src: base64 });
   },
 });
 
