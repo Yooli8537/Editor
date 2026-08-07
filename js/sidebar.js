@@ -122,7 +122,7 @@ function createFile(entry, previousEntry) {
         `?path=${previousEntry}&document=${entry.name}`,
       ); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
-      loadDocument(fileData, entry, previousEntry); // Sends the Document to be loaded
+      loadDocument(fileData, entry.name, previousEntry); // Sends the Document to be loaded
       setState("currentDocument", previousEntry + entry.name);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
@@ -365,30 +365,26 @@ function createCreationDropdown(parent, path, previousEntry) {
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
-    createPromptModal(
-      "Please Name your File.",
-      "",
-      async (name) => {
-        const response = await fetch("api/documents/newFile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            folderPath: previousEntry + path,
-          }),
-        });
-        if (response.ok) {
-          console.log("Successfully created File.");
-          buildSidebar();
-        } else if (response.status === 409) {
-          createErrorModal(
-            "A file with that name already exists in the current directory!",
-          );
-        } else {
-          createErrorModal("Something went wrong.");
-        }
-      },
-    );
+    createPromptModal("Please Name your File.", "", async (name) => {
+      const response = await fetch("api/documents/newFile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          folderPath: previousEntry + path,
+        }),
+      });
+      if (response.ok) {
+        console.log("Successfully created File.");
+        buildSidebar();
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A file with that name already exists in the current directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
+      }
+    });
   });
 
   const folderButton = document.createElement("div");
@@ -396,30 +392,26 @@ function createCreationDropdown(parent, path, previousEntry) {
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
-    createPromptModal(
-      "Please Name your Folder.",
-      "",
-      async (name) => {
-        const response = await fetch("api/documents/newFolder", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            folderPath: previousEntry + path,
-          }),
-        });
-        if (response.ok) {
-          buildSidebar();
-          console.log("Folder added successfully.");
-        } else if (response.status === 409) {
-          createErrorModal(
-            "A Folder with that name already exists in the current Directory!",
-          );
-        } else {
-          createErrorModal("Something went wrong.");
-        }
-      },
-    );
+    createPromptModal("Please Name your Folder.", "", async (name) => {
+      const response = await fetch("api/documents/newFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          folderPath: previousEntry + path,
+        }),
+      });
+      if (response.ok) {
+        buildSidebar();
+        console.log("Folder added successfully.");
+      } else if (response.status === 409) {
+        createErrorModal(
+          "A Folder with that name already exists in the current Directory!",
+        );
+      } else {
+        createErrorModal("Something went wrong.");
+      }
+    });
   });
 
   dropdown.appendChild(fileButton);
@@ -443,23 +435,19 @@ function removeDropdowns() {
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  createPromptModal(
-    "Please name your Notebook.",
-    "",
-    async (notebookName) => {
-      const response = await fetch("api/documents/newNotebook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: notebookName }),
-      });
+  createPromptModal("Please name your Notebook.", "", async (notebookName) => {
+    const response = await fetch("api/documents/newNotebook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: notebookName }),
+    });
 
-      if (response.ok) {
-        buildSidebar();
-      } else if (response.status === 409) {
-        createErrorModal("A Notebook with that name already exists!");
-      } else {
-        createErrorModal("Something went wrong.");
-      }
-    },
-  );
+    if (response.ok) {
+      buildSidebar();
+    } else if (response.status === 409) {
+      createErrorModal("A Notebook with that name already exists!");
+    } else {
+      createErrorModal("Something went wrong.");
+    }
+  });
 });
