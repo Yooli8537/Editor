@@ -54,7 +54,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - Image drag & drop doesn't work.
 - If the selected Document shows up in Search Results, it isn't highlighted.
-- Renaming a document doesn't update its URL.
+- Renaming a Document removes its highlight on the Sidebar.
 
 ## Planned Features
 
