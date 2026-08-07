@@ -16,6 +16,10 @@
 - Renaming a Document keeps its Highlight on the Sidebar.
 - The Remove Link button now actually removes links instead of just toggling it.
 
+### Notes
+
+- "Exported Documents show up inside the Assets???" nah my dumbass was just saving them to that location and didn't notice.
+
 ## v1.0.0-beta - Refactored User Data architecture
 
 ### Changed

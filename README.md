@@ -62,7 +62,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image drag & drop doesn't work.
 - If the selected Document shows up in Search Results, it isn't highlighted. Same thing when the search is closed.
 - Font sizes are smaller and generally different for the Export.
-- Exported Documents show up inside the Assets???
 
 ## Planned Features
 
