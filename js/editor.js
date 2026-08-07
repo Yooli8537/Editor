@@ -125,7 +125,6 @@ export function loadDocument(data, entry, previousEntry) {
     currentPreviousEntry = previousEntry;
     editorView.classList.remove("hidden");
     editTitleButton.classList.remove("hidden");
-    editTitleButton.removeEventListener("click", renameHandler);
     editTitleButton.style.display = "flex";
 
     documentTitle.textContent = data[0].title;
@@ -183,9 +182,7 @@ async function renameHandler() {
 
     // Resetting after successful rename
     if (response.ok) {
-      console.log("Current Entry: ", currentEntry);
-      console.log("Current Document: ", currentDocument);
-      console.log("Current previous Entry: ", currentPreviousEntry);
+
       currentDocument[0].title = titleRenameInput.value;
       currentEntry = {
         ...currentEntry,
@@ -196,9 +193,14 @@ async function renameHandler() {
       div.remove();
       editTitleButton.style.display = "flex";
       loadDocument(currentDocument, currentEntry, currentPreviousEntry);
+      history.pushState(
+        null,
+        "",
+        `?path=${currentPreviousEntry}&document=${currentEntry.name}`,
+      );
 
+      console.log("Post-rename");
       console.log("Current Entry: ", currentEntry);
-      console.log("Current Document: ", currentDocument);
       console.log("Current previous Entry: ", currentPreviousEntry);
     } else if (response.status === 409) {
       createErrorModal(

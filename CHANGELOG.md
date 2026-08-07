@@ -5,6 +5,7 @@
 ### Fixed
 
 - Deleting an opened document now closes the Editor.
+- Renaming a File now updates the URL.
 
 ## v0.2.1-beta - `master.json`-related fixes
 
