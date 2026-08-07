@@ -43,7 +43,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image resize doesn't work.
 - Can't search with `Enter` :(
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
-- Large Images shouldn't increase the horizontal Size of the A4 preview within the editor.
 - Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
 - Empty Links style as links and link to the root of the app.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
