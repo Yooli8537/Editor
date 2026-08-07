@@ -9,6 +9,7 @@ const rootPath = path.join(__dirname, "../");
 const dataFolder = path.join(rootPath, "data");
 const imageFolder = path.join(rootPath, "images");
 const attachmentsFolder = path.join(rootPath, "attachments");
+const masterFile = path.join(dataFolder, "master.json");
 
 const userDataFolders = [
   { name: "Data", path: dataFolder },
@@ -19,13 +20,25 @@ const userDataFolders = [
 for (let i = 0; i < userDataFolders.length; i++) {
   if (!fs.existsSync(userDataFolders[i].path)) {
     fs.mkdirSync(userDataFolders[i].path);
-    console.warn(
-      `Created missing ${userDataFolders[i].name} Folder.`,
-    );
+    console.warn(`Created missing ${userDataFolders[i].name} Folder.`);
     console.log(
       "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
     );
   }
+}
+
+if (!fs.existsSync(masterFile)) {
+  const masterFileContent = `[
+  {
+    "usedImages": []
+  }
+]
+`;
+  fs.writeFileSync(masterFile, masterFileContent, "utf-8");
+  console.warn("Created missing Master JSON File.");
+  console.log(
+    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+  );
 }
 
 const exportRoute = require("./routes/export");
