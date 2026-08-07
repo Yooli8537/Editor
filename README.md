@@ -8,6 +8,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - [Installation](#installation)
 - [Known Issues](#known-issues)
 - [Planned Features](#planned-features)
+- [Notes](#notes)
 
 ## Features
 
@@ -69,12 +70,16 @@ This is a Web-based Editor which can run locally or on a home server.
 - Highlighting the current Document
 - Backups of previous 5 versions of a document
 - Settings Menu
+  - Keybinds
+  - Display (Dark / Light Mode)
+  - Info (Lucide & TipTap credit, etc.)
 - "No Results" message when searching and no results come up.
 - Dark Mode
 - Containerization
 - Extension: Audio
 - Some kind of highlighting for Text
 - Keybinds (for example, Ctrl + S for saving)
+- Language Selection List for Codeblocks
 
 ## Notes
 
