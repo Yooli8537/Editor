@@ -26,6 +26,7 @@ import {
 import { buildSidebar } from "./sidebar";
 import { setState } from "./state";
 
+// HTML Elements
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
@@ -34,10 +35,11 @@ let editorIsSaved;
 // Defining and configuring extensions
 const extensions = [
   StarterKit.configure({
-    codeBlock: false,
+    codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
   }),
   TableKit,
   ListKit,
+  // TODO: FIGURE OUT WHY THIS DOESN'T WORK
   Image.configure({
     resize: {
       enabled: true,
@@ -59,15 +61,7 @@ const extensions = [
     onDrop: async (editor, files, pos) => {
       for (const file of files) {
         const url = await uploadImage(file);
-        editor
-          .chain()
-          .insertContentAt(pos, {
-            type: "Image",
-            attrs: {
-              src: url,
-            },
-          })
-          .run();
+        editor.chain().setImage({ src: url }).run();
       }
     },
   }),
@@ -460,11 +454,9 @@ linkButton.addEventListener("click", (e) => {
 setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
-
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
   const exportDocument = editorLocation[0].outerHTML; // Selects the first result, which should always be the Editor if things are working properly.
-  console.log(exportDocument);
 
   createConfirmModal(
     "Are you sure you want to Export the current Document?",
@@ -496,12 +488,7 @@ exportButton.addEventListener("click", async (e) => {
   );
 });
 
-async function saveEditor() {}
-
-setHelpText(saveButton, "Save Document");
-saveButton.addEventListener("click", async (e) => {
-  e.preventDefault();
-
+async function saveEditor() {
   if (!editorIsSaved) {
     const saveData = editor.getJSON();
     createConfirmModal(
@@ -535,6 +522,13 @@ saveButton.addEventListener("click", async (e) => {
   } else {
     createInfoModal("No changes were made.");
   }
+}
+
+setHelpText(saveButton, "Save Document");
+saveButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  saveEditor();
 });
 
 export function closeEditor() {
