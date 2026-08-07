@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.2.1-beta - Refactored Server architecture
+
+### Changed
+
+- Server architecture reworked. All user Data now lives inside of the `data` folder instead of being separated into different folders. Adjusted Operations across Files accordingly.
 
 ### Fixed
 

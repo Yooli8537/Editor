@@ -182,7 +182,6 @@ async function renameHandler() {
 
     // Resetting after successful rename
     if (response.ok) {
-
       currentDocument[0].title = titleRenameInput.value;
       currentEntry = {
         ...currentEntry,
