@@ -55,6 +55,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image drag & drop doesn't work.
 - If the selected Document shows up in Search Results, it isn't highlighted.
 - Renaming a Document removes its highlight on the Sidebar.
+- Font sizes are smaller and generally different for the Export.
+- Exported Documents show up inside the Assets???
+- When selecting more than just a Link and pressing the remove Link Button, the Link isn't removed.
 
 ## Planned Features
 
@@ -69,6 +72,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - Settings Menu
   - Keybinds
   - Display (Dark / Light Mode)
+  - Edit Formats
+  - "Cleanup Page" - Delete images from bin, etc.
   - Info (Lucide & TipTap credit, etc.)
 - "No Results" message when searching and no results come up.
 - Dark Mode
@@ -77,6 +82,10 @@ This is a Web-based Editor which can run locally or on a home server.
 - Some kind of highlighting for Text
 - Keybinds (for example, Ctrl + S for saving)
 - Language Selection List for Codeblocks
+- Discard Button warning Color
+- Allow the user to save a Document when Discard Button is clicked.
+- Label Images
+- Refactor Server architecture so that all Data is inside the Data folder.
 
 ## Notes
 
