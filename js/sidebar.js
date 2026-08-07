@@ -342,7 +342,6 @@ buildSidebar();
 
 // Checks if the current file is selected and highlights it if true.
 export function checkForSelectedFile(file, sidebarFile) {
-  console.log(file);
   if (getState("currentDocument") === file) {
     const selectedDocs = document.querySelectorAll(".selected");
     for (let i = 0; i < selectedDocs.length; i++) {
