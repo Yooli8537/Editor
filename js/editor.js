@@ -39,7 +39,6 @@ const extensions = [
   }),
   TableKit,
   ListKit,
-  // TODO: FIGURE OUT WHY THIS DOESN'T WORK
   Image.configure({
     resize: {
       enabled: true,
@@ -73,6 +72,7 @@ const extensions = [
   }),
 ];
 
+// Creating the TipTap Editor
 const editor = new Editor({
   element: wrapper, // Parent Element
   extensions: extensions,
@@ -84,6 +84,7 @@ const editor = new Editor({
   },
 });
 
+// Uploading Images to the Server.
 async function uploadImage(file) {
   const response = await fetch("/api/uploadImageFile", {
     method: "POST",
@@ -97,7 +98,7 @@ async function uploadImage(file) {
   return url;
 }
 
-// Warns before unloading
+// Warns before reloading / closing a Tab
 window.addEventListener("beforeunload", (e) => {
   if (editorIsSaved == false) {
     e.preventDefault();
@@ -110,23 +111,27 @@ let currentDocument;
 let currentEntry;
 let currentPreviousEntry;
 
-// Applying File Data
-export function loadDocument(data, entry, previousEntry) {
-  document.title = entry.name.slice(0, -5);
-  function continueLoading() {
-    currentDocument = data;
+// Loads Document into the Editor
+export function loadDocument(documentData, entry, previousEntry) {
+  console.log(entry);
+  function loadEditor() {
+    currentDocument = documentData;
     currentEntry = entry;
     currentPreviousEntry = previousEntry;
+
     editorView.classList.remove("hidden");
     editTitleButton.classList.remove("hidden");
     editTitleButton.style.display = "flex";
 
-    documentTitle.textContent = data[0].title;
+    // Sets the Title of the Page
+    document.title = currentEntry.slice(0, -5);
+    documentTitle.textContent = currentEntry.slice(0, -5);
 
     editor.commands.setContent(
-      data[0].content || "<p>Content failed to load.</p>",
+      documentData[0].content || "<p>Content failed to load.</p>",
     );
 
+    // Rename Button Event listener
     editTitleButton.addEventListener("click", (e) => {
       e.stopPropagation();
       renameHandler();
@@ -135,24 +140,25 @@ export function loadDocument(data, entry, previousEntry) {
     editorIsSaved = true;
   }
 
+  // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
   if (editorIsSaved === false) {
     createConfirmModal(
       "Leaving this Document will discard Changes!",
       "Back",
       "Discard Changes & Continue",
       () => {
-        continueLoading();
+        loadEditor();
       },
     );
   } else {
-    continueLoading();
+    loadEditor();
   }
 }
 
 // Handles the rename request
 async function renameFile(newName, div) {
   const folderPath = currentPreviousEntry;
-  const oldName = currentEntry.name;
+  const oldName = currentEntry;
 
   // Prevents Server Requests for identical Names. Slice removes .json
   if (newName === oldName.slice(0, -5)) {
@@ -172,15 +178,12 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
+    currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
-    currentEntry = {
-      ...currentEntry,
-      name: newName + ".json",
-    };
     documentTitle.textContent = newName;
+    div.remove();
     setState("currentDocument", folderPath + newName + ".json");
     buildSidebar();
-    div.remove();
     editTitleButton.style.display = "flex";
     loadDocument(currentDocument, currentEntry, folderPath);
     history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
@@ -196,12 +199,14 @@ async function renameFile(newName, div) {
 }
 
 setHelpText(editTitleButton, "Rename Document");
+// Creates the buttons to cancel / confirm and hides the initial one.
 async function renameHandler() {
-  documentTitle.innerHTML = "";
+  documentTitle.innerHTML = ""; // Removing this will stack rename fields after switching between tabs.
   editTitleButton.style.display = "none";
 
   const div = document.createElement("div");
 
+  // Input Field
   const titleRenameInput = document.createElement("input");
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
@@ -215,6 +220,7 @@ async function renameHandler() {
     }
   });
 
+  // Confirm Rename
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
   confirmButton.classList.add("borderlessButton");
@@ -224,6 +230,7 @@ async function renameHandler() {
     renameFile(titleRenameInput.value, div);
   });
 
+  // Cancel Rename
   const cancelButton = document.createElement("img");
   cancelButton.src = "../assets/function/cancel.svg";
   cancelButton.classList.add("borderlessButton");
@@ -231,7 +238,7 @@ async function renameHandler() {
   cancelButton.addEventListener("click", () => {
     div.remove();
     editTitleButton.style.display = "flex";
-    documentTitle.textContent = currentDocument[0].title;
+    documentTitle.textContent = currentDocument[0].title; // Updates Document Title
   });
 
   div.appendChild(titleRenameInput);
@@ -259,6 +266,8 @@ const exportButton = document.querySelector("#export");
 const saveButton = document.querySelector("#save");
 const discardButton = document.querySelector("#discard");
 
+// Setting different Button functions, including Helptexts
+// Format Buttons
 setHelpText(undoButton, "Undo");
 undoButton.addEventListener("click", (e) => {
   e.preventDefault();
@@ -293,8 +302,7 @@ const headingItems = [
 setHelpText(headings, "Headings");
 headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
-  e.stopPropagation();
-
+  e.stopPropagation(); // Stops Submenu from disappearing instantly
   createSubmenu(headingsButton, headingItems);
 });
 
@@ -321,7 +329,6 @@ setHelpText(listsButton, "Lists");
 listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-
   createSubmenu(listsButton, listItems);
 });
 
@@ -392,7 +399,6 @@ setHelpText(tableCreateButton, "Table Actions");
 tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-
   createSubmenu(tableCreateButton, tableCreateItems);
 });
 
@@ -456,7 +462,8 @@ exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
-  const exportDocument = editorLocation[0].outerHTML; // Selects the first result, which should always be the Editor if things are working properly.
+  // Selects the first result, which should always be the Editor if things are working properly. The HTML is used to Export the Document.
+  const exportDocument = editorLocation[0].outerHTML;
 
   createConfirmModal(
     "Are you sure you want to Export the current Document?",
@@ -468,18 +475,20 @@ exportButton.addEventListener("click", async (e) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           exportDocument: exportDocument,
-          name: currentEntry.name.replace(".json", ""),
+          name: currentEntry.replace(".json", ""),
         }),
       });
 
       if (response.ok) {
+        // Sends the response to the client, which then downloads it automatically.
         const blobResponse = await response.blob();
-        let downloadElement = document.createElement("a");
         let downloadURL = await URL.createObjectURL(blobResponse);
+
+        let downloadElement = document.createElement("a");
         downloadElement.href = downloadURL;
-        downloadElement.download = currentEntry.name.replace(".json", ".pdf");
+        downloadElement.download = currentEntry.replace(".json", ".pdf");
         downloadElement.click();
-        URL.revokeObjectURL(downloadURL);
+        URL.revokeObjectURL(downloadURL); // Deletes download Element
         console.log("Succsessfully exported File.");
       } else {
         createErrorModal("Something went wrong.");
@@ -501,11 +510,12 @@ async function saveEditor() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             saveData: saveData,
-            name: currentEntry.name,
+            name: currentEntry,
             folderPath: currentPreviousEntry,
           }),
         });
 
+        // Error handling
         if (response.ok) {
           console.log("Successfully saved Document.");
           editorIsSaved = true;
@@ -520,6 +530,7 @@ async function saveEditor() {
       },
     );
   } else {
+    // No changes = no need to update
     createInfoModal("No changes were made.");
   }
 }
@@ -527,10 +538,11 @@ async function saveEditor() {
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
-
+  e.stopPropagation();
   saveEditor();
 });
 
+// Closes the Editor
 export function closeEditor() {
   editorView.classList.add("hidden");
   console.log("Editor Closed.");
@@ -540,7 +552,7 @@ export function closeEditor() {
 // Discard Button's helptext is set within the autosave.
 discardButton.addEventListener("click", (e) => {
   e.preventDefault();
-
+  e.stopPropagation();
   if (!editorIsSaved) {
     createConfirmModal(
       "Discard Changes? This cannot be undone.",
@@ -612,7 +624,7 @@ setInterval(async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         saveData: saveData,
-        name: currentEntry.name,
+        name: currentEntry,
         folderPath: currentPreviousEntry,
       }),
     });
@@ -633,7 +645,7 @@ async function onFirstStart() {
 
   // Stops auto-open if the URL is the base URL.
   if (document === null) {
-    console.log("Editor ready!");
+    console.log("App ready!");
     return;
   } else {
     const response = await fetch(
@@ -644,14 +656,9 @@ async function onFirstStart() {
     );
 
     if (response.ok) {
-      // Mimics the data expected by the loadDocument function
-      const adjustedName = {
-        name: document,
-        isFolder: false,
-      };
       const fileData = await response.json();
       setState("currentDocument", path + document);
-      loadDocument(fileData, adjustedName, path);
+      loadDocument(fileData, document, path);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
     } else {
