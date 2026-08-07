@@ -17,6 +17,7 @@
 - The Remove Link button now actually removes links instead of just toggling it.
 - Font sizes for the Export are now consistent with the Editor. May still be different, it's obviously hard to tell.
 - Fixed A4 size not being A4 because it wasn't defined in the `export-content` class.
+- Task Lists are now vertically aligned with their counterparts.
 
 ### Notes
 

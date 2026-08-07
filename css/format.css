@@ -85,6 +85,7 @@ ul[data-type="taskList"] li {
 }
 
 ul[data-type="taskList"] li > label {
+  margin-left: 20px;
   display: flex;
   align-items: center;
 }

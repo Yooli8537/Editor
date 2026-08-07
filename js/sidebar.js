@@ -254,6 +254,7 @@ function createFileActions(path, previousEntry) {
         if (response.ok) {
           console.log("Successfully deleted File.");
           if (getState("currentDocument") === previousEntry + path) {
+            setState("currentDocument", null);
             closeEditor();
           }
           buildSidebar();
