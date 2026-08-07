@@ -44,10 +44,13 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   document.body.appendChild(modal);
 }
 
-function verifyInput(inputField, onSubmit) {
+function verifyInput(inputField, onSubmit, prevValue) {
   if (!inputField.value) {
     destroyModal();
     createErrorModal("The Input is empty. Try again.");
+  } else if (inputField.value === prevValue) {
+    destroyModal();
+    createErrorModal("The Input and Output are the same. Try again.");
   } else {
     onSubmit(inputField.value);
     destroyModal();
@@ -76,7 +79,7 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   inputField.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      verifyInput(inputField, onSubmit);
+      verifyInput(inputField, onSubmit, inputContent);
     }
   });
 
@@ -97,7 +100,7 @@ export function createPromptModal(prompt, onSubmit, inputContent) {
   submitButton.src = "../assets/function/checkmark.svg";
 
   submitButton.addEventListener("click", () => {
-    verifyInput(inputField, onSubmit);
+    verifyInput(inputField, onSubmit, inputContent);
   });
 
   modalButtons.appendChild(cancelButton);
@@ -119,11 +122,9 @@ export function createErrorModal(errorMsg) {
   });
 
   const modal = document.createElement("div");
+  modal.classList.add("errorMsg");
+  modal.textContent = errorMsg;
   modal.classList.add("modal");
-
-  const text = document.createElement("p");
-  text.classList.add("errorMsg");
-  text.textContent = errorMsg;
 
   const modalButtons = document.createElement("div");
   modalButtons.classList.add("modalButtons");
@@ -137,7 +138,34 @@ export function createErrorModal(errorMsg) {
   });
 
   modalButtons.appendChild(okButton);
-  modal.appendChild(text);
+  modal.appendChild(modalButtons);
+  document.body.appendChild(clickable);
+  document.body.appendChild(modal);
+}
+
+export function createInfoModal(msg) {
+  const clickable = document.createElement("div");
+  clickable.classList.add("clickable");
+  clickable.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  const modal = document.createElement("div");
+  modal.textContent = msg;
+  modal.classList.add("modal");
+
+  const modalButtons = document.createElement("div");
+  modalButtons.classList.add("modalButtons");
+
+  const okButton = document.createElement("div");
+  okButton.classList.add("modalTextButton");
+  okButton.textContent = "Ok";
+
+  okButton.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  modalButtons.appendChild(okButton);
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);
@@ -207,8 +235,6 @@ export function setHelpText(hoverButton, helpText) {
   let hoverInterval = null;
 
   function createHelpText() {
-    console.log(helpText);
-
     // Stops an empty helptext from generating
     if (helpText === undefined) {
       return;

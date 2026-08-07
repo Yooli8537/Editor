@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.2.0-beta - URLs, Syntax Highlighting and Bug fixes
+
+### Added
+
+- Full URL support, you can now continue from where you left off.
+- Fully functional Syntax Highlighting.
+- Currently opened Document is highlighted on the Sidebar.
+- Added new Icon for a saved editor.
+
+### Fixed
+
+- Editor no longer flashes for a split second after reloading the app.
+- Fixed Toggle Lists not working.
+- Renaming a Folder but not making any changes no longer sends a request to make an update.
+- Bloated Image widths
+- Images can be inserted into the Editor via Copy & Paste and are saved on the Server.
+- Saving a saved Editor does nothing.
+
 ## v0.1.2-beta - Editor help & fixed Exports
 
 ### Added

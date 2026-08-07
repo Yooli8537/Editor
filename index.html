@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/format.css" />
   <link rel="stylesheet" href="css/editor.css" />
   <link rel="stylesheet" href="css/sidebar.css" />
+  <link rel="stylesheet" href="css/syntax.css" />
   <script type="module" src="js/sidebar.js" defer></script>
   <script type="module" src="js/editor.js" defer></script>
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
@@ -21,7 +22,7 @@
       <button id="rootButton">Create new Notebook</button>
     </div>
     <div id="contentView">
-      <div id="editorView">
+      <div id="editorView" class="hidden">
         <div style="display: flex; align-items: center;">
           <h1 id="documentTitle">No Document selected</h1>
           <img id="editTitleButton" src="assets/function/edit.svg" class="borderlessButton">
@@ -75,10 +76,10 @@
                 <img class="toolbarIcon" src="assets/function/export.svg" alt="Export" />
               </button>
               <button class="toolbarButton" id="save">
-                <img class="toolbarIcon" src="assets/function/save.svg" alt="Save" />
+                <img id="saveIcon" class="toolbarIcon" src="assets/function/saved.svg" alt="Save" />
               </button>
               <button class="toolbarButton" id="discard">
-                <img id="discardIcon" class="toolbarIcon" src="assets/function/discard.svg" alt="Discard" />
+                <img id="discardIcon" class="toolbarIcon" src="assets/function/cancel.svg" alt="Discard" />
               </button>
             </div>
           </div>

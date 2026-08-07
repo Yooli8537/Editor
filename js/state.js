@@ -1,0 +1,19 @@
+let state = {
+  currentDocument: null,
+};
+
+// Gets the given state
+export function getState(parameter) {
+  return state.parameter;
+}
+
+// Overwrites a State with the passed value
+export function setState(parameter, value) {
+  state.parameter = value;
+  console.log(state.parameter);
+}
+
+// Adds to a State, reserved for Arrays
+export function addState(parameter, value) {
+  state.parameter
+}

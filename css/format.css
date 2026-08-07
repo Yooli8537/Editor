@@ -63,7 +63,7 @@
 .export-content pre code,
 .ProseMirror pre code {
   background-color: inherit;
-  color: #dbf7f6;
+  color: #ededed;
   padding: 0;
 }
 
@@ -81,4 +81,10 @@ ul[data-type="taskList"] li {
 ul[data-type="taskList"] li > label {
   display: flex;
   align-items: center;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }

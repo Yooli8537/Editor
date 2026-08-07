@@ -1,11 +1,19 @@
-// Importing TipTap Components
+// Importing TipTap Extensions
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
+import { ListKit } from "@tiptap/extension-list";
 import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { createLowlight, all } from "lowlight";
 
+// Setting up lowlight extension for Syntax Highlighting
+const lowlight = createLowlight(all);
+const lowlightLanguages = lowlight.listLanguages();
+
+// Importing custom functions
 import {
   createConfirmModal,
   destroyModal,
@@ -13,18 +21,66 @@ import {
   removeSubmenus,
   createErrorModal,
   setHelpText,
+  createInfoModal,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
+import { setState } from "./state";
 
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
 let editorIsSaved;
 
-// Creating new TipTap Editor
-const extensions = [StarterKit, TableKit, Image, FileHandler, Emoji];
+// Defining and configuring extensions
+const extensions = [
+  StarterKit.configure({
+    codeBlock: false,
+  }),
+  TableKit,
+  ListKit,
+  Image.configure({
+    resize: {
+      enabled: true,
+      directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
+      minWidth: 50,
+      minHeight: 50,
+      alwaysPreserveAspectRatio: true,
+    },
+  }),
+  FileHandler.configure({
+    allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
+    consumePasteEvent: true,
+    onPaste: async (editor, files, htmlContent) => {
+      for (const file of files) {
+        const url = await uploadImage(file);
+        editor.chain().setImage({ src: url }).run();
+      }
+    },
+    onDrop: async (editor, files, pos) => {
+      for (const file of files) {
+        const url = await uploadImage(file);
+        editor
+          .chain()
+          .insertContentAt(pos, {
+            type: "Image",
+            attrs: {
+              src: url,
+            },
+          })
+          .run();
+      }
+    },
+  }),
+  Emoji,
+  CodeBlockLowlight.configure({
+    lowlight,
+    enableTabIndentation: true,
+    tabSize: 2,
+  }),
+];
+
 const editor = new Editor({
-  element: wrapper,
+  element: wrapper, // Parent Element
   extensions: extensions,
   content: "<p></p>",
   autofocus: true,
@@ -34,36 +90,17 @@ const editor = new Editor({
   },
 });
 
-// Config
-Image.configure({
-  allowBase64: true,
-  resize: {
-    enabled: true,
-    directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
-    minWidth: 50,
-    minHeight: 50,
-    alwaysPreserveAspectRatio: true,
-  },
-});
-
-FileHandler.configure({
-  onPaste: async (editor, files, htmlContent) => {
-    const base64 = await toBase64(files[0]);
-    editor.commands.setImage({ src: base64 });
-  },
-  onDrop: async (editor, files, pos) => {
-    const base64 = await toBase64(files[0]);
-    editor.commands.setImage({ src: base64 });
-  },
-});
-
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject("Failed to load File.");
-    reader.readAsDataURL(file);
+async function uploadImage(file) {
+  const response = await fetch("/api/uploadImageFile", {
+    method: "POST",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
   });
+
+  const { url } = await response.json();
+  return url;
 }
 
 // Warns before unloading
@@ -81,6 +118,7 @@ let currentPreviousEntry;
 
 // Applying File Data
 export function loadDocument(data, entry, previousEntry) {
+  document.title = entry.name.slice(0, -5);
   function continueLoading() {
     currentDocument = data;
     currentEntry = entry;
@@ -158,6 +196,7 @@ async function renameHandler() {
       div.remove();
       editTitleButton.style.display = "flex";
       loadDocument(currentDocument, currentEntry, currentPreviousEntry);
+
       console.log("Current Entry: ", currentEntry);
       console.log("Current Document: ", currentDocument);
       console.log("Current previous Entry: ", currentPreviousEntry);
@@ -376,7 +415,11 @@ const linkEditButtons = [
       editor
         .chain()
         .focus()
-        .toggleLink({ href: prompt("Please Input your Link below.") })
+        .toggleLink({
+          href: prompt(
+            'Please Input your Link below. Make sure it begins with "http://" or "https://", otherwise it will not work.',
+          ),
+        })
         .run(),
     helpText: "Add new Link",
   },
@@ -399,49 +442,34 @@ setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const exportDocument = editor.getJSON();
+  // Location of the Editor within the Webapp
+  const editorLocation = document.querySelectorAll(".ProseMirror");
+  const exportDocument = editorLocation[0].outerHTML; // Selects the first result, which should always be the Editor if things are working properly.
+  console.log(exportDocument);
 
   createConfirmModal(
-    "You must save your Document before Exporting.",
+    "Are you sure you want to Export the current Document?",
     "Back to Editor",
-    "Save Document & Export",
+    "Export as PDF",
     async () => {
-      const saveDocument = await fetch("api/documents/updateFile", {
-        method: "PUT",
+      const response = await fetch("api/export", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          saveData: exportDocument,
-          name: currentEntry.name,
-          folderPath: currentPreviousEntry,
+          exportDocument: exportDocument,
+          name: currentEntry.name.replace(".json", ""),
         }),
       });
 
-      if (saveDocument.ok) {
-        editorIsSaved = true;
-        console.log("Successfully saved File.");
-        const response = await fetch("api/export", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exportDocument: exportDocument,
-            name: currentEntry.name.replace(".json", ""),
-          }),
-        });
-
-        if (response.ok) {
-          const blobResponse = await response.blob();
-          let downloadElement = document.createElement("a");
-          let downloadURL = await URL.createObjectURL(blobResponse);
-          downloadElement.href = downloadURL;
-          downloadElement.download = currentEntry.name.replace(".json", ".pdf");
-          downloadElement.click();
-          URL.revokeObjectURL(downloadURL);
-          console.log("Succsessfully exported File.");
-        } else {
-          createErrorModal("Something went wrong.");
-        }
-      } else if (saveDocument.status === 404) {
-        createErrorModal("Couldn't find File to save.");
+      if (response.ok) {
+        const blobResponse = await response.blob();
+        let downloadElement = document.createElement("a");
+        let downloadURL = await URL.createObjectURL(blobResponse);
+        downloadElement.href = downloadURL;
+        downloadElement.download = currentEntry.name.replace(".json", ".pdf");
+        downloadElement.click();
+        URL.revokeObjectURL(downloadURL);
+        console.log("Succsessfully exported File.");
       } else {
         createErrorModal("Something went wrong.");
       }
@@ -449,28 +477,43 @@ exportButton.addEventListener("click", async (e) => {
   );
 });
 
+async function saveEditor() {}
+
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
-  const saveData = editor.getJSON();
 
-  const response = await fetch("api/documents/updateFile", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      saveData: saveData,
-      name: currentEntry.name,
-      folderPath: currentPreviousEntry,
-    }),
-  });
+  if (!editorIsSaved) {
+    const saveData = editor.getJSON();
+    createConfirmModal(
+      "Are you sure you want to save this File?",
+      "Back to Editor",
+      "Save File",
+      async () => {
+        const response = await fetch("api/documents/updateFile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            saveData: saveData,
+            name: currentEntry.name,
+            folderPath: currentPreviousEntry,
+          }),
+        });
 
-  if (response.ok) {
-    console.log("Successfully saved Document.");
-    editorIsSaved = true;
-  } else if (response.status === 404) {
-    createErrorModal("Couldn't find File to save.");
+        if (response.ok) {
+          console.log("Successfully saved Document.");
+          editorIsSaved = true;
+        } else if (response.status === 404) {
+          createErrorModal("Couldn't find File to save.");
+        } else if (response.status === 413) {
+          createErrorModal("Save File too large.");
+        } else {
+          createErrorModal("Something went wrong.");
+        }
+      },
+    );
   } else {
-    createErrorModal("Something went wrong.");
+    createInfoModal("No changes were made.");
   }
 });
 
@@ -492,32 +535,62 @@ discardButton.addEventListener("click", (e) => {
       () => {
         closeEditor();
         console.log("Changes Discarded.");
+        setState("currentDocument", null);
+        buildSidebar();
+        history.pushState(null, "", "/");
       },
     );
   } else {
     closeEditor();
+    setState("currentDocument", null);
+    buildSidebar();
+    history.pushState(null, "", "/");
   }
 });
-
-function onFirstStart() {
-  editorView.classList.add("hidden");
-}
 
 const discardIcon = document.querySelector("#discardIcon");
 const discardIconPath = "assets/function/discard.svg";
 const closeIconPath = "assets/function/cancel.svg";
 let isDiscardIcon = true;
 
-// Autosaving including swapping Discard Button for Close Button
-setInterval(async () => {
-  const saveData = editor.getJSON();
+const saveIcon = document.querySelector("#saveIcon");
+const saveIconPath = "assets/function/save.svg";
+const savedIconPath = "assets/function/saved.svg";
+let isSavedIcon = true;
 
-  if (editorIsSaved === false) {
+// Updates the Save & Discard Icons to be correct with the current state.
+function updateSaveIcons() {
+  if (editorIsSaved) {
+    if (isDiscardIcon) {
+      discardIcon.src = closeIconPath;
+      setHelpText(discardButton, "Close Document");
+      isDiscardIcon = false;
+    }
+    if (!isSavedIcon) {
+      saveIcon.src = savedIconPath;
+      setHelpText(saveButton, "Changes Saved");
+      isSavedIcon = true;
+    }
+  } else {
     if (!isDiscardIcon) {
       discardIcon.src = discardIconPath;
       setHelpText(discardButton, "Discard Changes");
       isDiscardIcon = true;
     }
+    if (isSavedIcon) {
+      saveIcon.src = saveIconPath;
+      setHelpText(saveButton, "Save Changes");
+      isSavedIcon = false;
+    }
+  }
+}
+
+// Autosaving including swapping Discard Button for Close Button
+setInterval(async () => {
+  const saveData = editor.getJSON();
+
+  if (editorIsSaved === false) {
+    updateSaveIcons();
     //console.log(saveData);
     /*
     const autosave = await fetch("api/documents/autosave", {
@@ -534,12 +607,44 @@ setInterval(async () => {
       console.log("SUCCESS");
     }*/
   } else {
-    if (isDiscardIcon) {
-      discardIcon.src = closeIconPath;
-      setHelpText(discardButton, "Close Document");
-      isDiscardIcon = false;
-    }
+    updateSaveIcons();
   }
 }, 1000);
+
+// Opens Document from URL if one is present.
+async function onFirstStart() {
+  const params = new URLSearchParams(window.location.search);
+  const path = params.get("path");
+  const document = params.get("document");
+
+  // Stops auto-open if the URL is the base URL.
+  if (document === null) {
+    console.log("Editor ready!");
+    return;
+  } else {
+    const response = await fetch(
+      `api/documents/getFile?folderPath=${path}&name=${document}`,
+      {
+        method: "GET",
+      },
+    );
+
+    if (response.ok) {
+      // Mimics the data expected by the loadDocument function
+      const adjustedName = {
+        name: document,
+        isFolder: false,
+      };
+      const fileData = await response.json();
+      setState("currentDocument", path + document);
+      loadDocument(fileData, adjustedName, path);
+    } else if (response.status === 404) {
+      createErrorModal("Couldn't find the File you were looking for.");
+    } else {
+      createErrorModal(`${response.status}; Something went wrong.`);
+    }
+  }
+  console.log("Editor ready!");
+}
 
 onFirstStart();
