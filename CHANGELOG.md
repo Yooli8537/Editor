@@ -20,6 +20,7 @@
 - Fixed A4 size not being A4 because it wasn't defined in the `export-content` class.
 - Task Lists are now vertically aligned with their counterparts.
 - If the selected Document shows up in Search Results, it's now highlighted. Same thing when the search is closed. Apparently I fixed that at some point. Cool.
+- The Search is now case-insensitive.
 
 ### Notes
 
