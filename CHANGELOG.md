@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.0.0-beta - Refactored User Data architecture
+
+### Changed
+
+- User Data architecture reworked. All user Data now lives inside of the `data` folder instead of being separated into different folders. Adjusted Operations across Files accordingly.
+
+### Fixed
+
+- Deleting an opened document now closes the Editor.
+- Renaming a File now updates the URL.
+
 ## v0.2.1-beta - `master.json`-related fixes
 
 ### Fixed

@@ -5,7 +5,7 @@ import {
   createPromptModal,
   createErrorModal,
 } from "./utils";
-import { loadDocument } from "./editor";
+import { closeEditor, loadDocument } from "./editor";
 import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
@@ -253,6 +253,9 @@ function createFileActions(path, previousEntry) {
 
         if (response.ok) {
           console.log("Successfully deleted File.");
+          if (getState("currentDocument") === previousEntry + path) {
+            closeEditor();
+          }
           buildSidebar();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find File to be deleted.");
@@ -306,10 +309,6 @@ function renderEntries(entries, indentlevel, previousEntry) {
       }
     } else {
       // Creating File
-      // Cancels rendering for Master File
-      if (indentlevel === 0 && entries[i].name === "master.json") {
-        return;
-      }
       const wrapper = createWrapper();
       const file = createFile(entries[i], previousEntry);
       file.appendChild(createFileActions(entries[i].name, previousEntry));

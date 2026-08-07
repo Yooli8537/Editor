@@ -4,6 +4,13 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
+const rootPath = path.join(__dirname, "../../");
+const dataFolderPath = path.join(rootPath, "data");
+const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
+const imageFolderPath = path.join(dataFolderPath, "images");
+const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
+const masterFilePath = path.join(dataFolderPath, "master.json");
+
 // Gets full data folder
 async function readDirRecursive(dir) {
   const entries = await fs.promises.readdir(dir, {
@@ -43,9 +50,6 @@ async function searchNotebooks(dir, key, searchResults) {
         return searchNotebooks(fullPath, key, searchResults);
       } else {
         console.log(fullPath);
-        if (fullPath === path.join(__dirname, "../../data/master.json")) {
-          return;
-        }
         const file = await fs.promises.readFile(fullPath, "utf-8");
         const praseFile = JSON.parse(file);
         return findText(
@@ -82,8 +86,7 @@ function findText(node, key, file, searchResults, fileTitle) {
 
 // GET all documents
 router.get("/api/documents", async (req, res) => {
-  const data = path.join(__dirname, "../../data");
-  const resposneArray = await readDirRecursive(data);
+  const resposneArray = await readDirRecursive(notebooksFolderPath);
 
   res.json(resposneArray);
 });
@@ -91,16 +94,15 @@ router.get("/api/documents", async (req, res) => {
 router.get("/api/documents/search", async (req, res) => {
   const { key } = req.query;
   const searchResults = [];
-  const data = path.join(__dirname, "../../data");
-  await searchNotebooks(data, key, searchResults);
+  await searchNotebooks(notebooksFolderPath, key, searchResults);
 
   console.log(searchResults);
 
   // Results that can be used by the Sidebar loading function
   const relativeResults = searchResults.map((fullPath) => ({
-    path: path.relative(data, fullPath),
+    path: path.relative(notebooksFolderPath, fullPath),
     name: path.basename(fullPath),
-    folderPath: path.relative(data, path.dirname(fullPath)),
+    folderPath: path.relative(notebooksFolderPath, path.dirname(fullPath)),
   }));
 
   res.json(relativeResults);
@@ -111,7 +113,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
 
   try {
-    await fs.promises.mkdir(path.join(__dirname, "../../data", name));
+    await fs.promises.mkdir(path.join(notebooksFolderPath, name));
     res.json({ success: true });
   } catch (err) {
     console.error(err);
@@ -145,7 +147,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      location = path.join(__dirname, "../../data", folderPath, name + ".json");
+      location = path.join(notebooksFolderPath, folderPath, name + ".json");
       // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
@@ -178,9 +180,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      await fs.promises.mkdir(
-        path.join(__dirname, "../../data", folderPath, name),
-      );
+      await fs.promises.mkdir(path.join(notebooksFolderPath, folderPath, name));
       res.json({ success: true });
     } else if (name) {
       console.error("No Folder Path found.");
@@ -202,7 +202,7 @@ router.delete("/api/documents/deletePath", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      const fullFolderPath = path.join(__dirname, "../../data", folderPath);
+      const fullFolderPath = path.join(notebooksFolderPath, folderPath);
 
       await fs.promises.rm(fullFolderPath, { recursive: true, force: true });
       res.send("Path successfully deleted.");
@@ -224,7 +224,7 @@ router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
 
   try {
-    const fullFolderPath = path.join(__dirname, "../../data", folderPath, name);
+    const fullFolderPath = path.join(notebooksFolderPath, folderPath, name);
     const file = await fs.promises.readFile(fullFolderPath);
     res.send(JSON.parse(file));
   } catch (err) {
@@ -244,14 +244,12 @@ router.post("/api/documents/renameFile", async (req, res) => {
 
   const baseName = path.parse(name).name;
   const filePath = path.join(
-    __dirname,
-    "../../data",
+    notebooksFolderPath,
     folderPath,
     baseName + ".json",
   );
   const newFilePath = path.join(
-    __dirname,
-    "../../data",
+    notebooksFolderPath,
     folderPath,
     newName + ".json",
   );
@@ -289,14 +287,14 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   console.log(req.body);
   const { newName, folderPath, name } = req.body;
 
-  const currentPath = path.join(__dirname, "../../data", folderPath, name);
-  const newPath = path.join(__dirname, "../../data", folderPath, newName);
+  const currentPath = path.join(notebooksFolderPath, folderPath, name);
+  const newPath = path.join(notebooksFolderPath, folderPath, newName);
   /*
   If a Folder is in the "root" directory, no folderPath will be recieved.
   This exception requires a different path to be built.
   */
-  const rootPath = path.join(__dirname, "../../data", name);
-  const newRootPath = path.join(__dirname, "../../data", newName);
+  const rootPath = path.join(notebooksFolderPath, name);
+  const newRootPath = path.join(notebooksFolderPath, newName);
 
   try {
     if (newName && folderPath && name) {
@@ -327,7 +325,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 });
 
 async function readFileData(file) {
-  const masterFileLoc = path.join(__dirname, "../../data/master.json");
+  const masterFileLoc = path.join(dataFolderPath, "master.json");
   const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   const usedImages = masterFile[0].usedImages;
@@ -365,7 +363,7 @@ async function readFileData(file) {
 router.put("/api/documents/updateFile", async (req, res) => {
   const { saveData, name, folderPath } = req.body;
 
-  const filePath = path.join(__dirname, "../../data", folderPath, name);
+  const filePath = path.join(notebooksFolderPath, folderPath, name);
   const file = await fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
@@ -393,7 +391,7 @@ router.post("/api/documents/autosave", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      const location = path.join(__dirname, "../../data", folderPath, name);
+      const location = path.join(notebooksFolderPath, folderPath, name);
       fs.writeFileSync(location, defaultContent, "utf8");
       res.json({ success: true });
     } else if (name) {
@@ -425,11 +423,11 @@ router.post(
     }
 
     const fileName = imageName() + fileEnding;
-    location = path.join(__dirname, "../../images", fileName);
+    location = path.join(imageFolderPath, fileName);
     fs.writeFileSync(location, req.body);
 
     res.json({
-      url: `/images/${fileName}`,
+      url: `/data/images/${fileName}`,
     });
   },
 );

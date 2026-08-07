@@ -8,15 +8,17 @@ const app = express();
 const port = 8510;
 
 const rootPath = path.join(__dirname, "../");
-const dataFolder = path.join(rootPath, "data");
-const imageFolder = path.join(rootPath, "images");
-const attachmentsFolder = path.join(rootPath, "attachments");
-const masterFile = path.join(dataFolder, "master.json");
+const dataFolderPath = path.join(rootPath, "data");
+const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
+const imageFolderPath = path.join(dataFolderPath, "images");
+const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
+const masterFilePath = path.join(dataFolderPath, "master.json");
 
 const userDataFolders = [
-  { name: "Data", path: dataFolder },
-  { name: "Image", path: imageFolder },
-  { name: "Attachments", path: attachmentsFolder },
+  { name: "Data", path: dataFolderPath },
+  { name: "Notebooks", path: notebooksFolderPath },
+  { name: "Image", path: imageFolderPath },
+  { name: "Attachments", path: attachmentsFolderPath },
 ];
 
 for (let i = 0; i < userDataFolders.length; i++) {
@@ -30,15 +32,14 @@ for (let i = 0; i < userDataFolders.length; i++) {
 }
 
 // Master File for config across Sessions
-// TODO: ADD KEYBINDS TO MASTER FILE AND LOAD THEM INTO STATE.JS ON SERVER START
-if (!fs.existsSync(masterFile)) {
+if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[
   {
     "usedImages": []
   }
 ]
 `;
-  fs.writeFileSync(masterFile, masterFileContent, "utf-8");
+  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
   console.warn("Created missing Master JSON File.");
   console.log(
     "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",

@@ -10,7 +10,6 @@ export function getState(parameter) {
 // Overwrites a State with the passed value
 export function setState(parameter, value) {
   state.parameter = value;
-  console.log(state.parameter);
 }
 
 // Adds to a State, reserved for Arrays
