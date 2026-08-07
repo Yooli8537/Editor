@@ -1,3 +1,5 @@
+// Main Server File
+// Mainly used for one-time Operations (creating missing Data Folders, loading things into the state, etc.)
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -27,6 +29,8 @@ for (let i = 0; i < userDataFolders.length; i++) {
   }
 }
 
+// Master File for config across Sessions
+// TODO: ADD KEYBINDS TO MASTER FILE AND LOAD THEM INTO STATE.JS ON SERVER START
 if (!fs.existsSync(masterFile)) {
   const masterFileContent = `[
   {
