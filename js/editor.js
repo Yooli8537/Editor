@@ -21,6 +21,7 @@ import {
   removeSubmenus,
   createErrorModal,
   setHelpText,
+  createInfoModal,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
 import { setState } from "./state";
@@ -447,7 +448,7 @@ exportButton.addEventListener("click", async (e) => {
   console.log(exportDocument);
 
   createConfirmModal(
-    `Are you sure you want to Export the current Document?`,
+    "Are you sure you want to Export the current Document?",
     "Back to Editor",
     "Export as PDF",
     async () => {
@@ -476,30 +477,43 @@ exportButton.addEventListener("click", async (e) => {
   );
 });
 
+async function saveEditor() {}
+
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
-  const saveData = editor.getJSON();
 
-  const response = await fetch("api/documents/updateFile", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      saveData: saveData,
-      name: currentEntry.name,
-      folderPath: currentPreviousEntry,
-    }),
-  });
+  if (!editorIsSaved) {
+    const saveData = editor.getJSON();
+    createConfirmModal(
+      "Are you sure you want to save this File?",
+      "Back to Editor",
+      "Save File",
+      async () => {
+        const response = await fetch("api/documents/updateFile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            saveData: saveData,
+            name: currentEntry.name,
+            folderPath: currentPreviousEntry,
+          }),
+        });
 
-  if (response.ok) {
-    console.log("Successfully saved Document.");
-    editorIsSaved = true;
-  } else if (response.status === 404) {
-    createErrorModal("Couldn't find File to save.");
-  } else if (response.status === 413) {
-    createErrorModal("Save File too large.");
+        if (response.ok) {
+          console.log("Successfully saved Document.");
+          editorIsSaved = true;
+        } else if (response.status === 404) {
+          createErrorModal("Couldn't find File to save.");
+        } else if (response.status === 413) {
+          createErrorModal("Save File too large.");
+        } else {
+          createErrorModal("Something went wrong.");
+        }
+      },
+    );
   } else {
-    createErrorModal("Something went wrong.");
+    createInfoModal("No changes were made.");
   }
 });
 
@@ -539,16 +553,44 @@ const discardIconPath = "assets/function/discard.svg";
 const closeIconPath = "assets/function/cancel.svg";
 let isDiscardIcon = true;
 
-// Autosaving including swapping Discard Button for Close Button
-setInterval(async () => {
-  const saveData = editor.getJSON();
+const saveIcon = document.querySelector("#saveIcon");
+const saveIconPath = "assets/function/save.svg";
+const savedIconPath = "assets/function/saved.svg";
+let isSavedIcon = true;
 
-  if (editorIsSaved === false) {
+// Updates the Save & Discard Icons to be correct with the current state.
+function updateSaveIcons() {
+  if (editorIsSaved) {
+    if (isDiscardIcon) {
+      discardIcon.src = closeIconPath;
+      setHelpText(discardButton, "Close Document");
+      isDiscardIcon = false;
+    }
+    if (!isSavedIcon) {
+      saveIcon.src = savedIconPath;
+      setHelpText(saveButton, "Changes Saved");
+      isSavedIcon = true;
+    }
+  } else {
     if (!isDiscardIcon) {
       discardIcon.src = discardIconPath;
       setHelpText(discardButton, "Discard Changes");
       isDiscardIcon = true;
     }
+    if (isSavedIcon) {
+      saveIcon.src = saveIconPath;
+      setHelpText(saveButton, "Save Changes");
+      isSavedIcon = false;
+    }
+  }
+}
+
+// Autosaving including swapping Discard Button for Close Button
+setInterval(async () => {
+  const saveData = editor.getJSON();
+
+  if (editorIsSaved === false) {
+    updateSaveIcons();
     //console.log(saveData);
     /*
     const autosave = await fetch("api/documents/autosave", {
@@ -565,11 +607,7 @@ setInterval(async () => {
       console.log("SUCCESS");
     }*/
   } else {
-    if (isDiscardIcon) {
-      discardIcon.src = closeIconPath;
-      setHelpText(discardButton, "Close Document");
-      isDiscardIcon = false;
-    }
+    updateSaveIcons();
   }
 }, 1000);
 

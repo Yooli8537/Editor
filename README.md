@@ -53,6 +53,10 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, most of a Code Block will just be defined as a String by the Syntax highlighting.
 - Helptexts within submenus do not disappear when you click on the function, they just stick around.
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
+- Image drag & drop doesn't work.
+- If the selected Document shows up in Search Results, it isn't highlighted.
+- Renaming a document doesn't update its URL
+- `master.json` file can be found on the sidebar.
 
 ## Planned Features
 
@@ -69,4 +73,5 @@ This is a Web-based Editor which can run locally or on a home server.
 - Dark Mode
 - Containerization
 - Extension: Audio
-- Some kind of highlighting
+- Some kind of highlighting for Text
+- Keybinds (for example, Ctrl + S for saving)
