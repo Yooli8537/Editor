@@ -517,7 +517,7 @@ saveButton.addEventListener("click", async (e) => {
   }
 });
 
-function closeEditor() {
+export function closeEditor() {
   editorView.classList.add("hidden");
   console.log("Editor Closed.");
   editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.

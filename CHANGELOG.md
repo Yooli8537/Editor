@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Deleting an opened document now closes the Editor.
+
 ## v0.2.1-beta - `master.json`-related fixes
 
 ### Fixed

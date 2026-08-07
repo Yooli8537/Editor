@@ -5,7 +5,7 @@ import {
   createPromptModal,
   createErrorModal,
 } from "./utils";
-import { loadDocument } from "./editor";
+import { closeEditor, loadDocument } from "./editor";
 import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
@@ -253,6 +253,9 @@ function createFileActions(path, previousEntry) {
 
         if (response.ok) {
           console.log("Successfully deleted File.");
+          if (getState("currentDocument") === previousEntry + path) {
+            closeEditor();
+          }
           buildSidebar();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find File to be deleted.");
@@ -339,6 +342,7 @@ buildSidebar();
 
 // Checks if the current file is selected and highlights it if true.
 export function checkForSelectedFile(file, sidebarFile) {
+  console.log(file);
   if (getState("currentDocument") === file) {
     const selectedDocs = document.querySelectorAll(".selected");
     for (let i = 0; i < selectedDocs.length; i++) {
