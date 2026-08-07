@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- File renaming can be confirmed with `Enter`.
+
+### Fixed
+
+- Renaming a File to an identical name no longer sends a request to the Server, instead giving out an Error.
+
 ## v1.0.0-beta - Refactored User Data architecture
 
 ### Changed

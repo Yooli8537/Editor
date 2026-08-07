@@ -133,7 +133,10 @@ export function loadDocument(data, entry, previousEntry) {
       data[0].content || "<p>Content failed to load.</p>",
     );
 
-    editTitleButton.addEventListener("click", renameHandler);
+    editTitleButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      renameHandler();
+    });
 
     editorIsSaved = true;
   }
@@ -152,6 +155,51 @@ export function loadDocument(data, entry, previousEntry) {
   }
 }
 
+// Handles the rename request
+async function renameFile(newName, div) {
+  const folderPath = currentPreviousEntry;
+  const oldName = currentEntry.name;
+
+  // Prevents Server Requests for identical Names. Slice removes .json
+  if (newName === oldName.slice(0, -5)) {
+    createErrorModal("Current and previous File names are identical.");
+    return;
+  }
+
+  const response = await fetch("api/documents/renameFile", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      newName: newName,
+      folderPath: folderPath,
+      name: oldName,
+    }),
+  });
+
+  // Resetting after successful rename
+  if (response.ok) {
+    currentDocument[0].title = newName;
+    currentEntry = {
+      ...currentEntry,
+      name: currentDocument[0].title + ".json",
+    };
+    documentTitle.textContent = currentDocument[0].title;
+    buildSidebar();
+    div.remove();
+    editTitleButton.style.display = "flex";
+    loadDocument(currentDocument, currentEntry, folderPath);
+    history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
+  } else if (response.status === 409) {
+    createErrorModal(
+      "A File with that name already exists within the same Directory!",
+    );
+  } else if (response.status === 404) {
+    createErrorModal("File wasn't found.");
+  } else {
+    createErrorModal("Something went wrong.");
+  }
+}
+
 setHelpText(editTitleButton, "Rename Document");
 async function renameHandler() {
   documentTitle.innerHTML = "";
@@ -165,51 +213,20 @@ async function renameHandler() {
   titleRenameInput.type = "text";
   titleRenameInput.maxLength = 30;
 
+  titleRenameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      renameFile(titleRenameInput.value, div);
+    }
+  });
+
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
   confirmButton.classList.add("borderlessButton");
 
-  confirmButton.addEventListener("click", async () => {
-    const response = await fetch("api/documents/renameFile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        newName: titleRenameInput.value,
-        folderPath: currentPreviousEntry,
-        name: currentEntry.name,
-      }),
-    });
-
-    // Resetting after successful rename
-    if (response.ok) {
-      currentDocument[0].title = titleRenameInput.value;
-      currentEntry = {
-        ...currentEntry,
-        name: currentDocument[0].title + ".json",
-      };
-      documentTitle.textContent = currentDocument[0].title;
-      buildSidebar();
-      div.remove();
-      editTitleButton.style.display = "flex";
-      loadDocument(currentDocument, currentEntry, currentPreviousEntry);
-      history.pushState(
-        null,
-        "",
-        `?path=${currentPreviousEntry}&document=${currentEntry.name}`,
-      );
-
-      console.log("Post-rename");
-      console.log("Current Entry: ", currentEntry);
-      console.log("Current previous Entry: ", currentPreviousEntry);
-    } else if (response.status === 409) {
-      createErrorModal(
-        "A File with that name already exists within the same Directory!",
-      );
-    } else if (response.status === 404) {
-      createErrorModal("File wasn't found.");
-    } else {
-      createErrorModal("Something went wrong.");
-    }
+  confirmButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    renameFile(titleRenameInput.value, div);
   });
 
   const cancelButton = document.createElement("img");
