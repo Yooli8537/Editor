@@ -60,7 +60,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Helptexts within submenus do not disappear when you click on the function, they just stick around.
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - Image drag & drop doesn't work.
-- If the selected Document shows up in Search Results, it isn't highlighted. Same thing when the search is closed.
 - When switching between Documents with images inside them, the images are replaced with the images of the previously opened document, but only inside the browser, not the file itself.
 
 ## Planned Features

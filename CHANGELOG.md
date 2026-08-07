@@ -19,6 +19,7 @@
 - Font sizes for the Export are now consistent with the Editor. May still be different, it's obviously hard to tell.
 - Fixed A4 size not being A4 because it wasn't defined in the `export-content` class.
 - Task Lists are now vertically aligned with their counterparts.
+- If the selected Document shows up in Search Results, it's now highlighted. Same thing when the search is closed. Apparently I fixed that at some point. Cool.
 
 ### Notes
 
