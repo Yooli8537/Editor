@@ -23,6 +23,7 @@ function createWrapper() {
 }
 
 // Creating Search
+let key = "";
 function createSearch() {
   const searchWrapper = document.createElement("div");
   searchWrapper.classList.add("wrapper");
@@ -32,13 +33,19 @@ function createSearch() {
   input.classList.add("searchField");
   input.type = "text";
 
+  // Sets the Search Key at the top.
+  if (searchIsOpen) {
+    input.value = key;
+  }
+
   const icon = document.createElement("img");
   icon.classList.add("sidebarButton");
   icon.src = "../assets/function/search.svg";
 
   icon.addEventListener("click", async () => {
-    if (!input.value) return;
-    const search = await fetch(`api/documents/search?key=${input.value}`, {
+    key = input.value;
+    if (!key) return;
+    const search = await fetch(`api/documents/search?key=${key}`, {
       method: "GET",
     });
 

@@ -5,6 +5,7 @@
 ### Added
 
 - File renaming can be confirmed with `Enter`.
+- Search Key stays in the Search field after searching.
 
 ### Changed
 
