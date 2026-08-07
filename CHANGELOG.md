@@ -9,6 +9,7 @@
 ### Fixed
 
 - Renaming a File to an identical name no longer sends a request to the Server, instead giving out an Error.
+- Renaming a Document keeps its Highlight on the Sidebar.
 
 ## v1.0.0-beta - Refactored User Data architecture
 

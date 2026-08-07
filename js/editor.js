@@ -181,9 +181,10 @@ async function renameFile(newName, div) {
     currentDocument[0].title = newName;
     currentEntry = {
       ...currentEntry,
-      name: currentDocument[0].title + ".json",
+      name: newName + ".json",
     };
-    documentTitle.textContent = currentDocument[0].title;
+    documentTitle.textContent = newName;
+    setState("currentDocument", folderPath + newName + ".json");
     buildSidebar();
     div.remove();
     editTitleButton.style.display = "flex";
