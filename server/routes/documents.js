@@ -42,6 +42,10 @@ async function searchNotebooks(dir, key, searchResults) {
       if (entry.isDirectory()) {
         return searchNotebooks(fullPath, key, searchResults);
       } else {
+        console.log(fullPath);
+        if (fullPath === path.join(__dirname, "../../data/master.json")) {
+          return;
+        }
         const file = await fs.promises.readFile(fullPath, "utf-8");
         const praseFile = JSON.parse(file);
         return findText(
@@ -322,14 +326,52 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   }
 });
 
+async function readFileData(file) {
+  const masterFileLoc = path.join(__dirname, "../../data/master.json");
+  const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
+  const masterFile = JSON.parse(rawMasterFile);
+  const usedImages = masterFile[0].usedImages;
+
+  function loopThroughJSON(obj) {
+    for (let key in obj) {
+      if (typeof obj[key] === "object") {
+        if (Array.isArray(obj[key])) {
+          // loop through array
+          for (let i = 0; i < obj[key].length; i++) {
+            loopThroughJSON(obj[key][i]);
+          }
+        } else {
+          // call function recursively for object
+          loopThroughJSON(obj[key]);
+        }
+      } else {
+        const searchObj = obj[key];
+        if (
+          key === "src" &&
+          searchObj.search(/\/images\/Y\w{20}\.\w{3}/) !== -1
+        ) {
+          console.log(searchObj);
+          const image = key + ": " + searchObj;
+          // TODO: READ OUT NEW IMAGES & IMAGES WHICH HAVE BEEN DELETED AND ADD / REMOVE THEM
+          // OH GOD THAT SOUNDS COMPLICATED
+        }
+      }
+    }
+  }
+
+  loopThroughJSON(file);
+}
+
 router.put("/api/documents/updateFile", async (req, res) => {
   const { saveData, name, folderPath } = req.body;
 
   const filePath = path.join(__dirname, "../../data", folderPath, name);
-  const file = await fs.promises.readFile(filePath, "utf-8");
+  const file = await fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
   fileData[0].content = saveData;
+
+  readFileData(fileData);
 
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf8");
   res.json({ success: true });
@@ -392,13 +434,14 @@ router.post(
   },
 );
 
-module.exports = router;
 function imageName() {
-  let name = "";
+  let name = "Y";
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 21; i++) {
     name += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return name;
 }
+
+module.exports = router;
