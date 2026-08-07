@@ -57,7 +57,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image drag & drop doesn't work.
 - If the selected Document shows up in Search Results, it isn't highlighted.
 - Renaming a document doesn't update its URL
-- `master.json` file can be found on the sidebar.
 
 ## Planned Features
 

@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## v0.2.1-beta - `master.json`-related fixes
+
+### Fixed
+
+- `master.json` no longer shows up on the Sidebar.
+- `master.json` is no longer included in the Search function, thus fixing it.
 
 ## v0.2.0-beta - URLs, Syntax Highlighting and Bug fixes
 
