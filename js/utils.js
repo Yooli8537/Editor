@@ -57,7 +57,7 @@ function verifyInput(inputField, onSubmit, prevValue) {
   }
 }
 
-export function createPromptModal(prompt, onSubmit, inputContent) {
+export function createPromptModal(prompt, inputContent, onSubmit) {
   const clickable = document.createElement("div");
   clickable.classList.add("clickable");
   clickable.addEventListener("click", () => {

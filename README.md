@@ -61,6 +61,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - Image drag & drop doesn't work.
 - When switching between Documents with images inside them, the images are replaced with the images of the previously opened document, but only inside the browser, not the file itself.
+- Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
 
 ## Planned Features
 

@@ -171,6 +171,7 @@ function createFolderActions(path, previousEntry) {
   renameButton.addEventListener("click", async (e) => {
     createPromptModal(
       "Please Input the new Folder Name.",
+      path,
       async (newName) => {
         const response = await fetch("api/documents/renameFolder", {
           method: "POST",
@@ -191,7 +192,6 @@ function createFolderActions(path, previousEntry) {
           createErrorModal("Something went wrong.");
         }
       },
-      path,
     );
   });
 
@@ -367,6 +367,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   fileButton.addEventListener("click", () => {
     createPromptModal(
       "Please Name your File.",
+      "",
       async (name) => {
         const response = await fetch("api/documents/newFile", {
           method: "POST",
@@ -387,7 +388,6 @@ function createCreationDropdown(parent, path, previousEntry) {
           createErrorModal("Something went wrong.");
         }
       },
-      "",
     );
   });
 
@@ -398,6 +398,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   folderButton.addEventListener("click", () => {
     createPromptModal(
       "Please Name your Folder.",
+      "",
       async (name) => {
         const response = await fetch("api/documents/newFolder", {
           method: "POST",
@@ -418,7 +419,6 @@ function createCreationDropdown(parent, path, previousEntry) {
           createErrorModal("Something went wrong.");
         }
       },
-      "",
     );
   });
 
@@ -445,6 +445,7 @@ rootButton.addEventListener("click", async (e) => {
 
   createPromptModal(
     "Please name your Notebook.",
+    "",
     async (notebookName) => {
       const response = await fetch("api/documents/newNotebook", {
         method: "POST",
@@ -460,6 +461,5 @@ rootButton.addEventListener("click", async (e) => {
         createErrorModal("Something went wrong.");
       }
     },
-    "",
   );
 });
