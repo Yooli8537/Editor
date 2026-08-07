@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.2.1-beta - Refactored User Data architecture
+## v1.0.0-beta - Refactored User Data architecture
 
 ### Changed
 

@@ -86,6 +86,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - Allow the user to save a Document when Discard Button is clicked.
 - Label Images
 - Refactor Code for the single-function principle.
+- Hovering over an Image shows it's label.
+- Image labels can be searched through.
 
 ## Notes
 
