@@ -63,7 +63,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - If the selected Document shows up in Search Results, it isn't highlighted. Same thing when the search is closed.
 - Font sizes are smaller and generally different for the Export.
 - Exported Documents show up inside the Assets???
-- When selecting more than just a Link and pressing the remove Link Button, the Link isn't removed.
 
 ## Planned Features
 

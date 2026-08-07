@@ -444,7 +444,7 @@ const linkEditButtons = [
   },
   {
     icon: "unlink.svg",
-    action: () => editor.chain().focus().toggleLink().run(),
+    action: () => editor.chain().focus().unsetLink().run(),
     helpText: "Delete Link",
   },
 ];
@@ -522,6 +522,7 @@ saveButton.addEventListener("click", async (e) => {
         if (response.ok) {
           console.log("Successfully saved Document.");
           editorIsSaved = true;
+          updateSaveIcons();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find File to save.");
         } else if (response.status === 413) {

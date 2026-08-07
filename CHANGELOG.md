@@ -6,10 +6,15 @@
 
 - File renaming can be confirmed with `Enter`.
 
+### Changed
+
+- Saving a Document instantly updates the Save Icons.
+
 ### Fixed
 
 - Renaming a File to an identical name no longer sends a request to the Server, instead giving out an Error.
 - Renaming a Document keeps its Highlight on the Sidebar.
+- The Remove Link button now actually removes links instead of just toggling it.
 
 ## v1.0.0-beta - Refactored User Data architecture
 
