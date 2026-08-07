@@ -75,3 +75,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - Extension: Audio
 - Some kind of highlighting for Text
 - Keybinds (for example, Ctrl + S for saving)
+
+## Notes
+
+- Icons were downloaded from [Lucide](https://lucide.dev/).
+- The Editor's functionality comes from [TipTap](https://tiptap.dev/) and its Extensions.

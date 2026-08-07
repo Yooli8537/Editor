@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## v0.2.0-beta - URLs, Syntax Highlighting and Bug fixes
 
 ### Added
@@ -17,6 +19,10 @@
 - Bloated Image widths
 - Images can be inserted into the Editor via Copy & Paste and are saved on the Server.
 - Saving a saved Editor does nothing.
+
+### Notes
+
+- Images are technically supported, but I wouldn't use them just yet as there's no easy way to delete them from the server storage.
 
 ## v0.1.2-beta - Editor help & fixed Exports
 
