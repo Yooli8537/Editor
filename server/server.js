@@ -37,7 +37,7 @@ for (let i = 0; i < userDataFolders.length; i++) {
 if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[
   {
-    "unsavedFiles": {}
+    "unsavedFiles": []
   }
 ]
 `;

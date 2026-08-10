@@ -611,30 +611,32 @@ function updateSaveIcons() {
   }
 }
 
-// Autosaving including swapping Discard Button for Close Button
+// Updates the save Icons every second
+setInterval(() => {
+  updateSaveIcons();
+}, 1000);
+
+// Requests a new autosave every 10s.
 setInterval(async () => {
   const saveData = editor.getJSON();
 
   if (editorIsSaved === false) {
-    updateSaveIcons();
-
-    console.log(saveData);
+    console.log(currentEntry);
+    console.log(currentPreviousEntry);
 
     const autosave = await fetch("api/autosave", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         saveData: saveData,
-        name: currentEntry,
-        folderPath: currentPreviousEntry,
+        path: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
+        name: currentEntry, // currentEntry is the file's name.
       }),
     });
 
     if (autosave.ok) {
       console.log("SUCCESS");
     }
-  } else {
-    updateSaveIcons();
   }
 }, 1000);
 
@@ -644,11 +646,12 @@ async function onFirstStart() {
   const path = params.get("path");
   const document = params.get("document");
 
-  // Stops auto-open if the URL is the base URL.
+  // Stops auto-open if no document is provided.
   if (document === null) {
     console.log("App ready!");
     return;
   } else {
+    // Getting the Document from the URL.
     const response = await fetch(
       `api/documents/getFile?folderPath=${path}&name=${document}`,
       {
