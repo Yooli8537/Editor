@@ -33,13 +33,12 @@ router.post("/api/autosave", async (req, res) => {
   }
 
   if (saveNameToArray) {
-    console.log(unsavedFiles);
+    // Updates variable copy of master.json with new data.
     unsavedFiles.push(name);
-    console.log(unsavedFiles);
-
     masterFile[0].unsavedFiles = unsavedFiles;
 
     try {
+      // Updates master.json on the fs.
       fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
       console.log("Successfully added unsaved filename to master.json.");
     } catch (err) {
@@ -47,6 +46,34 @@ router.post("/api/autosave", async (req, res) => {
       console.error(err);
       res.status(500).json({ error: err });
     }
+  }
+
+  res.json({ success: true });
+});
+
+router.delete("/api/removeAutosave", async (req, res) => {
+  const { name } = req.body;
+
+  let masterFile = await getMasterFile();
+  let unsavedFiles = masterFile[0].unsavedFiles;
+
+  // Removed the saved file from the unsavedFiles array within master.json
+  const removeIndex = unsavedFiles.indexOf(name);
+  if (removeIndex > -1) {
+    unsavedFiles.splice(removeIndex, 1);
+  }
+
+  // Updates variable copy of master.json with new data.
+  masterFile[0].unsavedFiles = unsavedFiles;
+
+  try {
+    // Updates master.json on the fs.
+    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    console.log("Successfully added unsaved filename to master.json.");
+  } catch (err) {
+    console.error("Failed to add unsaved filename to master.json.");
+    console.error(err);
+    res.status(500).json({ error: err });
   }
 
   res.json({ success: true });

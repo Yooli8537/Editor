@@ -113,7 +113,6 @@ let currentPreviousEntry;
 
 // Loads Document into the Editor
 export function loadDocument(documentData, entry, previousEntry) {
-  console.log(entry);
   function loadEditor() {
     currentDocument = documentData;
     currentEntry = entry;
@@ -497,6 +496,21 @@ exportButton.addEventListener("click", async (e) => {
   );
 });
 
+// Removes any autosaves from the server.
+async function removeAutosave() {
+  const response = await fetch("api/removeAutosave", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: currentEntry,
+    }),
+  });
+
+  if (response.ok) {
+    console.log(`Removed autosaves for ${currentEntry}.`);
+  }
+}
+
 async function saveEditor() {
   if (!editorIsSaved) {
     const saveData = editor.getJSON();
@@ -518,6 +532,7 @@ async function saveEditor() {
         // Error handling
         if (response.ok) {
           console.log("Successfully saved Document.");
+          removeAutosave();
           editorIsSaved = true;
           updateSaveIcons();
         } else if (response.status === 404) {
