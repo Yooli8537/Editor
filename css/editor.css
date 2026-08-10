@@ -81,6 +81,7 @@
 }
 
 .ProseMirror {
+  width: 794px;
   max-width: 794px;
   padding: 75px;
   margin: 0 auto;

@@ -38,6 +38,7 @@ async function readDirRecursive(dir) {
 }
 
 async function searchNotebooks(dir, key, searchResults) {
+  lowerKey = key.toLowerCase(); // Sets key to be lowercase
   const entries = await fs.promises.readdir(dir, {
     withFileTypes: true,
   });
@@ -47,14 +48,14 @@ async function searchNotebooks(dir, key, searchResults) {
       const fullPath = path.join(dir, entry.name);
 
       if (entry.isDirectory()) {
-        return searchNotebooks(fullPath, key, searchResults);
+        return searchNotebooks(fullPath, lowerKey, searchResults);
       } else {
         console.log(fullPath);
         const file = await fs.promises.readFile(fullPath, "utf-8");
         const praseFile = JSON.parse(file);
         return findText(
           praseFile[0].content,
-          key,
+          lowerKey,
           fullPath,
           searchResults,
           praseFile[0].title,
@@ -66,13 +67,13 @@ async function searchNotebooks(dir, key, searchResults) {
 
 function findText(node, key, file, searchResults, fileTitle) {
   if (fileTitle) {
-    if (fileTitle.includes(key) && !searchResults.includes(file)) {
+    if (fileTitle.toLowerCase().includes(key) && !searchResults.includes(file)) {
       searchResults.push(file);
     }
   }
 
   if (node.type === "text") {
-    if (node.text.includes(key) && !searchResults.includes(file)) {
+    if (node.text.toLowerCase().includes(key) && !searchResults.includes(file)) {
       searchResults.push(file);
     }
   }

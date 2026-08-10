@@ -1,5 +1,32 @@
 # Changelog
 
+## v1.1.0-beta - So many Bug Fixes & minor Improvements
+
+### Added
+
+- File renaming can be confirmed with `Enter`.
+- Search Key stays in the Search field after searching.
+
+### Changed
+
+- Saving a Document instantly updates the Save Icons.
+
+### Fixed
+
+- Renaming a File to an identical name no longer sends a request to the Server, instead giving out an Error.
+- Renaming a Document keeps its Highlight on the Sidebar.
+- The Remove Link button now actually removes links instead of just toggling it.
+- Font sizes for the Export are now consistent with the Editor. May still be different, it's obviously hard to tell.
+- Fixed A4 size not being A4 because it wasn't defined in the `export-content` class.
+- Task Lists are now vertically aligned with their counterparts.
+- If the selected Document shows up in Search Results, it's now highlighted. Same thing when the search is closed. Apparently I fixed that at some point. Cool.
+- The Search is now case-insensitive.
+- Image Drag & Drop now works.
+
+### Notes
+
+- "Exported Documents show up inside the Assets???" nah my dumbass was just saving them to that location and didn't notice.
+
 ## v1.0.0-beta - Refactored User Data architecture
 
 ### Changed
@@ -10,6 +37,10 @@
 
 - Deleting an opened document now closes the Editor.
 - Renaming a File now updates the URL.
+
+### Notes
+
+- As the version number implies, this is a data-changing update. Previous data will not be functional in the new release.
 
 ## v0.2.1-beta - `master.json`-related fixes
 
