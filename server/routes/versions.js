@@ -65,6 +65,7 @@ router.post("/api/autosave", async (req, res) => {
           JSON.stringify(saveData),
           "utf-8",
         );
+        res.json({ success: true });
       }
       console.error("Failed to create autosave.");
       console.error(err);

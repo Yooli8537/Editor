@@ -648,10 +648,12 @@ setInterval(async () => {
     });
 
     if (autosave.ok) {
-      console.log("SUCCESS");
+      console.log(
+        `Successfully created Autosave for document ${currentEntry}.`,
+      );
     }
   }
-}, 1000);
+}, 10000);
 
 // Opens Document from URL if one is present.
 async function onFirstStart() {
