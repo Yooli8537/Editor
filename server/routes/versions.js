@@ -59,6 +59,13 @@ router.post("/api/autosave", async (req, res) => {
       console.log("Successfully created autosave.");
       res.json({ success: true });
     } catch (err) {
+      if (err.code === "EEXIST") {
+        await fs.writeFileSync(
+          autosaveFilePath,
+          JSON.stringify(saveData),
+          "utf-8",
+        );
+      }
       console.error("Failed to create autosave.");
       console.error(err);
       res.status(500).json({ error: err });
@@ -88,6 +95,9 @@ router.delete("/api/removeAutosave", async (req, res) => {
     // Updates master.json on the fs.
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     console.log("Successfully removed filename from master.json.");
+
+    await fs.rmSync(path.join(autosavesFolderPath, fullFilePath));
+    await fs.rmdirSync(path.join(autosavesFolderPath, folderPath));
   } catch (err) {
     console.error("Failed to remove filename from master.json.");
     console.error(err);
