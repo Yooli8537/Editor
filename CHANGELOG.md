@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased - So many Bug Fixes & Improvements
+## v1.1.0-beta - So many Bug Fixes & minor Improvements
 
 ### Added
 

@@ -87,7 +87,10 @@ This is a Web-based Editor which can run locally or on a home server.
 - Moving folders & files using drag & drop.
 - Settings Menu
   - Keybinds
-  - Display (Dark / Light Mode)
+  - Display
+    - Dark / Light Mode
+    - Amount of Characters before "..."
+  - Autosaving Config
   - Edit Formats
   - Info (Lucide & TipTap credit, etc.)
 - Containerization
@@ -97,6 +100,7 @@ This is a Web-based Editor which can run locally or on a home server.
   - Label Images
   - Hovering over an Image shows it's label.
   - Image labels can be searched through.
+- Support long names by replacing them with "..." if they get >25 characters long. Cap at 50 instead of 30.
 
 ### Cosmetic
 
