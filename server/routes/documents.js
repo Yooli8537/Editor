@@ -328,8 +328,8 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 async function readFileData(file) {
   const masterFileLoc = path.join(dataFolderPath, "master.json");
   const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
-  const masterFile = JSON.parse(rawMasterFile);
-  const usedImages = masterFile[0].usedImages;
+  const masterFile = JSON.parse(rawMasterFile)[0];
+  const usedImages = masterFile.usedImages;
 
   function loopThroughJSON(obj) {
     for (let key in obj) {

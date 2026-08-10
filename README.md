@@ -34,7 +34,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 1. Clone the Repo using `git clone https://github.com/Yooli8537/Editor`.
 2. Run `npm install`.
-3. Run `npm run dev` and open `http://localhost:8511/`.
+3. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
 
 ## Update Guide
 
@@ -45,7 +45,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Known Issues
 
-- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
+- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
 
 ### Priority
 
@@ -91,7 +91,9 @@ This is a Web-based Editor which can run locally or on a home server.
   - Display
     - Dark / Light Mode
     - Amount of Characters before "..."
-  - Autosaving Config
+  - Saving Config
+    - Autosaving Interval
+    - Number of Backed-Up Versions
   - Edit Formats
   - Info (Lucide & TipTap credit, etc.)
 - Containerization

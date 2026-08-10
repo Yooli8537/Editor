@@ -35,7 +35,7 @@ for (let i = 0; i < userDataFolders.length; i++) {
 if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[
   {
-    "usedImages": []
+    "unsavedFiles": {}
   }
 ]
 `;
@@ -44,6 +44,36 @@ if (!fs.existsSync(masterFilePath)) {
   console.log(
     "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
   );
+} else {
+  deleteDeprecatedMasterProperties();
+}
+
+// Deletes deprecated master.json properties
+async function deleteDeprecatedMasterProperties() {
+  console.log("Checking for deprecated master.json properties...");
+
+  let changesMade = false;
+  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  const masterFile = JSON.parse(rawMasterFile);
+
+  if (delete masterFile[0].usedImages) {
+    console.log('Deleted masterfile property "usedImages".');
+    changesMade = true;
+  }
+
+  if (changesMade) {
+    try {
+      fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+      console.log("Successfully removed deprecated masterfile properties.");
+    } catch (err) {
+      console.error("Something went wrong trying to update master.json.");
+      console.error(err);
+    }
+  } else {
+    console.log(
+      "No deprecated masterfile properties found. Starting App without changes.",
+    );
+  }
 }
 
 const exportRoute = require("./routes/export");

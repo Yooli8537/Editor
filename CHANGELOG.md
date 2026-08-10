@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Deprecated Properties are automatically removed from `master.json`.
+
 ## v1.1.0-beta - So many Bug Fixes & minor Improvements
 
 ### Added
