@@ -55,9 +55,11 @@ async function deleteDeprecatedMasterProperties() {
   console.log("Checking for deprecated master.json properties...");
 
   let changesMade = false;
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  // Getting the masterfile data. Has to be parsed.
+  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
 
+  // Deletes the usedImages property
   if (masterFile[0].usedImages) {
     delete masterFile[0].usedImages;
     console.log('Deleted masterfile property "usedImages".');
@@ -66,6 +68,7 @@ async function deleteDeprecatedMasterProperties() {
 
   if (changesMade) {
     try {
+      // Updates the masterfile
       fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
       console.log("Successfully removed deprecated masterfile properties.");
     } catch (err) {
@@ -79,13 +82,15 @@ async function deleteDeprecatedMasterProperties() {
   }
 }
 
-const exportRoute = require("./routes/export");
 const documentsRoute = require("./routes/documents");
+const exportRoute = require("./routes/export");
+const versionsRoute = require("./routes/versions");
 
 app.use(express.json());
 app.use(express.static(rootPath));
-app.use(exportRoute);
 app.use(documentsRoute);
+app.use(exportRoute);
+app.use(versionsRoute);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));

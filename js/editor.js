@@ -577,7 +577,7 @@ discardButton.addEventListener("click", (e) => {
 const discardIcon = document.querySelector("#discardIcon");
 const discardIconPath = "assets/function/discard.svg";
 const closeIconPath = "assets/function/cancel.svg";
-let isDiscardIcon = true;
+let isDiscardIcon = false;
 
 const saveIcon = document.querySelector("#saveIcon");
 const saveIconPath = "assets/function/save.svg";
@@ -617,9 +617,10 @@ setInterval(async () => {
 
   if (editorIsSaved === false) {
     updateSaveIcons();
-    //console.log(saveData);
-    /*
-    const autosave = await fetch("api/documents/autosave", {
+
+    console.log(saveData);
+
+    const autosave = await fetch("api/autosave", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -631,7 +632,7 @@ setInterval(async () => {
 
     if (autosave.ok) {
       console.log("SUCCESS");
-    }*/
+    }
   } else {
     updateSaveIcons();
   }
