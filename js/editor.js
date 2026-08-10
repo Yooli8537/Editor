@@ -24,7 +24,7 @@ import {
   createInfoModal,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
-import { setState } from "./state";
+import { loadMaster, setState } from "./state";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
@@ -656,6 +656,9 @@ setInterval(async () => {
 
 // Opens Document from URL if one is present.
 async function onFirstStart() {
+  // Loads Data from master.json into state.js
+  loadMaster();
+
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
   const document = params.get("document");

@@ -82,6 +82,17 @@ async function deleteDeprecatedMasterProperties() {
   }
 }
 
+app.get("/api/getMaster", async (req, res) => {
+  try {
+    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    res.send(JSON.stringify(rawMasterFile));
+    console.log("Successfully loaded Masterfile.");
+  } catch (err) {
+    console.error("Couldn't load Masterfile.");
+    console.error(err);
+  }
+});
+
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
 const versionsRoute = require("./routes/versions");

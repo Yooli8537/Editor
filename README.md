@@ -68,6 +68,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, most of a Code Block will just be defined as a String by the Syntax highlighting. Likely due to the MD formatting (``````).
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - TipTap's emoji Extension doesn't work.
+- Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
 
 ## Planned Features
 
