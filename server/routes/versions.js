@@ -19,27 +19,23 @@ async function getMasterFile() {
 
 router.post("/api/autosave", async (req, res) => {
   const { saveData, folderPath, name } = req.body;
-  const fullFilePath = path.join(folderPath, name); // Full path of the file from the notebooks folder onwards.
-  const autosaveFolderPath = path.join(autosavesFolderPath, folderPath); // Full path to the autosave folder location
-  const autosaveFilePath = path.join(autosaveFolderPath, name); // Full path to the autosave file location
+  const autosaveFilePath = path.join(autosavesFolderPath, name); // Full path to the autosave file location.
 
   let masterFile = await getMasterFile();
   let unsavedFiles = masterFile[0].unsavedFiles;
-  let createAutosave = true;
+  let addFileName = true;
 
   for (let i = 0; i < unsavedFiles.length; i++) {
     // If the name of the file is already included within the array, it doesn't have to be added again.
-    if (unsavedFiles[i] === fullFilePath) {
-      createAutosave = false;
+    if (unsavedFiles[i] === name) {
+      addFileName = false;
     }
   }
 
-  if (createAutosave) {
+  if (addFileName) {
     // Updates variable copy of master.json with new data.
-    unsavedFiles.push(fullFilePath);
+    unsavedFiles.push(name);
     masterFile[0].unsavedFiles = unsavedFiles;
-
-    console.log("TEST");
     try {
       // Updates master.json on the fs.
       await fs.writeFileSync(
@@ -48,43 +44,33 @@ router.post("/api/autosave", async (req, res) => {
         "utf-8",
       );
       console.log("Successfully added unsaved filename to master.json.");
-
-      // Creates the autosave folder & file
-      await fs.mkdirSync(autosaveFolderPath);
-      await fs.writeFileSync(
-        autosaveFilePath,
-        JSON.stringify(saveData),
-        "utf-8",
-      );
-      console.log("Successfully created autosave.");
-      res.json({ success: true });
     } catch (err) {
-      if (err.code === "EEXIST") {
-        await fs.writeFileSync(
-          autosaveFilePath,
-          JSON.stringify(saveData),
-          "utf-8",
-        );
-        res.json({ success: true });
-      }
-      console.error("Failed to create autosave.");
+      console.error("Failed to add unsaved filename to master.json.");
       console.error(err);
       res.status(500).json({ error: err });
     }
-  } else {
+  }
+
+  try {
+    // Creates the autosave
+    await fs.writeFileSync(autosaveFilePath, JSON.stringify(saveData), "utf-8");
+    console.log("Successfully created autosave.");
     res.json({ success: true });
+  } catch (err) {
+    console.error("Failed to create autosave.");
+    console.error(err);
+    res.status(500).json({ error: err });
   }
 });
 
 router.delete("/api/removeAutosave", async (req, res) => {
-  const { folderPath, name } = req.body;
-  const fullFilePath = path.join(folderPath, name); // Full path to the file
+  const { name } = req.body;
 
   let masterFile = await getMasterFile();
   let unsavedFiles = masterFile[0].unsavedFiles;
 
   // Removed the saved file from the unsavedFiles array within master.json
-  const removeIndex = unsavedFiles.indexOf(fullFilePath);
+  const removeIndex = unsavedFiles.indexOf(name);
   if (removeIndex > -1) {
     unsavedFiles.splice(removeIndex, 1);
   }
@@ -97,10 +83,9 @@ router.delete("/api/removeAutosave", async (req, res) => {
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     console.log("Successfully removed filename from master.json.");
 
-    await fs.rmSync(path.join(autosavesFolderPath, fullFilePath));
-    await fs.rmdirSync(path.join(autosavesFolderPath, folderPath));
+    await fs.rmSync(path.join(autosavesFolderPath, name));
   } catch (err) {
-    console.error("Failed to remove filename from master.json.");
+    console.error("Failed to remove autosave.");
     console.error(err);
     res.status(500).json({ error: err });
   }

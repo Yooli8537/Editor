@@ -502,7 +502,6 @@ async function removeAutosave() {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      folderPath: currentPreviousEntry,
       name: currentEntry,
     }),
   });
