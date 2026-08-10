@@ -75,7 +75,8 @@ This is a Web-based Editor which can run locally or on a home server.
 
 - Refactor Code for the single-function principle
 - Full Image support
-  - Used images are saved in an array. If all their instances are deleted, the image is removed from the server as well.
+  - Unused Images should be deleted from the Server.
+  - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
 - Collapsing / Expanding Folders
 - Some kind of highlighting
 - Extension: Audio
