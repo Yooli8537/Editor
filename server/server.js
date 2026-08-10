@@ -9,6 +9,7 @@ const port = 8510;
 
 const rootPath = path.join(__dirname, "../");
 const dataFolderPath = path.join(rootPath, "data");
+const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
 const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
@@ -16,6 +17,7 @@ const masterFilePath = path.join(dataFolderPath, "master.json");
 
 const userDataFolders = [
   { name: "Data", path: dataFolderPath },
+  { name: "Autosaves", path: autosavesFolderPath },
   { name: "Notebooks", path: notebooksFolderPath },
   { name: "Image", path: imageFolderPath },
   { name: "Attachments", path: attachmentsFolderPath },
@@ -56,7 +58,8 @@ async function deleteDeprecatedMasterProperties() {
   const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
 
-  if (delete masterFile[0].usedImages) {
+  if (masterFile[0].usedImages) {
+    delete masterFile[0].usedImages;
     console.log('Deleted masterfile property "usedImages".');
     changesMade = true;
   }
