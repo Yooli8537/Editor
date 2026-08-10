@@ -393,7 +393,7 @@ router.post(
     }
 
     const fileName = imageName() + fileEnding;
-    location = path.join(imageFolderPath, fileName);
+    let location = path.join(imageFolderPath, fileName);
     fs.writeFileSync(location, req.body);
 
     res.json({

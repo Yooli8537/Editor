@@ -502,6 +502,7 @@ async function removeAutosave() {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      folderPath: currentPreviousEntry,
       name: currentEntry,
     }),
   });
@@ -636,15 +637,12 @@ setInterval(async () => {
   const saveData = editor.getJSON();
 
   if (editorIsSaved === false) {
-    console.log(currentEntry);
-    console.log(currentPreviousEntry);
-
     const autosave = await fetch("api/autosave", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         saveData: saveData,
-        path: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
+        folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
         name: currentEntry, // currentEntry is the file's name.
       }),
     });
