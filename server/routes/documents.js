@@ -227,7 +227,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 
   try {
     const fullFolderPath = path.join(notebooksFolderPath, folderPath, name);
-    const file = await fs.promises.readFile(fullFolderPath);
+    const file = await fs.readFileSync(fullFolderPath, "utf-8");
     res.send(JSON.parse(file));
   } catch (err) {
     console.error(err);

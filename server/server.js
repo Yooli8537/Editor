@@ -85,7 +85,8 @@ async function deleteDeprecatedMasterProperties() {
 app.get("/api/getMaster", async (req, res) => {
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
-    res.send(JSON.stringify(rawMasterFile));
+    const masterFile = JSON.parse(rawMasterFile);
+    res.json(masterFile[0]);
     console.log("Successfully loaded Masterfile.");
   } catch (err) {
     console.error("Couldn't load Masterfile.");
