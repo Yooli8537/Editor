@@ -115,7 +115,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
 
   try {
-    await fs.promises.mkdir(path.join(notebooksFolderPath, name));
+    await fs.mkdirSync(path.join(notebooksFolderPath, name));
     res.json({ success: true });
   } catch (err) {
     console.error(err);
@@ -182,7 +182,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      await fs.promises.mkdir(path.join(notebooksFolderPath, folderPath, name));
+      await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
       res.json({ success: true });
     } else if (name) {
       console.error("No Folder Path found.");
