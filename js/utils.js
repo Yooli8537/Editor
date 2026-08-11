@@ -187,13 +187,15 @@ export function destroyModal() {
 }
 
 // Submenus (mainly for Editor Toolbar)
-export function createSubmenu(triggerButton, items) {
+export function createSubmenu(triggerButton, items, width) {
   const isOpen = triggerButton.classList.contains("activeButton");
 
   removeSubmenus();
 
   const selector = document.createElement("div");
   selector.classList.add("selectMenu");
+  selector.style.width = 4 + width * 35 + width * 2 + "px"; // Sets the width. A toolbarButton has a width of 35px. The extra width is to account for margins.
+  console.log(selector.style.width);
 
   for (let i = 0; i < items.length; i++) {
     const button = document.createElement("button");

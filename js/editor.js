@@ -8,6 +8,7 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
+import Highlight from "@tiptap/extension-highlight";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -65,6 +66,9 @@ const extensions = [
     lowlight,
     enableTabIndentation: true,
     tabSize: 2,
+  }),
+  Highlight.configure({
+    multicolor: true,
   }),
 ];
 
@@ -348,7 +352,7 @@ setHelpText(headings, "Headings");
 headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
-  createSubmenu(headingsButton, headingItems);
+  createSubmenu(headingsButton, headingItems, 1);
 });
 
 // Items for the Lists Submenu
@@ -374,7 +378,7 @@ setHelpText(listsButton, "Lists");
 listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(listsButton, listItems);
+  createSubmenu(listsButton, listItems, 1);
 });
 
 setHelpText(codeBlockButton, "Code Block");
@@ -444,7 +448,7 @@ setHelpText(tableCreateButton, "Table Actions");
 tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(tableCreateButton, tableCreateItems);
+  createSubmenu(tableCreateButton, tableCreateItems, 2);
 });
 
 const tableDeleteItems = [
@@ -469,7 +473,7 @@ setHelpText(tableDeleteButton, "Table delete Actions");
 tableDeleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(tableDeleteButton, tableDeleteItems);
+  createSubmenu(tableDeleteButton, tableDeleteItems, 1);
 });
 
 const linkEditButtons = [
@@ -498,7 +502,7 @@ setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(linkButton, linkEditButtons);
+  createSubmenu(linkButton, linkEditButtons, 1);
 });
 
 // Functional Buttons
