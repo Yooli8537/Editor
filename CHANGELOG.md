@@ -6,6 +6,10 @@
 
 - Deprecated Properties are automatically removed from `master.json`.
 
+### Changed
+
+- Made adjustments to Syntax Highlighting.
+
 ### Fixed
 
 - Discard Icon now shows up correctly when the Document is unsaved.
