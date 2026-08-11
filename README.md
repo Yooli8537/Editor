@@ -51,7 +51,6 @@ This is a Web-based Editor which can run locally or on a home server.
 ### Priority
 
 - Image resize doesn't work.
-- Images can't be moved sometimes and other times are duplicated instead of moved.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
 - Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
 
@@ -99,6 +98,9 @@ This is a Web-based Editor which can run locally or on a home server.
     - Autosaving Interval
     - Number of Backed-Up Versions
   - Edit Formats
+  - Manage
+    - Storage
+      - Clear unused Images (search all the JSON and clear images which aren't used anywhere).
   - Info (Lucide & TipTap credit, etc.)
 - Containerization
 - Language Selection List for Codeblocks

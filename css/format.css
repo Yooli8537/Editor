@@ -98,5 +98,5 @@ ul[data-type="taskList"] li > label {
 .ProseMirror img {
   max-width: 100%;
   height: auto;
-  display: block;
+  display: inline;
 }
