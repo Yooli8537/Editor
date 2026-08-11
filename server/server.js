@@ -48,7 +48,19 @@ if (!fs.existsSync(masterFilePath)) {
   );
 } else {
   deleteDeprecatedMasterProperties();
-  //addMissingMasterProperties();
+  addMissingMasterProperties();
+}
+
+// Updates the masterfile and gives feedback on success
+async function updateMasterfile(masterFile) {
+  try {
+    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Something went wrong trying to update master.json.");
+    console.error(err);
+    return false;
+  }
 }
 
 // Deletes deprecated master.json properties
@@ -61,7 +73,7 @@ async function deleteDeprecatedMasterProperties() {
   let changesMade = false;
   const deprecatedProperties = ["usedImages"];
 
-  // Deletes the usedImages property
+  // Deletes deprecated properties
   for (let i = 0; i < deprecatedProperties.length; i++) {
     if (masterFile[0][deprecatedProperties[i]]) {
       delete masterFile[0][deprecatedProperties[i]];
@@ -71,17 +83,41 @@ async function deleteDeprecatedMasterProperties() {
   }
 
   if (changesMade) {
-    try {
-      // Updates the masterfile
-      fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    if (updateMasterfile(masterFile)) {
       console.log("Successfully removed deprecated masterfile properties.");
-    } catch (err) {
-      console.error("Something went wrong trying to update master.json.");
-      console.error(err);
+    }
+  } else {
+    console.log("No deprecated masterfile properties found.");
+  }
+}
+
+// Adds any missing properties to the master.json file.
+async function addMissingMasterProperties() {
+  console.log("Checking for missing master.json properties...");
+
+  // Getting the masterfile data. Has to be parsed.
+  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+  const masterFile = JSON.parse(rawMasterFile);
+  let changesMade = false;
+  const missingProperties = { unsavedFiles: [], autosaveInterval: 10000 };
+
+  for (const key in missingProperties) {
+    if (!masterFile[0][key]) {
+      masterFile[0][key] = missingProperties[key];
+      console.log(`Added missing masterfile property "${key}".`);
+    }
+    changesMade = true;
+  }
+
+  if (changesMade) {
+    if (updateMasterfile(masterFile)) {
+      console.log("Successfully added missing masterfile properties.");
+    } else {
+      console.log("Failed to update masterfile properties.");
     }
   } else {
     console.log(
-      "No deprecated masterfile properties found. Starting App without changes.",
+      "No missing masterfile properties found. Starting App without changes.",
     );
   }
 }
