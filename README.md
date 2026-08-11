@@ -29,6 +29,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Export Documents as .pdf files.
 - Always continue where you left off with URLs for any page.
 - Add Images and never delete them! *Seriously, they aren't deleted automatically right now, so they'll clog up storage*
+- Avoid losing Data with Autosaves
 
 ## Installation
 
@@ -70,6 +71,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - TipTap's emoji Extension doesn't work.
 - Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
 - When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
+- When renaming a file, it will likely not recognize its previous autosaves.
 
 ## Planned Features
 
@@ -85,7 +87,6 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ### Functional
 
-- Autosaving
 - Backups of previous 5 versions of a document
 - Moving folders & files using drag & drop.
 - Settings Menu
