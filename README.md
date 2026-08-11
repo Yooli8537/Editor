@@ -69,6 +69,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - TipTap's emoji Extension doesn't work.
 - Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
+- When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
 
 ## Planned Features
 

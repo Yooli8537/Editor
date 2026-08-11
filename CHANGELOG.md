@@ -5,6 +5,7 @@
 ### Added
 
 - Deprecated Properties are automatically removed from `master.json`.
+- Autosaving. Every 10s, an autosave is created. If a document is left without saving, the user is prompted to restore it upon reopening.
 
 ### Changed
 

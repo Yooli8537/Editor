@@ -112,33 +112,73 @@ let currentDocument;
 let currentEntry;
 let currentPreviousEntry;
 
+// Checks for an autosave and prompts the user to restore it.
+async function checkForAutosave(fileData, document, path) {
+  if (getState("unsavedFiles").indexOf(document) > -1) {
+    createConfirmModal(
+      "It appears that you left this document without saving. Would you like to restore the autosave?",
+      "Continue without restoring",
+      "Restore autosave & continue to editor",
+      () => {
+        // Loads document with Data from the file if restoration is cancelled.
+        loadEditor(fileData, document, path);
+        removeAutosave();
+      },
+      async () => {
+        // Gets the Autosave
+        const autosave = await fetch(`api/getAutosave?name=${document}`, {
+          method: "GET",
+        });
+
+        if (autosave.ok) {
+          const autosaveData = await autosave.json();
+          loadEditor(autosaveData, document, path); // Loads document with autosave data.
+          // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
+          editorIsSaved = false;
+          saveEditor(true);
+          removeAutosave(); // Removes autosave from server to free storage.
+        } else {
+          createErrorModal(`Something went wrong. ${autosave.status}`);
+        }
+      },
+    );
+  } else {
+    // Loads document with Data from the file if no Autosave is found.
+    loadEditor(fileData, document, path);
+  }
+}
+
+// Unhides editor and inserts a document's data.
+function loadEditor(documentData, entry, previousEntry) {
+  currentDocument = documentData;
+  currentEntry = entry;
+  currentPreviousEntry = previousEntry;
+
+  editorView.classList.remove("hidden");
+  editTitleButton.classList.remove("hidden");
+  editTitleButton.style.display = "flex";
+
+  // Sets the Title of the Page
+  document.title = currentEntry.slice(0, -5);
+  documentTitle.textContent = currentEntry.slice(0, -5);
+
+  // Inserts the content of the document into the editor.
+  editor.commands.setContent(
+    documentData[0].content || "<p>Content failed to load.</p>",
+  );
+
+  // Rename Button Event listener
+  editTitleButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    renameHandler();
+  });
+
+  editorIsSaved = true;
+}
+
 // Loads Document into the Editor
 export function loadDocument(documentData, entry, previousEntry) {
-  function loadEditor() {
-    currentDocument = documentData;
-    currentEntry = entry;
-    currentPreviousEntry = previousEntry;
-
-    editorView.classList.remove("hidden");
-    editTitleButton.classList.remove("hidden");
-    editTitleButton.style.display = "flex";
-
-    // Sets the Title of the Page
-    document.title = currentEntry.slice(0, -5);
-    documentTitle.textContent = currentEntry.slice(0, -5);
-
-    editor.commands.setContent(
-      documentData[0].content || "<p>Content failed to load.</p>",
-    );
-
-    // Rename Button Event listener
-    editTitleButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      renameHandler();
-    });
-
-    editorIsSaved = true;
-  }
+  checkForAutosave(documentData, entry, previousEntry);
 
   // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
   if (editorIsSaved === false) {
@@ -148,11 +188,11 @@ export function loadDocument(documentData, entry, previousEntry) {
       "Discard Changes & Continue",
       () => {},
       () => {
-        loadEditor();
+        loadEditor(documentData, entry, previousEntry);
       },
     );
   } else {
-    loadEditor();
+    loadEditor(documentData, entry, previousEntry);
   }
 }
 
@@ -499,74 +539,12 @@ exportButton.addEventListener("click", async (e) => {
   );
 });
 
-// Removes any autosaves from the server.
-async function removeAutosave() {
-  const response = await fetch("api/removeAutosave", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: currentEntry,
-    }),
-  });
-
-  if (response.ok) {
-    console.log(`Removed Autosave for ${currentEntry}.`);
-  }
-}
-
-async function saveEditor() {
-  if (!editorIsSaved) {
-    const saveData = editor.getJSON();
-    createConfirmModal(
-      "Are you sure you want to save this File?",
-      "Back to Editor",
-      "Save File",
-      () => {},
-      async () => {
-        const response = await fetch("api/documents/updateFile", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            saveData: saveData,
-            name: currentEntry,
-            folderPath: currentPreviousEntry,
-          }),
-        });
-
-        // Error handling
-        if (response.ok) {
-          console.log("Successfully saved Document.");
-          removeAutosave();
-          editorIsSaved = true;
-          updateSaveIcons();
-        } else if (response.status === 404) {
-          createErrorModal("Couldn't find File to save.");
-        } else if (response.status === 413) {
-          createErrorModal("Save File too large.");
-        } else {
-          createErrorModal("Something went wrong.");
-        }
-      },
-    );
-  } else {
-    // No changes = no need to update
-    createInfoModal("No changes were made.");
-  }
-}
-
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
-  saveEditor();
+  saveEditor(false);
 });
-
-// Closes the Editor
-export function closeEditor() {
-  editorView.classList.add("hidden");
-  console.log("Editor Closed.");
-  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
-}
 
 // Discard Button's helptext is set within the autosave.
 discardButton.addEventListener("click", (e) => {
@@ -593,6 +571,54 @@ discardButton.addEventListener("click", (e) => {
     history.pushState(null, "", "/");
   }
 });
+
+async function pushSaveData() {
+  const response = await fetch("api/documents/updateFile", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      saveData: saveData,
+      name: currentEntry,
+      folderPath: currentPreviousEntry,
+    }),
+  });
+
+  // Error handling
+  if (response.ok) {
+    console.log("Successfully saved Document.");
+    removeAutosave();
+    editorIsSaved = true;
+    updateSaveIcons();
+  } else if (response.status === 404) {
+    createErrorModal("Couldn't find File to save.");
+  } else if (response.status === 413) {
+    createErrorModal("Save File too large.");
+  } else {
+    createErrorModal("Something went wrong.");
+  }
+}
+
+let saveData;
+function saveEditor(isRestoration) {
+  if (!editorIsSaved) {
+    saveData = editor.getJSON();
+    // Directly pushes changes if it's an autosave restoration, without creating a prompt.
+    if (isRestoration) {
+      pushSaveData();
+    } else {
+      createConfirmModal(
+        "Are you sure you want to save this File?",
+        "Back to Editor",
+        "Save File",
+        () => {},
+        pushSaveData,
+      );
+    }
+  } else {
+    // No changes = no need to update
+    createInfoModal("No changes were made.");
+  }
+}
 
 const discardIcon = document.querySelector("#discardIcon");
 const discardIconPath = "assets/function/discard.svg";
@@ -659,6 +685,28 @@ setInterval(async () => {
   }
 }, 10000);
 
+// Removes any autosaves from the server.
+async function removeAutosave() {
+  const response = await fetch("api/removeAutosave", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: currentEntry,
+    }),
+  });
+
+  if (response.ok) {
+    console.log(`Removed Autosave for ${currentEntry}.`);
+  }
+}
+
+// Closes the Editor
+export function closeEditor() {
+  editorView.classList.add("hidden");
+  console.log("Editor Closed.");
+  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+}
+
 // Opens Document from URL if one is present.
 async function onFirstStart() {
   // Loads Data from master.json into state.js
@@ -684,33 +732,7 @@ async function onFirstStart() {
     if (response.ok) {
       const fileData = await response.json();
       setState("currentDocument", path + document);
-
-      if (getState("unsavedFiles").indexOf(document) > -1) {
-        createConfirmModal(
-          "It appears that you left this document without saving. Would you like to restore the autosave?",
-          "Continue without restoring",
-          "Restore autosave & continue to editor",
-          () => {
-            console.log("CANCEL RESTORE AND CONTINUE NORMALLY");
-          },
-          async () => {
-            const autosave = await fetch(`api/getAutosave?name=${document}`, {
-              method: "GET",
-            });
-
-            if (autosave.ok) {
-              const autosaveData = await autosave.json();
-              console.log(autosaveData);
-              console.log(fileData);
-              loadDocument(autosaveData, document, path);
-            } else {
-              createErrorModal(`Something went wrong. ${autosave.status}`);
-            }
-          },
-        );
-      } else {
-        loadDocument(fileData, document, path);
-      }
+      checkForAutosave(fileData, document, path);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
     } else {
