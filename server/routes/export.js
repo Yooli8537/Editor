@@ -22,11 +22,12 @@ async function setExtensions() {
 
   return [
     StarterKit.configure({
-      codeBlock: false,
+      codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
     }),
     TableKit,
+    ListKit,
     Image.configure({
-      allowBase64: true,
+      inline: true,
       resize: {
         enabled: true,
         directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
@@ -36,13 +37,13 @@ async function setExtensions() {
       },
     }),
     FileHandler.configure({
+      allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
+      consumePasteEvent: true,
       onPaste: async (editor, files, htmlContent) => {
-        const base64 = await toBase64(files[0]);
-        editor.commands.setImage({ src: base64 });
-      },
-      onDrop: async (editor, files, pos) => {
-        const base64 = await toBase64(files[0]);
-        editor.commands.setImage({ src: base64 });
+        for (const file of files) {
+          const url = await uploadImage(file);
+          editor.chain().setImage({ src: url }).run();
+        }
       },
     }),
     Emoji,
