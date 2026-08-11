@@ -41,6 +41,7 @@ const extensions = [
   TableKit,
   ListKit,
   Image.configure({
+    inline: true,
     resize: {
       enabled: true,
       directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
@@ -53,12 +54,6 @@ const extensions = [
     allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
     consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
-      for (const file of files) {
-        const url = await uploadImage(file);
-        editor.chain().setImage({ src: url }).run();
-      }
-    },
-    onDrop: async (editor, files, pos) => {
       for (const file of files) {
         const url = await uploadImage(file);
         editor.chain().setImage({ src: url }).run();

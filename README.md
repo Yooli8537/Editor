@@ -53,7 +53,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Image resize doesn't work.
 - Images can't be moved sometimes and other times are duplicated instead of moved.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
-- When switching between Documents with images inside them, the images are replaced with the images of the previously opened document, but only inside the browser, not the file itself.
 - Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
 
 ### To be fixed

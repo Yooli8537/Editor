@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Changed
+
+- Images are now styled as inline.
+
+### Removed
+
+- Removed Image Drag & Drop due to issues with duplicating images.
+
 ### Fixed
 
 - Saving a file no longer sends unnecessary `DELETE` request to the server.
