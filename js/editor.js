@@ -22,9 +22,10 @@ import {
   createErrorModal,
   setHelpText,
   createInfoModal,
+  getMaster,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
-import { getState, getMaster, setState } from "./state";
+import { getState, setState } from "./state";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
@@ -657,8 +658,7 @@ setInterval(async () => {
 // Opens Document from URL if one is present.
 async function onFirstStart() {
   // Loads Data from master.json into state.js
-  const masterData = await getMaster();
-  console.log(masterData.unsavedFiles);
+  getMaster();
 
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
@@ -682,7 +682,8 @@ async function onFirstStart() {
       setState("currentDocument", path + document);
       loadDocument(fileData, document, path);
 
-      if (masterData.unsavedFiles.indexOf(document) > -1) {
+      console.log(getState("unsavedFiles"))
+      if (getState("unsavedFiles").indexOf(document) > -1) {
         createConfirmModal(
           "It appears that you left this document without saving. Would you like to restore the autosave?",
           "Continue without restoring",
