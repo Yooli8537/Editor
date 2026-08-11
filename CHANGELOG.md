@@ -4,7 +4,8 @@
 
 ### Fixed
 
-- Saving a file no longer sends unnecessary `DELETE` request to the server
+- Saving a file no longer sends unnecessary `DELETE` request to the server.
+- Helptexts within submenus do now disappear when you click on the function.
 
 ## v1.2.0-beta - Autosaves
 

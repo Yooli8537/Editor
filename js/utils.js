@@ -234,6 +234,14 @@ export function removeSubmenus() {
   document
     .querySelectorAll(".activeButton")
     .forEach((el) => el.classList.remove("activeButton"));
+  removeHelpTexts();
+}
+
+// Removes all helptexts
+function removeHelpTexts() {
+  document
+    .querySelectorAll(".helpText")
+    .forEach((helpText) => helpText.remove());
 }
 
 // Function descriptions (when hovering)
@@ -275,9 +283,7 @@ export function setHelpText(hoverButton, helpText) {
   hoverButton.addEventListener("mouseleave", (e) => {
     clearInterval(hoverInterval);
     hoverInterval = null;
-    document
-      .querySelectorAll(".helpText")
-      .forEach((helpText) => helpText.remove());
+    removeHelpTexts();
   });
 }
 
