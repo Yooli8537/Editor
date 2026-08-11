@@ -14,6 +14,8 @@
 
 - Saving a file no longer sends unnecessary `DELETE` request to the server.
 - Helptexts within submenus do now disappear when you click on the function.
+- Images now render correctly when a Document is exported. This is the fix btw:
+`documentImages[i].src = documentImages[i].src;`
 
 ## v1.2.0-beta - Autosaves
 

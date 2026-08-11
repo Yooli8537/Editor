@@ -507,8 +507,16 @@ exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
-  // Selects the first result, which should always be the Editor if things are working properly. The HTML is used to Export the Document.
-  const exportDocument = editorLocation[0].outerHTML;
+
+  // Getting raw HTML to process images (change src).
+  // Selects the first result, which should always be the Editor if things are working properly.
+  const rawDocHTML = editorLocation[0].cloneNode(true);
+  const documentImages = rawDocHTML.querySelectorAll("img");
+  for (let i = 0; i < documentImages.length; i++) {
+    documentImages[i].src = documentImages[i].src;
+  }
+
+  const exportDocument = rawDocHTML.outerHTML;
 
   createConfirmModal(
     "Are you sure you want to Export the current Document?",

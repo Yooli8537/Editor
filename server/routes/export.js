@@ -58,6 +58,8 @@ async function setExtensions() {
 router.post("/api/export", async (req, res) => {
   const { exportDocument, name } = req.body;
 
+  console.log(exportDocument);
+
   const exportHTML = `
   <html>
   <head>
