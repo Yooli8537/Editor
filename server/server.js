@@ -48,22 +48,26 @@ if (!fs.existsSync(masterFilePath)) {
   );
 } else {
   deleteDeprecatedMasterProperties();
+  //addMissingMasterProperties();
 }
 
 // Deletes deprecated master.json properties
 async function deleteDeprecatedMasterProperties() {
   console.log("Checking for deprecated master.json properties...");
 
-  let changesMade = false;
   // Getting the masterfile data. Has to be parsed.
   const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
+  let changesMade = false;
+  const deprecatedProperties = ["usedImages"];
 
   // Deletes the usedImages property
-  if (masterFile[0].usedImages) {
-    delete masterFile[0].usedImages;
-    console.log('Deleted masterfile property "usedImages".');
-    changesMade = true;
+  for (let i = 0; i < deprecatedProperties.length; i++) {
+    if (masterFile[0][deprecatedProperties[i]]) {
+      delete masterFile[0][deprecatedProperties[i]];
+      console.log(`Deleted masterfile property "${deprecatedProperties[i]}".`);
+      changesMade = true;
+    }
   }
 
   if (changesMade) {
