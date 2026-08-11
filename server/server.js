@@ -28,7 +28,7 @@ for (let i = 0; i < userDataFolders.length; i++) {
     fs.mkdirSync(userDataFolders[i].path);
     console.warn(`Created missing ${userDataFolders[i].name} Folder.`);
     console.log(
-      "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+      "This is standard if you've freshly cloned the Repository or updated to a newer version, as the data folder is ignored by git.",
     );
   }
 }
