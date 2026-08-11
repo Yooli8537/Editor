@@ -194,8 +194,8 @@ export function createSubmenu(triggerButton, items, width) {
 
   const selector = document.createElement("div");
   selector.classList.add("selectMenu");
-  selector.style.width = 4 + width * 35 + width * 2 + "px"; // Sets the width. A toolbarButton has a width of 35px. The extra width is to account for margins.
-  console.log(selector.style.width);
+  // Sets the width. 2 = padding, 35 = toolbarButton width, 4 = toolbarButton margin
+  selector.style.width = 2 + width * 35 + width * 4 + "px";
 
   for (let i = 0; i < items.length; i++) {
     const button = document.createElement("button");

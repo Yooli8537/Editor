@@ -82,7 +82,6 @@ This is a Web-based Editor which can run locally or on a home server.
   - Unused Images should be deleted from the Server.
   - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
 - Collapsing / Expanding Folders
-- Some kind of highlighting
 - Extension: Audio
 
 ### Functional

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Text Highlighting! It's pretty!
+
 ### Changed
 
 - Images are now styled as inline.
