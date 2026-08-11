@@ -25,7 +25,7 @@ import {
   getMaster,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
-import { getState, setState } from "./state";
+import { addState, checkState, getState, rmState, setState } from "./state";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
@@ -113,7 +113,7 @@ let currentEntry;
 let currentPreviousEntry;
 
 // Checks for an autosave and prompts the user to restore it.
-async function checkForAutosave(fileData, document, path) {
+export async function checkForAutosave(fileData, document, path) {
   if (getState("unsavedFiles").indexOf(document) > -1) {
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
@@ -121,7 +121,7 @@ async function checkForAutosave(fileData, document, path) {
       "Restore autosave & continue to editor",
       () => {
         // Loads document with Data from the file if restoration is cancelled.
-        loadEditor(fileData, document, path);
+        loadDocument(fileData, document, path);
         removeAutosave();
       },
       async () => {
@@ -132,11 +132,10 @@ async function checkForAutosave(fileData, document, path) {
 
         if (autosave.ok) {
           const autosaveData = await autosave.json();
-          loadEditor(autosaveData, document, path); // Loads document with autosave data.
+          loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
           editorIsSaved = false;
-          saveEditor(true);
-          removeAutosave(); // Removes autosave from server to free storage.
+          saveEditor(true); // Saves editor which also deletes autosaves.
         } else {
           createErrorModal(`Something went wrong. ${autosave.status}`);
         }
@@ -144,7 +143,7 @@ async function checkForAutosave(fileData, document, path) {
     );
   } else {
     // Loads document with Data from the file if no Autosave is found.
-    loadEditor(fileData, document, path);
+    loadDocument(fileData, document, path);
   }
 }
 
@@ -177,9 +176,7 @@ function loadEditor(documentData, entry, previousEntry) {
 }
 
 // Loads Document into the Editor
-export function loadDocument(documentData, entry, previousEntry) {
-  checkForAutosave(documentData, entry, previousEntry);
-
+function loadDocument(documentData, entry, previousEntry) {
   // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
   if (editorIsSaved === false) {
     createConfirmModal(
@@ -667,6 +664,10 @@ setInterval(async () => {
   const saveData = editor.getJSON();
 
   if (editorIsSaved === false) {
+    // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
+    if (!checkState("unsavedFiles", currentEntry)) {
+      addState("unsavedFiles", currentEntry);
+    }
     const autosave = await fetch("api/autosave", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -697,6 +698,8 @@ async function removeAutosave() {
 
   if (response.ok) {
     console.log(`Removed Autosave for ${currentEntry}.`);
+    // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
+    rmState("unsavedFiles", currentEntry);
   }
 }
 
