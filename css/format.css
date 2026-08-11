@@ -3,31 +3,32 @@
 .Prosemirror {
   width: 794px;
   max-width: 794px;
+  font-size: 16px;
   font-family: "Calibri", sans-serif !important;
   font-weight: 500;
 }
 
 .export-content h1,
 .ProseMirror h1 {
-  font-size: xx-large !important;
+  font-size: 32px !important;
   margin: 5px;
 }
 
 .export-content h2,
 .ProseMirror h2 {
-  font-size: x-large !important;
+  font-size: 24px !important;
   margin: 3px;
 }
 
 .export-content h3,
 .ProseMirror h3 {
-  font-size: larger !important;
+  font-size: 20px !important;
   margin: 1px;
 }
 
 .export-content p,
 .ProseMirror p {
-  font-size: medium !important;
+  font-size: 16px !important;
   margin: 0;
 }
 
@@ -58,6 +59,7 @@
   background-color: #cdcdcd;
   padding: 2px 4px;
   border-radius: 4px;
+  font-size: 12px;
 }
 
 .export-content pre,

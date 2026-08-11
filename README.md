@@ -93,13 +93,13 @@ This is a Web-based Editor which can run locally or on a home server.
   - Display
     - Dark / Light Mode
     - Amount of Characters before "..."
-  - Saving Config
-    - Autosaving Interval
-    - Number of Backed-Up Versions
   - Edit Formats
   - Manage
     - Storage
       - Clear unused Images (search all the JSON and clear images which aren't used anywhere).
+    - Saving Config
+      - Autosaving Interval
+      - Number of Backed-Up Versions
   - Info (Lucide & TipTap credit, etc.)
 - Containerization
 - Language Selection List for Codeblocks
