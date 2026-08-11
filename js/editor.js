@@ -24,7 +24,7 @@ import {
   createInfoModal,
 } from "./utils";
 import { buildSidebar } from "./sidebar";
-import { loadMaster, setState } from "./state";
+import { getState, getMaster, setState } from "./state";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
@@ -507,7 +507,7 @@ async function removeAutosave() {
   });
 
   if (response.ok) {
-    console.log(`Removed autosaves for ${currentEntry}.`);
+    console.log(`Removed Autosave for ${currentEntry}.`);
   }
 }
 
@@ -657,7 +657,8 @@ setInterval(async () => {
 // Opens Document from URL if one is present.
 async function onFirstStart() {
   // Loads Data from master.json into state.js
-  loadMaster();
+  const masterData = await getMaster();
+  console.log(masterData.unsavedFiles);
 
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
@@ -680,6 +681,18 @@ async function onFirstStart() {
       const fileData = await response.json();
       setState("currentDocument", path + document);
       loadDocument(fileData, document, path);
+
+      if (masterData.unsavedFiles.indexOf(document) > -1) {
+        createConfirmModal(
+          "It appears that you left this document without saving. Would you like to restore the autosave?",
+          "Continue without restoring",
+          "Restore autosave & continue to editor",
+          async () => {
+            restoredAutosave = true;
+            console.log("hmmm");
+          },
+        );
+      }
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
     } else {

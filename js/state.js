@@ -2,6 +2,7 @@ import { createErrorModal } from "./utils";
 
 let state = {
   currentDocument: null,
+  unsavedDocuments: [],
 };
 
 // Gets the given state
@@ -18,17 +19,13 @@ export function setState(parameter, value) {
 export function addState(parameter, value) {}
 
 // Loads data from master.json into the state.
-export async function loadMaster() {
+export async function getMaster() {
   const rawMasterFile = await fetch("api/getMaster", {
     method: "GET",
   });
 
   if (rawMasterFile.ok) {
-    const masterData = await rawMasterFile.json();
-    // Loops through all the properties in master.json and adds them into the state variable.
-    for (const key in masterData) {
-      setState(key, masterData[key]);
-    }
+    return await rawMasterFile.json();
   } else {
     createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
   }
