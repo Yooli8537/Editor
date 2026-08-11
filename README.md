@@ -72,6 +72,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
 - When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
 - When renaming a file, it will likely not recognize its previous autosaves.
+- Leaving an unsaved document highlights the newly selected one, even if you press "back".
+- Clicking on the already active & unsaved document on the sidebar gives out both an autosave restoration and discard changes modal.
 
 ## Planned Features
 

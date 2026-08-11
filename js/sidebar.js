@@ -5,7 +5,7 @@ import {
   createPromptModal,
   createErrorModal,
 } from "./utils";
-import { checkForAutosave, closeEditor } from "./editor";
+import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
 import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
@@ -122,7 +122,7 @@ function createFile(entry, previousEntry) {
         `?path=${previousEntry}&document=${entry.name}`,
       ); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
-      checkForAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
+      loadAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");

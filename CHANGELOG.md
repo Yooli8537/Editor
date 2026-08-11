@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Saving a file no longer sends unnecessary `DELETE` request to the server
+
 ## v1.2.0-beta - Autosaves
 
 ### Added

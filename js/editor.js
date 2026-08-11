@@ -112,9 +112,18 @@ let currentDocument;
 let currentEntry;
 let currentPreviousEntry;
 
-// Checks for an autosave and prompts the user to restore it.
-export async function checkForAutosave(fileData, document, path) {
+// Checks for an autosave
+export function checkForAutosave(document) {
   if (getState("unsavedFiles").indexOf(document) > -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Prompts the user to restore the autosave
+export async function loadAutosave(fileData, document, path) {
+  if (checkForAutosave(document)) {
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
@@ -142,7 +151,6 @@ export async function checkForAutosave(fileData, document, path) {
       },
     );
   } else {
-    // Loads document with Data from the file if no Autosave is found.
     loadDocument(fileData, document, path);
   }
 }
@@ -216,6 +224,7 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
+    removeAutosave();
     currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
     documentTitle.textContent = newName;
@@ -583,8 +592,10 @@ async function pushSaveData() {
   // Error handling
   if (response.ok) {
     console.log("Successfully saved Document.");
-    removeAutosave();
     editorIsSaved = true;
+    if (checkForAutosave(currentEntry)) {
+      removeAutosave();
+    }
     updateSaveIcons();
   } else if (response.status === 404) {
     createErrorModal("Couldn't find File to save.");
@@ -735,7 +746,7 @@ async function onFirstStart() {
     if (response.ok) {
       const fileData = await response.json();
       setState("currentDocument", path + document);
-      checkForAutosave(fileData, document, path);
+      loadAutosave(fileData, document, path);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
     } else {
