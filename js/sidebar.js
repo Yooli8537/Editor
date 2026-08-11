@@ -205,6 +205,7 @@ function createFolderActions(path, previousEntry) {
       "Are you sure you want to delete this Folder?",
       "Cancel",
       "Confirm",
+      () => {},
       async () => {
         const response = await fetch("api/documents/deletePath", {
           method: "DELETE",
@@ -248,6 +249,7 @@ function createFileActions(path, previousEntry) {
       "Are you sure you want to delete this File?",
       "Cancel",
       "Confirm",
+      () => {},
       async () => {
         const response = await fetch("api/documents/deletePath", {
           method: "DELETE",

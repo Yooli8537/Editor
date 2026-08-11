@@ -146,6 +146,7 @@ export function loadDocument(documentData, entry, previousEntry) {
       "Leaving this Document will discard Changes!",
       "Back",
       "Discard Changes & Continue",
+      () => {},
       () => {
         loadEditor();
       },
@@ -469,6 +470,7 @@ exportButton.addEventListener("click", async (e) => {
     "Are you sure you want to Export the current Document?",
     "Back to Editor",
     "Export as PDF",
+    () => {},
     async () => {
       const response = await fetch("api/export", {
         method: "POST",
@@ -519,6 +521,7 @@ async function saveEditor() {
       "Are you sure you want to save this File?",
       "Back to Editor",
       "Save File",
+      () => {},
       async () => {
         const response = await fetch("api/documents/updateFile", {
           method: "PUT",
@@ -574,6 +577,7 @@ discardButton.addEventListener("click", (e) => {
       "Discard Changes? This cannot be undone.",
       "Cancel",
       "Discard Changes",
+      () => {},
       () => {
         closeEditor();
         console.log("Changes Discarded.");
@@ -680,19 +684,32 @@ async function onFirstStart() {
     if (response.ok) {
       const fileData = await response.json();
       setState("currentDocument", path + document);
-      loadDocument(fileData, document, path);
 
-      console.log(getState("unsavedFiles"))
       if (getState("unsavedFiles").indexOf(document) > -1) {
         createConfirmModal(
           "It appears that you left this document without saving. Would you like to restore the autosave?",
           "Continue without restoring",
           "Restore autosave & continue to editor",
+          () => {
+            console.log("CANCEL RESTORE AND CONTINUE NORMALLY");
+          },
           async () => {
-            restoredAutosave = true;
-            console.log("hmmm");
+            const autosave = await fetch(`api/getAutosave?name=${document}`, {
+              method: "GET",
+            });
+
+            if (autosave.ok) {
+              const autosaveData = await autosave.json();
+              console.log(autosaveData);
+              console.log(fileData);
+              loadDocument(autosaveData, document, path);
+            } else {
+              createErrorModal(`Something went wrong. ${autosave.status}`);
+            }
           },
         );
+      } else {
+        loadDocument(fileData, document, path);
       }
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");

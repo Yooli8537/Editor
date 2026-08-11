@@ -1,4 +1,5 @@
 // Autosaves & Document versions
+const { error } = require("console");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
@@ -19,6 +20,7 @@ async function getMasterFile() {
 
 router.post("/api/autosave", async (req, res) => {
   const { saveData, folderPath, name } = req.body;
+  const saveArray = [saveData];
   const autosaveFilePath = path.join(autosavesFolderPath, name); // Full path to the autosave file location.
 
   let masterFile = await getMasterFile();
@@ -53,7 +55,11 @@ router.post("/api/autosave", async (req, res) => {
 
   try {
     // Creates the autosave
-    await fs.writeFileSync(autosaveFilePath, JSON.stringify(saveData), "utf-8");
+    await fs.writeFileSync(
+      autosaveFilePath,
+      JSON.stringify(saveArray),
+      "utf-8",
+    );
     console.log("Successfully created autosave.");
     res.json({ success: true });
   } catch (err) {
@@ -91,6 +97,24 @@ router.delete("/api/removeAutosave", async (req, res) => {
   }
 
   res.json({ success: true });
+});
+
+router.get("/api/getAutosave", async (req, res) => {
+  const { name } = req.query;
+
+  try {
+    const rawAutosave = await fs.readFileSync(
+      path.join(autosavesFolderPath, name),
+      "utf-8",
+    );
+    res.json(JSON.parse(rawAutosave));
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      res.status(404).json({ error: "Couldn't find autosave." });
+    } else {
+      res.status(500).json({ error: err });
+    }
+  }
 });
 
 module.exports = router;

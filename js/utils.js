@@ -4,7 +4,13 @@ import { buildSidebar } from "./sidebar";
 import { getState, setState } from "./state";
 
 // Modals
-export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
+export function createConfirmModal(
+  prompt,
+  cancel,
+  confirm,
+  onCancel,
+  onSubmit,
+) {
   const clickable = document.createElement("div");
   clickable.classList.add("clickable");
   clickable.addEventListener("click", () => {
@@ -25,6 +31,7 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   cancelButton.textContent = cancel;
 
   cancelButton.addEventListener("click", () => {
+    onCancel();
     destroyModal();
   });
 
@@ -285,7 +292,6 @@ export async function getMaster() {
     for (const key in masterData) {
       setState(key, masterData[key]);
     }
-    console.log(getState("unsavedFiles"));
   } else {
     createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
   }
