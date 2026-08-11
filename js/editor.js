@@ -219,7 +219,10 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
-    removeAutosave();
+    if (checkForAutosave(currentEntry)) {
+      removeAutosave();
+    }
+
     currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
     documentTitle.textContent = newName;

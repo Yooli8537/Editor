@@ -64,6 +64,11 @@
 .ProseMirror pre {
   background-color: #222222;
   border-radius: 1px;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .export-content pre code,
