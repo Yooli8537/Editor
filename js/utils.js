@@ -1,9 +1,16 @@
 // Utilities
 
 import { buildSidebar } from "./sidebar";
+import { getState, setState } from "./state";
 
 // Modals
-export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
+export function createConfirmModal(
+  prompt,
+  cancel,
+  confirm,
+  onCancel,
+  onSubmit,
+) {
   const clickable = document.createElement("div");
   clickable.classList.add("clickable");
   clickable.addEventListener("click", () => {
@@ -24,6 +31,7 @@ export function createConfirmModal(prompt, cancel, confirm, onSubmit) {
   cancelButton.textContent = cancel;
 
   cancelButton.addEventListener("click", () => {
+    onCancel();
     destroyModal();
   });
 
@@ -271,4 +279,20 @@ export function setHelpText(hoverButton, helpText) {
       .querySelectorAll(".helpText")
       .forEach((helpText) => helpText.remove());
   });
+}
+
+// Loads data from master.json and returns it as useable JSON.
+export async function getMaster() {
+  const rawMasterFile = await fetch("api/getMaster", {
+    method: "GET",
+  });
+
+  if (rawMasterFile.ok) {
+    const masterData = await rawMasterFile.json();
+    for (const key in masterData) {
+      setState(key, masterData[key]);
+    }
+  } else {
+    createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+  }
 }

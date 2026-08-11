@@ -29,12 +29,13 @@ This is a Web-based Editor which can run locally or on a home server.
 - Export Documents as .pdf files.
 - Always continue where you left off with URLs for any page.
 - Add Images and never delete them! *Seriously, they aren't deleted automatically right now, so they'll clog up storage*
+- Avoid losing Data with Autosaves
 
 ## Installation
 
 1. Clone the Repo using `git clone https://github.com/Yooli8537/Editor`.
 2. Run `npm install`.
-3. Run `npm run dev` and open `http://localhost:8511/`.
+3. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
 
 ## Update Guide
 
@@ -45,7 +46,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Known Issues
 
-- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com/) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
+- Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
 
 ### Priority
 
@@ -68,6 +69,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Sometimes, most of a Code Block will just be defined as a String by the Syntax highlighting. Likely due to the MD formatting (``````).
 - Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
 - TipTap's emoji Extension doesn't work.
+- Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
+- When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
+- When renaming a file, it will likely not recognize its previous autosaves.
 
 ## Planned Features
 
@@ -83,7 +87,6 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ### Functional
 
-- Autosaving
 - Backups of previous 5 versions of a document
 - Moving folders & files using drag & drop.
 - Settings Menu
@@ -91,7 +94,9 @@ This is a Web-based Editor which can run locally or on a home server.
   - Display
     - Dark / Light Mode
     - Amount of Characters before "..."
-  - Autosaving Config
+  - Saving Config
+    - Autosaving Interval
+    - Number of Backed-Up Versions
   - Edit Formats
   - Info (Lucide & TipTap credit, etc.)
 - Containerization

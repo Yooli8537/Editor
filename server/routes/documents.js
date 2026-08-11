@@ -6,6 +6,7 @@ const path = require("path");
 
 const rootPath = path.join(__dirname, "../../");
 const dataFolderPath = path.join(rootPath, "data");
+const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
 const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
@@ -114,7 +115,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
 
   try {
-    await fs.promises.mkdir(path.join(notebooksFolderPath, name));
+    await fs.mkdirSync(path.join(notebooksFolderPath, name));
     res.json({ success: true });
   } catch (err) {
     console.error(err);
@@ -181,7 +182,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      await fs.promises.mkdir(path.join(notebooksFolderPath, folderPath, name));
+      await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
       res.json({ success: true });
     } else if (name) {
       console.error("No Folder Path found.");
@@ -226,7 +227,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 
   try {
     const fullFolderPath = path.join(notebooksFolderPath, folderPath, name);
-    const file = await fs.promises.readFile(fullFolderPath);
+    const file = await fs.readFileSync(fullFolderPath, "utf-8");
     res.send(JSON.parse(file));
   } catch (err) {
     console.error(err);
@@ -328,8 +329,8 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 async function readFileData(file) {
   const masterFileLoc = path.join(dataFolderPath, "master.json");
   const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
-  const masterFile = JSON.parse(rawMasterFile);
-  const usedImages = masterFile[0].usedImages;
+  const masterFile = JSON.parse(rawMasterFile)[0];
+  const usedImages = masterFile.usedImages;
 
   function loopThroughJSON(obj) {
     for (let key in obj) {
@@ -376,38 +377,6 @@ router.put("/api/documents/updateFile", async (req, res) => {
   res.json({ success: true });
 });
 
-// Autosaves
-router.post("/api/documents/autosave", async (req, res) => {
-  const { name, folderPath, saveData } = req.body;
-  const defaultContent = JSON.stringify(
-    [
-      {
-        title: name,
-        content: saveData,
-      },
-    ],
-    null,
-    2,
-  );
-
-  try {
-    if (name && folderPath) {
-      const location = path.join(notebooksFolderPath, folderPath, name);
-      fs.writeFileSync(location, defaultContent, "utf8");
-      res.json({ success: true });
-    } else if (name) {
-      console.error("No Folder Path found.");
-    } else if (folderPath) {
-      console.error("No Name found.");
-    } else {
-      console.error("Required values not found for operation.");
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create Autosave" });
-  }
-});
-
 router.post(
   "/api/uploadImageFile",
   express.raw({ type: "image/*", limit: "10mb" }),
@@ -424,7 +393,7 @@ router.post(
     }
 
     const fileName = imageName() + fileEnding;
-    location = path.join(imageFolderPath, fileName);
+    let location = path.join(imageFolderPath, fileName);
     fs.writeFileSync(location, req.body);
 
     res.json({

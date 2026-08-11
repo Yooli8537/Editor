@@ -5,7 +5,7 @@ import {
   createPromptModal,
   createErrorModal,
 } from "./utils";
-import { closeEditor, loadDocument } from "./editor";
+import { checkForAutosave, closeEditor } from "./editor";
 import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
@@ -122,7 +122,7 @@ function createFile(entry, previousEntry) {
         `?path=${previousEntry}&document=${entry.name}`,
       ); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
-      loadDocument(fileData, entry.name, previousEntry); // Sends the Document to be loaded
+      checkForAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
@@ -205,6 +205,7 @@ function createFolderActions(path, previousEntry) {
       "Are you sure you want to delete this Folder?",
       "Cancel",
       "Confirm",
+      () => {},
       async () => {
         const response = await fetch("api/documents/deletePath", {
           method: "DELETE",
@@ -248,6 +249,7 @@ function createFileActions(path, previousEntry) {
       "Are you sure you want to delete this File?",
       "Cancel",
       "Confirm",
+      () => {},
       async () => {
         const response = await fetch("api/documents/deletePath", {
           method: "DELETE",

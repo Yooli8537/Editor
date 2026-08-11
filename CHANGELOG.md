@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.2.0-beta - Autosaves
+
+### Added
+
+- Deprecated Properties are automatically removed from `master.json`.
+- Autosaving. Every 10s, an autosave is created. If a document is left without saving, the user is prompted to restore it upon reopening.
+
+### Changed
+
+- Made adjustments to Syntax Highlighting.
+
+### Fixed
+
+- Discard Icon now shows up correctly when the Document is unsaved.
+
 ## v1.1.0-beta - So many Bug Fixes & minor Improvements
 
 ### Added
