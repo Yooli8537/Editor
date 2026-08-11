@@ -20,6 +20,7 @@ This is a Web-based Editor which can run locally or on a home server.
   - Bold
   - Italic
   - Underlined
+  - Highlighting
   - Inline Code
   - Tables
   - Links
@@ -82,7 +83,6 @@ This is a Web-based Editor which can run locally or on a home server.
   - Unused Images should be deleted from the Server.
   - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
 - Collapsing / Expanding Folders
-- Extension: Audio
 
 ### Functional
 
@@ -106,8 +106,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Allow the user to save a Document when Discard Button is clicked.
 - Advanced Images
   - Label Images
-  - Hovering over an Image shows it's label.
+  - Hovering over an Image shows its label.
   - Image labels can be searched through.
+  - Different Image positions (left / right)
 - Support long names by replacing them with "..." if they get >25 characters long. Cap at 50 instead of 30.
 
 ### Cosmetic
