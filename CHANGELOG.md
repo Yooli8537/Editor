@@ -4,11 +4,13 @@
 
 ### Added
 
-- Text Highlighting! It's pretty!
+- Text Highlighting! It's pretty! I guess.
 
 ### Changed
 
 - Images are now styled as inline.
+- Went through all the code and made sure it's readable & easily understood.
+- Corrected license.
 
 ### Removed
 
