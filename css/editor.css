@@ -98,3 +98,12 @@
 a {
   cursor: pointer;
 }
+
+[data-resize-handle] {
+  position: absolute;
+  z-index: 10;
+  width: 5px;
+  height: 5px;
+  border: 2px solid rgb(88, 88, 88);
+  border-radius: 50%;
+}

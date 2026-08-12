@@ -51,7 +51,6 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ### Priority
 
-- Image resize doesn't work.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
 - Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
 
