@@ -1,8 +1,10 @@
+// Exporting TipTap documents as .pdf-files
+// Importing server functions
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Importing TipTap Extensions for Export
 const StarterKit = require("@tiptap/starter-kit").default;
@@ -12,6 +14,7 @@ const { renderToHTMLString } = require("@tiptap/static-renderer");
 const FileHandler = require("@tiptap/extension-file-handler").default;
 const Emoji = require("@tiptap/extension-emoji").default;
 
+// Configures all the TipTap extensions to be identical to editor.js
 async function setExtensions() {
   // Importing Extensions which cannot be imported (no commonjs version)
   const { default: CodeBlockLowlight } =
@@ -55,9 +58,12 @@ async function setExtensions() {
   ];
 }
 
+// Processes HTML and converts it into PDF
 router.post("/api/export", async (req, res) => {
   const { exportDocument, name } = req.body;
 
+  // Basic HTML structure.
+  // The HTML from the request only includes the editor data, so stylesheets and stuff have to be set here.
   const exportHTML = `
   <html>
   <head>
@@ -72,21 +78,27 @@ router.post("/api/export", async (req, res) => {
   </html>
   `;
 
+  // Simulated browser which Puppeteer uses to generate the PDF.
   const browser = await puppeteer.launch({
     args: ["--allow-file-access-from-files"],
   });
+  // Creates new simulated page.
   const page = await browser.newPage();
+  // Sets the page content to the exportHTML
   const content = await page.setContent(exportHTML, {
     waitUntil: "networkidle0",
   });
 
+  // Converts the page into a PDF with specifications.
   const pdf = await page.pdf({
     format: "A4",
     printBackground: true,
     margin: { top: "75px", bottom: "75px", left: "75px", right: "75px" },
   });
+  // Closes the simulated browser.
   await browser.close();
 
+  // Sends the PDF back to the client.
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
     "Content-Disposition",
