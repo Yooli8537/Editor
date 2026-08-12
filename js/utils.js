@@ -300,7 +300,9 @@ export async function getMaster() {
     for (const key in masterData) {
       setState(key, masterData[key]);
     }
+    return true;
   } else {
     createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+    return false;
   }
 }

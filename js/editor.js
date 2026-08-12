@@ -763,32 +763,35 @@ setInterval(() => {
   updateSaveIcons();
 }, 1000);
 
-// Requests a new autosave every 10s.
-setInterval(async () => {
-  const saveData = editor.getJSON();
+let autosave = null;
+// Initializes the autosave.
+async function initAutosave(autosaveInterval) {
+  autosave = setInterval(async () => {
+    const saveData = editor.getJSON();
 
-  if (editorIsSaved === false) {
-    // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
-    if (!checkState("unsavedFiles", currentEntry)) {
-      addState("unsavedFiles", currentEntry);
-    }
-    const autosave = await fetch("api/autosave", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        saveData: saveData,
-        folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
-        name: currentEntry, // currentEntry is the file's name.
-      }),
-    });
+    if (editorIsSaved === false) {
+      // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
+      if (!checkState("unsavedFiles", currentEntry)) {
+        addState("unsavedFiles", currentEntry);
+      }
+      const autosave = await fetch("api/autosave", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          saveData: saveData,
+          folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
+          name: currentEntry, // currentEntry is the file's name.
+        }),
+      });
 
-    if (autosave.ok) {
-      console.log(
-        `Successfully created Autosave for document ${currentEntry}.`,
-      );
+      if (autosave.ok) {
+        console.log(
+          `Successfully created Autosave for document ${currentEntry}.`,
+        );
+      }
     }
-  }
-}, 10000);
+  }, autosaveInterval);
+}
 
 // Removes any autosaves from the server.
 async function removeAutosave() {
@@ -816,8 +819,10 @@ export function closeEditor() {
 
 // Opens Document from URL if one is present.
 async function onFirstStart() {
-  // Loads Data from master.json into state.js
-  getMaster();
+  // Loads Data from master.json and activates autosave upon success.
+  if (await getMaster()) {
+    initAutosave(getState("autosaveInterval"));
+  }
 
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
