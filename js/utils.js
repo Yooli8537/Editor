@@ -1,9 +1,41 @@
 // Utilities
-
 import { buildSidebar } from "./sidebar";
 import { getState, setState } from "./state";
 
 // Modals
+// Deletes the modal and creates no further actions.
+export function destroyModal() {
+  document.querySelectorAll(".modal").forEach((modal) => modal.remove());
+  document
+    .querySelectorAll(".clickable")
+    .forEach((clickable) => clickable.remove());
+}
+
+// "Background" of the modal. Clicking it destroys the modal.
+function createClickable() {
+  const clickable = document.createElement("div");
+  clickable.classList.add("clickable");
+  clickable.addEventListener("click", () => {
+    destroyModal();
+  });
+  return clickable;
+}
+
+// Creates the modal body.
+function createModalBody() {
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+  return modal;
+}
+
+// Creates the div element for the buttons to live in.
+function createModalButtonsDiv() {
+  const modalButtons = document.createElement("div");
+  modalButtons.classList.add("modalButtons");
+  return modalButtons;
+}
+
+// Creating a Modal for the user to confirm an action.
 export function createConfirmModal(
   prompt,
   cancel,
@@ -11,20 +43,12 @@ export function createConfirmModal(
   onCancel,
   onSubmit,
 ) {
-  const clickable = document.createElement("div");
-  clickable.classList.add("clickable");
-  clickable.addEventListener("click", () => {
-    destroyModal();
-  });
-
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
 
   const text = document.createElement("p");
   text.textContent = prompt;
-
-  const modalButtons = document.createElement("div");
-  modalButtons.classList.add("modalButtons");
 
   const cancelButton = document.createElement("div");
   cancelButton.classList.add("modalTextButton");
@@ -52,28 +76,25 @@ export function createConfirmModal(
   document.body.appendChild(modal);
 }
 
+// Verifies user input for prompt modals.
 function verifyInput(inputField, onSubmit, prevValue) {
   if (!inputField.value) {
     destroyModal();
-    createErrorModal("The Input is empty. Try again.");
+    createErrorModal("The input is empty. Try again.");
   } else if (inputField.value === prevValue) {
     destroyModal();
-    createErrorModal("The Input and Output are the same. Try again.");
+    createErrorModal("The input and output are the same. Try again.");
   } else {
     onSubmit(inputField.value);
     destroyModal();
   }
 }
 
+// Creates a prompt for the user to fill out.
 export function createPromptModal(prompt, inputContent, onSubmit) {
-  const clickable = document.createElement("div");
-  clickable.classList.add("clickable");
-  clickable.addEventListener("click", () => {
-    destroyModal();
-  });
-
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
 
   const text = document.createElement("p");
   text.textContent = prompt;
@@ -82,17 +103,15 @@ export function createPromptModal(prompt, inputContent, onSubmit) {
   inputField.classList.add("inputField");
   inputField.type = "text";
   inputField.maxLength = 30;
-  inputField.value = inputContent;
+  inputField.value = inputContent; // Adds the previous value to the input field.
 
+  // Confirm with enter key
   inputField.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       verifyInput(inputField, onSubmit, inputContent);
     }
   });
-
-  const modalButtons = document.createElement("div");
-  modalButtons.classList.add("modalButtons");
 
   const cancelButton = document.createElement("img");
   cancelButton.classList.add("modalButton");
@@ -122,21 +141,17 @@ export function createPromptModal(prompt, inputContent, onSubmit) {
   inputField.focus();
 }
 
+// Creates a modal when an error happens.
 export function createErrorModal(errorMsg) {
-  const clickable = document.createElement("div");
-  clickable.classList.add("clickable");
-  clickable.addEventListener("click", () => {
-    destroyModal();
-  });
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
 
-  const modal = document.createElement("div");
+  // Adds error message directly to modal.
   modal.classList.add("errorMsg");
   modal.textContent = errorMsg;
-  modal.classList.add("modal");
 
-  const modalButtons = document.createElement("div");
-  modalButtons.classList.add("modalButtons");
-
+  // Confirm button
   const okButton = document.createElement("div");
   okButton.classList.add("modalTextButton");
   okButton.textContent = "Ok";
@@ -151,20 +166,16 @@ export function createErrorModal(errorMsg) {
   document.body.appendChild(modal);
 }
 
+// Creates a modal to give the user a bit of information.
 export function createInfoModal(msg) {
-  const clickable = document.createElement("div");
-  clickable.classList.add("clickable");
-  clickable.addEventListener("click", () => {
-    destroyModal();
-  });
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
 
-  const modal = document.createElement("div");
+  // Adds message directly to modal.
   modal.textContent = msg;
-  modal.classList.add("modal");
 
-  const modalButtons = document.createElement("div");
-  modalButtons.classList.add("modalButtons");
-
+  // Confirm button
   const okButton = document.createElement("div");
   okButton.classList.add("modalTextButton");
   okButton.textContent = "Ok";
@@ -179,17 +190,10 @@ export function createInfoModal(msg) {
   document.body.appendChild(modal);
 }
 
-export function destroyModal() {
-  document.querySelectorAll(".modal").forEach((modal) => modal.remove());
-  document
-    .querySelectorAll(".clickable")
-    .forEach((clickable) => clickable.remove());
-}
-
-// Submenus (mainly for Editor Toolbar)
+// Submenus (mainly for Editor Toolbar).
 export function createSubmenu(triggerButton, items, width) {
   const isOpen = triggerButton.classList.contains("activeButton");
-
+  // Destroys all other submenus when a new one is opened.
   removeSubmenus();
 
   const selector = document.createElement("div");
@@ -197,6 +201,7 @@ export function createSubmenu(triggerButton, items, width) {
   // Sets the width. 2 = padding, 35 = toolbarButton width, 4 = toolbarButton margin
   selector.style.width = 2 + width * 35 + width * 4 + "px";
 
+  // Loops through array to create all the buttons within the submenu.
   for (let i = 0; i < items.length; i++) {
     const button = document.createElement("button");
     button.classList.add("toolbarButton");
@@ -213,6 +218,7 @@ export function createSubmenu(triggerButton, items, width) {
     selector.appendChild(button);
   }
 
+  // Adds the submenu to the document.
   if (!isOpen) {
     triggerButton.classList.add("activeButton");
 
@@ -231,6 +237,7 @@ export function createSubmenu(triggerButton, items, width) {
   }
 }
 
+// Deletes all submenus
 export function removeSubmenus() {
   document.querySelectorAll(".selectMenu").forEach((menu) => menu.remove());
   document
@@ -265,6 +272,7 @@ export function setHelpText(hoverButton, helpText) {
         clearInterval(hoverInterval);
         hoverInterval = null;
 
+        // Creates the box around the helptext
         const boundingBox = document.createElement("div");
         boundingBox.classList.add("helpText");
         boundingBox.textContent = helpText;
@@ -297,6 +305,7 @@ export async function getMaster() {
 
   if (rawMasterFile.ok) {
     const masterData = await rawMasterFile.json();
+    // Adds all the masterfile data into state.js
     for (const key in masterData) {
       setState(key, masterData[key]);
     }
