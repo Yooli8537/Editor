@@ -211,7 +211,6 @@ function createFolderActions(path, previousEntry) {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: path,
             folderPath: previousEntry + path,
           }),
         });
@@ -255,7 +254,6 @@ function createFileActions(path, previousEntry) {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: path,
             folderPath: previousEntry + path,
           }),
         });

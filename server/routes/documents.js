@@ -1,27 +1,30 @@
+// CRUD for files & folders
+// Imports
 const { error } = require("console");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
+// Data folder paths
 const rootPath = path.join(__dirname, "../../");
 const dataFolderPath = path.join(rootPath, "data");
-const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
-const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
-const masterFilePath = path.join(dataFolderPath, "master.json");
 
-// Gets full data folder
+// Recursively reads the full data folder.
 async function readDirRecursive(dir) {
+  // Reads the specified directory
   const entries = await fs.promises.readdir(dir, {
     withFileTypes: true,
   });
 
+  // Returns data
   return Promise.all(
     entries.map(async (entry) => {
       const fullPath = path.join(dir, entry.name);
 
+      // If a folder is detected, it's read through again.
       if (entry.isDirectory()) {
         return {
           name: entry.name,
@@ -29,6 +32,7 @@ async function readDirRecursive(dir) {
           children: await readDirRecursive(fullPath),
         };
       } else {
+        // Otherwise, it just gives back the file name.
         return {
           name: entry.name,
           isFolder: false,
@@ -38,20 +42,24 @@ async function readDirRecursive(dir) {
   );
 }
 
+// Searches through notebooks & folders (same difference lol)
 async function searchNotebooks(dir, key, searchResults) {
-  lowerKey = key.toLowerCase(); // Sets key to be lowercase
+  // Sets key to be lowercase to make search case-insensitive.
+  lowerKey = key.toLowerCase();
+  // Reads specified directory.
   const entries = await fs.promises.readdir(dir, {
     withFileTypes: true,
   });
 
+  // Returns results, just like with the full data folder reading.
   return Promise.all(
     entries.map(async (entry) => {
       const fullPath = path.join(dir, entry.name);
 
       if (entry.isDirectory()) {
+        // Folders aren't included in search results, instead their contents are searched.
         return searchNotebooks(fullPath, lowerKey, searchResults);
       } else {
-        console.log(fullPath);
         const file = await fs.promises.readFile(fullPath, "utf-8");
         const praseFile = JSON.parse(file);
         return findText(
@@ -66,19 +74,30 @@ async function searchNotebooks(dir, key, searchResults) {
   );
 }
 
+// Finds the search key within the text of files.
 function findText(node, key, file, searchResults, fileTitle) {
+  // If the key is found within the title of the file, it is also presented in the search results.
   if (fileTitle) {
-    if (fileTitle.toLowerCase().includes(key) && !searchResults.includes(file)) {
+    if (
+      // .toLowerCase() makes the searched content also case-insensitive.
+      fileTitle.toLowerCase().includes(key) &&
+      !searchResults.includes(file)
+    ) {
       searchResults.push(file);
     }
   }
 
+  // Only searches through text nodes, ensuring that other nodes (like src attributes) are ignored.
   if (node.type === "text") {
-    if (node.text.toLowerCase().includes(key) && !searchResults.includes(file)) {
+    if (
+      node.text.toLowerCase().includes(key) &&
+      !searchResults.includes(file)
+    ) {
       searchResults.push(file);
     }
   }
 
+  // Searches the children of nodes
   if (node.content) {
     node.content.forEach((child) => findText(child, key, file, searchResults));
   }
@@ -86,35 +105,36 @@ function findText(node, key, file, searchResults, fileTitle) {
   return;
 }
 
-// GET all documents
+// Gets all documents & folders.
 router.get("/api/documents", async (req, res) => {
   const resposneArray = await readDirRecursive(notebooksFolderPath);
 
   res.json(resposneArray);
 });
 
+// Processes search requests.
 router.get("/api/documents/search", async (req, res) => {
   const { key } = req.query;
+  // This array saves all the files which include the search key.
   const searchResults = [];
   await searchNotebooks(notebooksFolderPath, key, searchResults);
 
-  console.log(searchResults);
-
-  // Results that can be used by the Sidebar loading function
-  const relativeResults = searchResults.map((fullPath) => ({
+  // Results that can be used by the Sidebar loading function (requires paths for the event listeners to open the documents).
+  const adjustedResults = searchResults.map((fullPath) => ({
     path: path.relative(notebooksFolderPath, fullPath),
     name: path.basename(fullPath),
     folderPath: path.relative(notebooksFolderPath, path.dirname(fullPath)),
   }));
 
-  res.json(relativeResults);
+  res.json(adjustedResults);
 });
 
-// Create new Notebook
+// Creates a new notebook
 router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
 
   try {
+    // Makes the directory
     await fs.mkdirSync(path.join(notebooksFolderPath, name));
     res.json({ success: true });
   } catch (err) {
@@ -129,9 +149,10 @@ router.post("/api/documents/newNotebook", async (req, res) => {
   }
 });
 
-// Create new File
+// Creates a new file
 router.post("/api/documents/newFile", async (req, res) => {
   const { name, folderPath } = req.body;
+  // Builds up the expected content of a TipTap document.
   const defaultContent = JSON.stringify(
     [
       {
@@ -145,6 +166,8 @@ router.post("/api/documents/newFile", async (req, res) => {
     null,
     2,
   );
+
+  // Initialization of the variable outside the `try` function so that `catch` can also access the value.
   let location;
 
   try {
@@ -157,6 +180,7 @@ router.post("/api/documents/newFile", async (req, res) => {
           .status(409)
           .json({ error: "A File with that name already exists." });
       }
+      // Checking for the required values to create the file.
     } else if (name) {
       console.error("No Folder Path found.");
     } else if (folderPath) {
@@ -165,6 +189,7 @@ router.post("/api/documents/newFile", async (req, res) => {
       console.error("Required values not found for operation.");
     }
   } catch (err) {
+    // If the error is a "not found" error, the file is created.
     if (err.code === "ENOENT") {
       fs.writeFileSync(location, defaultContent, "utf8");
       console.log("Successfully created File.");
@@ -176,7 +201,7 @@ router.post("/api/documents/newFile", async (req, res) => {
   }
 });
 
-// Create new Folder
+// Creates a new folder, pretty much the same procedure as above.
 router.post("/api/documents/newFolder", async (req, res) => {
   const { name, folderPath } = req.body;
 
@@ -185,35 +210,39 @@ router.post("/api/documents/newFolder", async (req, res) => {
       await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
       res.json({ success: true });
     } else if (name) {
-      console.error("No Folder Path found.");
+      console.error("No folder path found.");
     } else if (folderPath) {
-      console.error("No Name found.");
+      console.error("No name found.");
     } else {
       console.error("Required values not found for operation.");
     }
   } catch (err) {
+    if (err.code === "EEXIST") {
+      console.error(err);
+      res
+        .status(409)
+        .json({ error: "A folder with this name already exists." });
+    }
     console.error(err);
-    res.status(500).json({ error: "Failed to create Folder" });
+    res.status(500).json({ error: "Failed to create folder" });
   }
 });
 
-// Delete Folder / File
+// Deletes a certain path, allowing for both files and folders to be deleted with the same function.
 router.delete("/api/documents/deletePath", async (req, res) => {
-  // Originally only meant for folders but works for Files too... Happy accidents :)
-  const { name, folderPath } = req.body;
+  // Originally only meant for folders but works for files too... happy accidents :)
+  const { folderPath } = req.body;
 
   try {
-    if (name && folderPath) {
-      const fullFolderPath = path.join(notebooksFolderPath, folderPath);
-
-      await fs.promises.rm(fullFolderPath, { recursive: true, force: true });
+    if (folderPath) {
+      const fullPath = path.join(notebooksFolderPath, folderPath);
+      await fs.promises.rm(fullPath, { recursive: true, force: true });
       res.send("Path successfully deleted.");
-    } else if (name) {
-      console.error("No Folder Path found.");
-    } else if (folderPath) {
-      console.error("No Name found.");
     } else {
-      console.error("Required values not found for operation.");
+      console.error("Couldn't find path to file / folder to be deleted.");
+      res
+        .status(404)
+        .json({ error: "Failed to fulfill deletion request: Path not found." });
     }
   } catch (err) {
     console.error(err);
@@ -221,13 +250,13 @@ router.delete("/api/documents/deletePath", async (req, res) => {
   }
 });
 
-// GET single File
+// Gets a file
 router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
 
   try {
-    const fullFolderPath = path.join(notebooksFolderPath, folderPath, name);
-    const file = await fs.readFileSync(fullFolderPath, "utf-8");
+    const fullPath = path.join(notebooksFolderPath, folderPath, name);
+    const file = await fs.readFileSync(fullPath, "utf-8"); // Reads out file data
     res.send(JSON.parse(file));
   } catch (err) {
     console.error(err);
@@ -239,7 +268,7 @@ router.get("/api/documents/getFile", async (req, res) => {
   }
 });
 
-// Rename single File
+// Renames a file, which is surprisingly annoying to do without tons of glitches.
 router.post("/api/documents/renameFile", async (req, res) => {
   console.log(req.body);
   const { newName, folderPath, name } = req.body;
@@ -257,18 +286,21 @@ router.post("/api/documents/renameFile", async (req, res) => {
   );
 
   try {
-    if (newName && folderPath && name) {
+    // Checks for a missing newName first.
+    // If the operation goes through even though the name is empty, there will be issues.
+    if (!newName || newName == "") {
+      console.error("No new Name found");
+    } else if (newName && folderPath && name) {
+      // Rename operation on the filesystem
       await fs.promises.rename(filePath, newFilePath);
 
-      // Changing Title inside Document
+      // Changing title inside document
       const fileContent = await fs.promises.readFile(newFilePath, "utf-8");
       const fileData = JSON.parse(fileContent);
       fileData[0].title = newName;
       fs.writeFileSync(newFilePath, JSON.stringify(fileData, null, 2), "utf-8");
 
       res.json({ success: true });
-    } else if (!newName || newName == "") {
-      console.error("No new Name found");
     } else if (!folderPath) {
       console.error("No Folder Path found.");
     } else if (!name) {
@@ -284,48 +316,49 @@ router.post("/api/documents/renameFile", async (req, res) => {
   }
 });
 
-// Rename Folder
+// Renames a folder
 router.post("/api/documents/renameFolder", async (req, res) => {
   console.log(req.body);
   const { newName, folderPath, name } = req.body;
 
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
   const newPath = path.join(notebooksFolderPath, folderPath, newName);
-  /*
-  If a Folder is in the "root" directory, no folderPath will be recieved.
-  This exception requires a different path to be built.
-  */
+
+  // If a Folder is in the highest directory, no folderPath will be recieved.
+  // This exception requires a different path to be built.
   const rootPath = path.join(notebooksFolderPath, name);
   const newRootPath = path.join(notebooksFolderPath, newName);
 
   try {
-    if (newName && folderPath && name) {
+    if (!newName || newName == "") {
+      console.error("No new Name found");
+    } else if (newName && folderPath && name) {
       await fs.promises.rename(currentPath, newPath);
 
       res.json({ success: true });
       return;
     } else if (newName && name) {
+      // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
       await fs.promises.cp(currentPath, newPath, { recursive: true });
       await fs.promises.rm(currentPath, { recursive: true, force: true });
 
       res.json({ success: true });
-    } else if (!newName || newName == "") {
-      console.error("No new Name found");
     } else if (!folderPath) {
-      console.error("No Folder Path found.");
+      console.error("No folder path found.");
     } else if (!name) {
-      console.error("No Folder found.");
+      console.error("No folder found.");
     } else {
       console.error(
-        "Multiple values which are required for renaming a Folder were not found.",
+        "Multiple values which are required for renaming a folder were not found.",
       );
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to rename Folder." });
+    res.status(500).json({ error: "Failed to rename folder." });
   }
 });
 
+// Experimental function for detecting images inside of TipTap documents. Not used right now.
 async function readFileData(file) {
   const masterFileLoc = path.join(dataFolderPath, "master.json");
   const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
@@ -362,6 +395,7 @@ async function readFileData(file) {
   loopThroughJSON(file);
 }
 
+// Updates a file with new content.
 router.put("/api/documents/updateFile", async (req, res) => {
   const { saveData, name, folderPath } = req.body;
 
@@ -369,14 +403,14 @@ router.put("/api/documents/updateFile", async (req, res) => {
   const file = await fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
+  // fileData[0] since everything in JSON is stored in one array.
   fileData[0].content = saveData;
-
-  readFileData(fileData);
 
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf8");
   res.json({ success: true });
 });
 
+// Uploads image files to the server.
 router.post(
   "/api/uploadImageFile",
   express.raw({ type: "image/*", limit: "10mb" }),
@@ -392,16 +426,20 @@ router.post(
       fileEnding = ".gif";
     }
 
+    // Sets the image's name to a completely random ID.
     const fileName = imageName() + fileEnding;
     let location = path.join(imageFolderPath, fileName);
     fs.writeFileSync(location, req.body);
 
+    // Sends the URL back so that TipTap can set it as the src.
     res.json({
       url: `/data/images/${fileName}`,
     });
   },
 );
 
+// Generates a completely random image name, starting with Y and followed by 20 random symbols.
+// Y functions as a sort of backup identifier. If the image src doesn't start with "Y", there must be an issue.
 function imageName() {
   let name = "Y";
   const characters =
