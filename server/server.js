@@ -150,13 +150,13 @@ app.get("/api/getMaster", async (req, res) => {
 // Server routes
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
-const versionsRoute = require("./routes/versions");
+const autosaveRoute = require("./routes/autosave");
 
 app.use(express.json());
 app.use(express.static(rootPath));
 app.use(documentsRoute);
 app.use(exportRoute);
-app.use(versionsRoute);
+app.use(autosaveRoute);
 
 // Sends index.html to the client.
 app.get("/", (req, res) => {
