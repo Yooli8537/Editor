@@ -7,6 +7,7 @@ const path = require("path");
 const app = express();
 const port = 8510;
 
+// Paths to Folders which need to exist within the data folder.
 const rootPath = path.join(__dirname, "../");
 const dataFolderPath = path.join(rootPath, "data");
 const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
@@ -23,6 +24,7 @@ const userDataFolders = [
   { name: "Attachments", path: attachmentsFolderPath },
 ];
 
+// Creates any missing data folders.
 for (let i = 0; i < userDataFolders.length; i++) {
   if (!fs.existsSync(userDataFolders[i].path)) {
     fs.mkdirSync(userDataFolders[i].path);
@@ -33,7 +35,7 @@ for (let i = 0; i < userDataFolders.length; i++) {
   }
 }
 
-// Master File for config across Sessions
+// Masterfile to store config across Sessions
 if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[
   {
@@ -47,11 +49,13 @@ if (!fs.existsSync(masterFilePath)) {
     "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
   );
 } else {
+  // If the masterfile is found, it's checked for any deprecated or missing properties, making updates to it automatic.
   deleteDeprecatedMasterProperties();
   addMissingMasterProperties();
 }
 
-// Updates the masterfile and gives feedback on success
+// Updates the masterfile and gives feedback on success.
+// This function is used after deprecated / missing properties are found.
 async function updateMasterfile(masterFile) {
   try {
     fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
@@ -71,6 +75,7 @@ async function deleteDeprecatedMasterProperties() {
   const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
+  // Array of ever property to be released and later be deprecated.
   const deprecatedProperties = ["usedImages"];
 
   // Deletes deprecated properties
@@ -82,9 +87,14 @@ async function deleteDeprecatedMasterProperties() {
     }
   }
 
+  // Updates the masterfile if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
       console.log("Successfully removed deprecated masterfile properties.");
+    } else {
+      console.error(
+        "Something went wrong trying to remove deprecated masterfile properties.",
+      );
     }
   } else {
     console.log("No deprecated masterfile properties found.");
@@ -99,21 +109,24 @@ async function addMissingMasterProperties() {
   const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
-  const missingProperties = { unsavedFiles: [], autosaveInterval: 10000 };
+  // Every property which should be in the masterfile.
+  const allProperties = { unsavedFiles: [], autosaveInterval: 10000 };
 
-  for (const key in missingProperties) {
+  // Adds all the missing properties
+  for (const key in allProperties) {
     if (!masterFile[0][key]) {
-      masterFile[0][key] = missingProperties[key];
+      masterFile[0][key] = allProperties[key];
       console.log(`Added missing masterfile property "${key}".`);
     }
     changesMade = true;
   }
 
+  // Updates the masterfile if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
       console.log("Successfully added missing masterfile properties.");
     } else {
-      console.log("Failed to update masterfile properties.");
+      console.log("Failed to add missing masterfile properties.");
     }
   } else {
     console.log(
@@ -134,6 +147,7 @@ app.get("/api/getMaster", async (req, res) => {
   }
 });
 
+// Server routes
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
 const versionsRoute = require("./routes/versions");
@@ -144,6 +158,7 @@ app.use(documentsRoute);
 app.use(exportRoute);
 app.use(versionsRoute);
 
+// Sends index.html to the client.
 app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));
 });

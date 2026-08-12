@@ -2,7 +2,6 @@ import { createErrorModal } from "./utils";
 
 let state = {
   currentDocument: null,
-  unsavedDocuments: [],
 };
 
 // Gets the given state
