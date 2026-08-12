@@ -86,6 +86,7 @@ router.post("/api/export", async (req, res) => {
   const page = await browser.newPage();
   // Sets the page content to the exportHTML
   const content = await page.setContent(exportHTML, {
+    // Waits until no network activities are active, ensuring that all async functions and similar
     waitUntil: "networkidle0",
   });
 
