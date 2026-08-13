@@ -1,0 +1,3 @@
+Hover: #3cb372
+Selected but no hover: #84ecb3
+background: #eeeeee
