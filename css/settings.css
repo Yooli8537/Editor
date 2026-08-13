@@ -1,0 +1,34 @@
+/* CSS for the settings page */
+/* Margin for the separator between sidebar & page. */
+hr.separator {
+  margin-left: 0.5vw;
+  margin-right: 0.5vw;
+}
+
+/* Page view */
+#settingsView {
+  display: flex;
+  height: 80vh;
+}
+
+/* Sidebar styling */
+#settingsSidebar {
+  width: 19vw;
+  max-width: 350px;
+  height: inherit;
+  border: 3px solid #000000;
+  overflow-y: auto;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}
+
+/* Page where all the Settings are shown */
+#settingsPage {
+  width: 80vw;
+  max-width: 1000px;
+  height: inherit;
+  border: 3px solid #000000;
+  overflow-y: auto;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}

@@ -7,6 +7,16 @@ a {
   cursor: pointer;
 }
 
+/* Vertical separator */
+hr.vertical {
+  width: 2px;
+  height: inherit;
+  margin-left: 2px;
+  margin-right: 2px;
+  border: none;
+  background-color: #000;
+}
+
 .hidden {
   display: none;
 }

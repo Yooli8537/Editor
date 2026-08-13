@@ -16,16 +16,7 @@
   padding: 3px;
   display: flex;
   justify-content: space-between;
-}
-
-/* Vertical separator on the toolbar */
-hr.vertical {
-  width: 1px;
-  height: auto;
-  margin-left: 2px;
-  margin-right: 2px;
-  border: none;
-  background-color: #000;
+  align-items:normal;
 }
 
 /* Formatting options within the toolbar. */
