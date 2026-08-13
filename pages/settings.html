@@ -7,7 +7,7 @@
     <title>Editor Settings</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/settings.css">
-    <script type="module" src="../js/state.js"></script>
+    <script type="module" src="../js/settings.js" defer></script>
     <link rel="icon" href="../assets/icons/settings-white.svg">
 </head>
 
@@ -15,9 +15,51 @@
     <h1>Settings</h1>
     <hr>
     <div id="settingsView">
-        <div id="settingsSidebar"></div>
+        <div id="settingsSidebar">
+            <div id="keybindsTab" class="tab">
+                <img src="../assets/settings/keybinds.svg" class="tabIcon">
+                <p>Keybinds</p>
+            </div>
+            <div id="manageTab" class="tab">
+                <img src="../assets/settings/manage.svg" class="tabIcon">
+                <p>Manage</p>
+            </div>
+        </div>
         <hr class="vertical separator">
-        <div id="settingsPage"></div>
+        <div id="settingsPage">
+            <div id="manage">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/storage.svg" class="groupIcon">
+                        <p>Storage</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum File upload Size (megaBytes)</div>
+                            <div class="settingDescription">Set the maximum size a file being uploaded to the server can
+                                be
+                                (images / attachments).</div>
+                            <div class="settingDefault">Default: 10</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxFileUploadSize">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum File upload Size</div>
+                            <div class="settingDescription">Set the maximum size a file being uploaded to the server can
+                                be
+                                (images / attachments).</div>
+                            <div class="settingDefault">Default: 10mb</div>
+                        </div>
+                        <div class="settingValue">
+                            <input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
