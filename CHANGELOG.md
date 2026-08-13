@@ -24,6 +24,7 @@
 `documentImages[i].src = documentImages[i].src;`
 - Image resize now works.
 - When reloading the editor, the selected file is now highlighted again.
+- When closing the editor, the Tab title adjusts.
 
 ## v1.2.0-beta - Autosaves
 

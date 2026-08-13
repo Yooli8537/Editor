@@ -660,14 +660,11 @@ discardButton.addEventListener("click", (e) => {
         console.log("Changes Discarded.");
         setState("currentDocument", null);
         buildSidebar();
-        history.pushState(null, "", "/");
       },
     );
   } else {
     closeEditor();
-    setState("currentDocument", null);
     buildSidebar();
-    history.pushState(null, "", "/");
   }
 });
 
@@ -814,6 +811,9 @@ async function removeAutosave() {
 export function closeEditor() {
   editorView.classList.add("hidden");
   console.log("Editor Closed.");
+  setState("currentDocument", null);
+  history.pushState(null, "", "/");
+  document.title = "Editor";
   editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
@@ -831,7 +831,6 @@ export async function onFirstStart() {
   // Stops auto-open if no document is provided.
   if (document === null) {
     console.log("App ready!");
-    return;
   } else {
     // Getting the Document from the URL.
     const response = await fetch(
