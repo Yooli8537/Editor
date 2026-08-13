@@ -1,10 +1,6 @@
 // Basically RAM for the app.
-// Includes code to make the settings page work.
 import { createErrorModal } from "./utils";
 
-const settingsButton = document.querySelector("#settingsButton");
-
-// State
 let state = {
   currentDocument: null,
 };
@@ -46,5 +42,3 @@ export function rmState(parameter, value) {
   // Updates Data
   setState(parameter, stateArray);
 }
-
-// Settings
