@@ -39,7 +39,9 @@ for (let i = 0; i < userDataFolders.length; i++) {
 if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[
   {
-    "unsavedFiles": []
+    "unsavedFiles": [],
+    "autosaveInterval": 10000,
+    "helpTextHoverTime": 15
   }
 ]
 `;
@@ -110,7 +112,11 @@ async function addMissingMasterProperties() {
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Every property which should be in the masterfile.
-  const allProperties = { unsavedFiles: [], autosaveInterval: 10000 };
+  const allProperties = {
+    unsavedFiles: [],
+    autosaveInterval: 10000,
+    helpTextHoverTime: 15,
+  };
 
   // Adds all the missing properties
   for (const key in allProperties) {

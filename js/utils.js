@@ -268,7 +268,7 @@ export function setHelpText(hoverButton, helpText) {
     time = 0;
 
     hoverInterval = setInterval(() => {
-      if (time >= 1) {
+      if (time >= getState("helpTextHoverTime")) {
         clearInterval(hoverInterval);
         hoverInterval = null;
 
@@ -285,7 +285,7 @@ export function setHelpText(hoverButton, helpText) {
       } else {
         time++;
       }
-    }, 1000);
+    }, 100);
   }
 
   hoverButton.addEventListener("mouseenter", createHelpText);
