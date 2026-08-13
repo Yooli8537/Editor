@@ -197,7 +197,7 @@ export function createSubmenu(triggerButton, items, width) {
   removeSubmenus();
 
   const selector = document.createElement("div");
-  selector.classList.add("selectMenu");
+  selector.classList.add("submenu");
   // Sets the width. 2 = padding, 35 = toolbarButton width, 4 = toolbarButton margin
   selector.style.width = 2 + width * 35 + width * 4 + "px";
 
@@ -239,7 +239,7 @@ export function createSubmenu(triggerButton, items, width) {
 
 // Deletes all submenus
 export function removeSubmenus() {
-  document.querySelectorAll(".selectMenu").forEach((menu) => menu.remove());
+  document.querySelectorAll(".submenu").forEach((menu) => menu.remove());
   document
     .querySelectorAll(".activeButton")
     .forEach((el) => el.classList.remove("activeButton"));

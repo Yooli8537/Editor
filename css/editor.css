@@ -1,3 +1,16 @@
+/* CSS for the editor. */
+/* Width of the editor, inlcuding toolbar & everything */
+#contentView {
+  width: 79vw;
+}
+
+/* Wraps around the toolbar */
+#wrapper {
+  border: 3px solid #000;
+  border-radius: 8px;
+}
+
+/* Editor toolbar */
 #toolbar {
   border-bottom: 3px solid #000;
   padding: 3px;
@@ -5,22 +18,32 @@
   justify-content: space-between;
 }
 
+/* Vertical separator on the toolbar */
+hr.vertical {
+  width: 1px;
+  height: auto;
+  margin-left: 2px;
+  margin-right: 2px;
+  border: none;
+  background-color: #000;
+}
+
+/* Formatting options within the toolbar. */
 #format {
   display: flex;
 }
 
+/* Function options (saving) within the toolbar. */
 #function {
   display: flex;
 }
 
+/* Button to edit the title of a document. */
 #editTitleButton {
   margin-left: 20px;
 }
 
-.errorMsg {
-  color: #ff0000;
-}
-
+/* Input field that shows up when you rename a file. */
 .renameInput {
   border: none;
   outline: none;
@@ -30,6 +53,7 @@
   color: #000;
 }
 
+/* Buttons without a border. Currently only used for the rename buttons. */
 .borderlessButton {
   vertical-align: middle;
   height: 10%;
@@ -37,12 +61,12 @@
   border-radius: 25%;
   cursor: pointer;
 }
-
 .borderlessButton:hover {
   height: 12%;
   background-color: #3cb372cc;
 }
 
+/* Buttons on the toolbar. */
 .toolbarButton {
   width: 35px;
   height: 35px;
@@ -54,6 +78,7 @@
   cursor: pointer;
 }
 
+/* Icons for the buttons on the toolbar. */
 .toolbarIcon {
   width: 25px;
   height: 25px;
@@ -62,13 +87,13 @@
 .toolbarButton:hover {
   background-color: #3cb372cc;
 }
-
 .toolbarButton:hover > .toolbarIcon {
   width: 31px;
   height: 31px;
 }
 
-.selectMenu,
+/* Submenu & helptext styling. */
+.submenu,
 .helpText {
   border: 2px solid #000;
   border-radius: 5px;
@@ -78,10 +103,12 @@
   flex-wrap: wrap;
 }
 
+/* A button is active when its not hovered over but its submenu is open. */
 .activeButton {
   background-color: #84ecb3;
 }
 
+/* The prosemirror is TipTap's editor class. */
 .ProseMirror {
   width: 794px;
   max-width: 794px;
@@ -95,10 +122,7 @@
   border: 2px solid #bababa;
 }
 
-a {
-  cursor: pointer;
-}
-
+/* Resizing circles for images. */
 [data-resize-handle] {
   position: absolute;
   z-index: 10;

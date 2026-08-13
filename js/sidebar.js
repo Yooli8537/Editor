@@ -156,17 +156,17 @@ function createFolderActions(path, previousEntry) {
   createButton.classList.add("hoverButton", "sidebarIcon");
   createButton.src = "../assets/function/plus.svg";
 
-  // Dropdown
+  // Dropdown to give choice between Folder & File.
   createButton.addEventListener("click", (e) => {
     e.stopPropagation();
     buttons.appendChild(createCreationDropdown(buttons, path, previousEntry));
   });
 
   document.addEventListener("click", () => {
-    // Removes the dropdown when clicking anywhere.
+    // Removes the creationDropdown when clicking anywhere.
     document
-      .querySelectorAll(".dropdown")
-      .forEach((dropdown) => dropdown.remove());
+      .querySelectorAll(".creationDropdown")
+      .forEach((creationDropdown) => creationDropdown.remove());
   });
 
   const renameButton = document.createElement("img");
@@ -359,13 +359,13 @@ export function checkForSelectedFile(file, sidebarFile) {
   }
 }
 
-// Dropdown to choose between File & Folder
+// creationDropdown to choose between File & Folder
 function createCreationDropdown(parent, path, previousEntry) {
-  const dropdown = document.createElement("div");
-  dropdown.classList.add("dropdown");
+  const creationDropdown = document.createElement("div");
+  creationDropdown.classList.add("creationDropdown");
 
   const fileButton = document.createElement("div");
-  fileButton.classList.add("dropdownOption");
+  fileButton.classList.add("creationDropdownOption");
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
@@ -392,7 +392,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   });
 
   const folderButton = document.createElement("div");
-  folderButton.classList.add("dropdownOption");
+  folderButton.classList.add("creationDropdownOption");
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
@@ -418,15 +418,15 @@ function createCreationDropdown(parent, path, previousEntry) {
     });
   });
 
-  dropdown.appendChild(fileButton);
-  dropdown.appendChild(folderButton);
+  creationDropdown.appendChild(fileButton);
+  creationDropdown.appendChild(folderButton);
 
   const position = parent.getBoundingClientRect();
-  dropdown.style.position = "absolute";
-  dropdown.style.top = position.top + "px";
-  dropdown.style.left = position.right + "px";
+  creationDropdown.style.position = "absolute";
+  creationDropdown.style.top = position.top + "px";
+  creationDropdown.style.left = position.right + "px";
 
-  return dropdown;
+  return creationDropdown;
 }
 
 // Creating a new notebook

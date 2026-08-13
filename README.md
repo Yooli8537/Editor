@@ -59,7 +59,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
 - Can't search with `Enter` :(
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
-- Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
 - Empty Links style as links and link to the root of the app.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Confirmation Modals can't be confirmed with the Enter Key.
@@ -72,6 +71,7 @@ This is a Web-based Editor which can run locally or on a home server.
 - When renaming a file, it will likely not recognize its previous autosaves.
 - Leaving an unsaved document highlights the newly selected one, even if you press "back".
 - Clicking on the already active & unsaved document on the sidebar gives out both an autosave restoration and discard changes modal.
+- Importing tables from Excel (and likely other sources) adds an image and a table.
 
 ## Planned Features
 
