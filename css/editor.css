@@ -53,7 +53,7 @@ hr.vertical {
   color: #000;
 }
 
-/* Buttons without a border. Currently only used for the rename buttons. */
+/* Buttons without a border. */
 .borderlessButton {
   vertical-align: middle;
   height: 10%;
@@ -62,7 +62,6 @@ hr.vertical {
   cursor: pointer;
 }
 .borderlessButton:hover {
-  height: 12%;
   background-color: #3cb372cc;
 }
 

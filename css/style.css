@@ -16,6 +16,15 @@ a {
   display: flex;
 }
 
+/* Settings button */
+#settingsButton {
+  height: 5%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
 /* Modal CSS */
 /* Modal body */
 .modal {
