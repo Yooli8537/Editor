@@ -1,3 +1,4 @@
+// Basically RAM for the app.
 import { createErrorModal } from "./utils";
 
 let state = {

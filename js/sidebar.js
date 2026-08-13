@@ -11,18 +11,17 @@ import { getState, setState } from "./state";
 const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
 const rootButton = document.querySelector("#rootButton");
-const editorView = document.querySelector("#editorView");
 
-let searchIsOpen;
+let searchIsOpen = false;
 
-// Creating Elements
+// Creates the wrapper for sidebar elements.
 function createWrapper() {
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper");
   return wrapper;
 }
 
-// Creating Search
+// Creating search
 let key = "";
 function createSearch() {
   const searchWrapper = document.createElement("div");
@@ -33,7 +32,7 @@ function createSearch() {
   input.classList.add("searchField");
   input.type = "text";
 
-  // Sets the Search Key at the top.
+  // Sets the search key into the search bar after a search.
   if (searchIsOpen) {
     input.value = key;
   }
@@ -42,6 +41,7 @@ function createSearch() {
   icon.classList.add("sidebarButton");
   icon.src = "../assets/function/search.svg";
 
+  // When the search icon is clicked, the search is activated.
   icon.addEventListener("click", async () => {
     key = input.value;
     if (!key) return;
@@ -53,10 +53,10 @@ function createSearch() {
       const results = await search.json();
       searchIsOpen = true;
 
-      // Replacing Sidebar with Results
       folderStructure.innerHTML = "";
       folderStructure.appendChild(createSearch());
 
+      // Replacing Sidebar with Results
       results.forEach((result) => {
         const wrapper = createWrapper();
         const file = createFile(
@@ -74,6 +74,7 @@ function createSearch() {
   });
 
   if (searchIsOpen) {
+    // Creating close button to close the search.
     const closeButton = document.createElement("img");
     closeButton.classList.add("sidebarButton");
     closeButton.src = "../assets/function/cancel.svg";
@@ -137,7 +138,7 @@ function createFile(entry, previousEntry) {
   return file;
 }
 
-// Setting Sidebar Icon
+// Creating an icon for the sidebar
 function setIcon(iconPath) {
   const icon = document.createElement("img");
   icon.classList.add("sidebarIcon");
@@ -162,7 +163,10 @@ function createFolderActions(path, previousEntry) {
   });
 
   document.addEventListener("click", () => {
-    removeDropdowns();
+    // Removes the dropdown when clicking anywhere.
+    document
+      .querySelectorAll(".dropdown")
+      .forEach((dropdown) => dropdown.remove());
   });
 
   const renameButton = document.createElement("img");
@@ -425,13 +429,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   return dropdown;
 }
 
-function removeDropdowns() {
-  document
-    .querySelectorAll(".dropdown")
-    .forEach((dropdown) => dropdown.remove());
-}
-
-// Creating new Notebook
+// Creating a new notebook
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
