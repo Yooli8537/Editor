@@ -133,6 +133,7 @@ function createFile(entry, previousEntry) {
     checkForSelectedFile(previousEntry + entry.name, file);
   });
 
+  // Checks for the selected file on startup.
   checkForSelectedFile(previousEntry + entry.name, file);
 
   return file;
@@ -344,13 +345,13 @@ export async function buildSidebar() {
   folderStructure.appendChild(createSearch());
 
   renderEntries(data, 0, "");
+  console.log("Sidebar ready!");
 }
-
-buildSidebar();
 
 // Checks if the current file is selected and highlights it if true.
 export function checkForSelectedFile(file, sidebarFile) {
   if (getState("currentDocument") === file) {
+    console.log();
     const selectedDocs = document.querySelectorAll(".selected");
     for (let i = 0; i < selectedDocs.length; i++) {
       selectedDocs[i].classList.remove("selected");

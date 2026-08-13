@@ -818,7 +818,7 @@ export function closeEditor() {
 }
 
 // Opens Document from URL if one is present.
-async function onFirstStart() {
+export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
   if (await getMaster()) {
     initAutosave(getState("autosaveInterval"));
@@ -852,6 +852,8 @@ async function onFirstStart() {
     }
   }
   console.log("Editor ready!");
+
+  buildSidebar();
 }
 
 onFirstStart();

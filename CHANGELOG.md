@@ -23,6 +23,7 @@
 - Images now render correctly when a Document is exported. This is the fix btw:
 `documentImages[i].src = documentImages[i].src;`
 - Image resize now works.
+- When reloading the editor, the selected file is now highlighted again.
 
 ## v1.2.0-beta - Autosaves
 

@@ -1,4 +1,5 @@
 // Basically RAM for the app.
+// Includes code to make the settings page work.
 import { createErrorModal } from "./utils";
 
 let state = {

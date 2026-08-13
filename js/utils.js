@@ -1,5 +1,4 @@
 // Utilities
-import { buildSidebar } from "./sidebar";
 import { getState, setState } from "./state";
 
 // Modals
