@@ -20,12 +20,14 @@ const masterFilePath = path.join(dataFolderPath, "master.json");
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
 const autosaveRoute = require("./routes/autosave");
+const settingsRoute = require("./routes/settings");
 
 app.use(express.json());
 app.use(express.static(rootPath));
 app.use(documentsRoute);
 app.use(exportRoute);
 app.use(autosaveRoute);
+app.use(settingsRoute);
 
 const userDataFolders = [
   { name: "Data", path: dataFolderPath },
@@ -161,19 +163,6 @@ app.get("/api/getMaster", async (req, res) => {
   } catch (err) {
     console.error("Couldn't load Masterfile.");
     console.error(err);
-  }
-});
-
-app.put("/api/updateMaster", async (req, res) => {
-  const { data } = req.body;
-
-  try {
-    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
-    console.log("Successfully updated masterfile.");
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Couldn't update masterfile.");
-    res.status(500).json({ error: err });
   }
 });
 
