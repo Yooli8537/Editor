@@ -74,6 +74,7 @@ if (!fs.existsSync(masterFilePath)) {
 async function updateMasterfile(masterFile) {
   try {
     fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    console.log("Successfully updated master.json.");
     return true;
   } catch (err) {
     console.error("Something went wrong trying to update master.json.");
@@ -136,8 +137,8 @@ async function addMissingMasterProperties() {
     if (!masterFile[0][key]) {
       masterFile[0][key] = allProperties[key];
       console.log(`Added missing masterfile property "${key}".`);
+      changesMade = true;
     }
-    changesMade = true;
   }
 
   // Updates the masterfile if changes were made
