@@ -24,13 +24,14 @@ This is a Web-based Editor which can run locally or on a home server.
   - Inline Code
   - Tables
   - Links
+  - Images (copy-paste)
 - Sidebar allowing for easy navigation of the Folder Structure
 - Search Bar
 - Undo / Redo
 - Export Documents as .pdf files.
 - Always continue where you left off with URLs for any page.
-- Add Images and never delete them! *Seriously, they aren't deleted automatically right now, so they'll clog up storage*
-- Avoid losing Data with Autosaves
+- Avoid losing Data with Autosaves.
+- Configure the app to your liking with the Settings page (WIP).
 
 ## Installation
 
@@ -79,7 +80,6 @@ This is a Web-based Editor which can run locally or on a home server.
 
 - Refactor Code for the single-function principle
 - Full Image support
-  - Unused Images should be deleted from the Server.
   - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
 - Collapsing / Expanding Folders
 
@@ -96,12 +96,9 @@ This is a Web-based Editor which can run locally or on a home server.
   - Manage
     - Storage
       - Maximum image size (in mb)
-      - Clear unused images (search all the JSON and clear images which aren't used anywhere).
       - Maximum PDF export size
     - Saving config
-      - Autosaving interval
       - Number of backed-up versions
-  - Info (Lucide & TipTap credit, etc.)
 - Containerization
 - Language Selection List for Codeblocks
 - Allow the user to save a Document when Discard Button is clicked.
