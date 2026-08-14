@@ -52,12 +52,14 @@ const saveSettingsButton = document.querySelector("#saveSettingsButton");
 const displayTab = document.querySelector("#displayTab");
 const keybindsTab = document.querySelector("#keybindsTab");
 const manageTab = document.querySelector("#manageTab");
+const infoTab = document.querySelector("#infoTab");
 
 // Array of every tab
 const allTabs = [
   { name: "display", element: displayTab },
   { name: "keybinds", element: keybindsTab },
   { name: "manage", element: manageTab },
+  { name: "info", element: infoTab },
 ];
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).

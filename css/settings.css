@@ -143,3 +143,14 @@ hr.separator {
   border-radius: 5px;
   cursor: pointer;
 }
+.button a {
+  color: #000000;
+  text-decoration: none;
+}
+/* Settings which have an icon in their title. */
+.settingIcon {
+  display: flex;
+}
+.settingIcon img {
+  margin-right: 5px;
+}
