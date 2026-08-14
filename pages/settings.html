@@ -21,6 +21,10 @@
     <hr>
     <div id="settingsView">
         <div id="settingsSidebar">
+            <div id="displayTab" class="tab hoverClass">
+                <img src="../assets/settings/display.svg" class="tabIcon">
+                <p>Display</p>
+            </div>
             <div id="keybindsTab" class="tab hoverClass">
                 <img src="../assets/settings/keybinds.svg" class="tabIcon">
                 <p>Keybinds</p>
@@ -36,8 +40,8 @@
             <div id="manage" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/settings/storage.svg" class="groupIcon">
-                        <p>Storage</p>
+                        <img src="../assets/function/save.svg" class="groupIcon">
+                        <p>Save Config</p>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
@@ -51,6 +55,12 @@
                         <div class="settingValue">
                             <input type="number" id="autosaveInterval">
                         </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/storage.svg" class="groupIcon">
+                        <p>Storage</p>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
@@ -70,7 +80,17 @@
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p><del>Keybinds</del> This area is under construction! Please be patient while I figure this feature out... 🤔</p>
+                        <p><del>Keybinds</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔</p>
+                    </div>
+                </div>
+            </div>
+            <div id="display" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p><del>Display</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔</p>
                     </div>
                 </div>
             </div>
