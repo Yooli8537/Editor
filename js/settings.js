@@ -25,17 +25,6 @@ const saveSettingsButton = document.querySelector("#saveSettingsButton");
 const keybindsTab = document.querySelector("#keybindsTab");
 const manageTab = document.querySelector("#manageTab");
 
-let settingsChanged = false;
-
-// Warns before reloading / closing a Tab
-window.addEventListener("beforeunload", (e) => {
-  if (settingsChanged == true) {
-    e.preventDefault();
-    e.returnValue = "";
-    console.log("WARN");
-  }
-});
-
 // Array of every tab
 const allTabs = [
   { name: "keybinds", element: keybindsTab },
@@ -64,20 +53,8 @@ function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
 }
 
-let saveButtonInterval = null;
-function checkForSettings() {
-  saveButtonInterval = setInterval(() => {
-    if (settingsChanged) {
-      saveSettingsButton.style.opacity = 1;
-    } else {
-      saveSettingsButton.style.opacity = 0.5;
-    }
-  }, 1000);
-}
-
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
   console.log(master);
   addTabListeners();
-  checkForSettings();
 }
