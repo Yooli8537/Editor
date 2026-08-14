@@ -1,12 +1,11 @@
 # Editor
 
-This is a Web-based Editor which can run locally or on a home server. The project is powered by an Express and Vite server, with Tiptap extensions powering the editor itself. It's easy to keep your documents organized with a sidebar including as many levels of folders as your heart desires and a search, so that you can always find what you're looking for.
+This is a Web-based Editor which can run locally or on a home server. The project is powered by vanilla HTML, CSS and JS, an Express and Vite server, with Tiptap extensions powering the editor itself. It's easy to keep your documents organized with a sidebar including as many levels of folders as your heart desires and a search, so that you can always find what you're looking for.
 
 ## Contents
 
 - [Features](#features)
 - [Installation](#installation)
-- [Update Guide](#update-guide)
 - [Known Issues](#known-issues)
 - [Planned Features](#planned-features)
 - [Notes](#notes)
@@ -46,17 +45,8 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 
 - Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
 
-### Priority
-
-- Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
-- Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
-
 ### To be fixed
 
-- Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
-- Can't search with `Enter`.
-- When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
-- Empty Links style as links and link to the root of the app.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Confirmation Modals can't be confirmed with the Enter Key.
 - Pasting in Code from Word which was pasted in from VSC or Code copied directly from GitHub makes the line spacing very big.
