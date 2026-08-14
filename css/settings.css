@@ -1,4 +1,30 @@
 /* CSS for the settings page */
+/* Title area */
+#titleBar {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 2%;
+  align-items: center;
+}
+
+#saveSettingsButton {
+  background-color: #eeeeee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24px;
+  font-weight: 600;
+  margin-right: 2%;
+  height: auto;
+  padding: 0.4%;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  opacity: 0.5;
+}
+#saveSettingsButton img {
+  margin-right: 10px;
+}
+
 /* Margin for the separator between sidebar & page. */
 hr.separator {
   margin-left: 0.5vw;
@@ -41,14 +67,9 @@ hr.separator {
   height: 4%;
   margin-left: 10%;
   margin-top: 2%;
-  background-color: #fefefe;
-  border: 3px solid #000000ba;
+  background-color: #eeeeee;
+  border: 3px solid #000000;
   border-radius: 5px;
-  cursor: pointer;
-}
-
-.tab:hover {
-  background-color: #3cb372;
 }
 
 .tabIcon {
@@ -62,7 +83,7 @@ hr.separator {
 }
 
 .tabHighlight {
-  background-color: #3cb372;
+  background-color: #84ecb3;
 }
 
 /* The title of a group within the settings page */

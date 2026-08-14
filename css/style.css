@@ -21,6 +21,14 @@ hr.vertical {
   display: none;
 }
 
+/* Class with special properties when hovered over. */
+.hoverClass {
+  cursor: pointer;
+}
+.hoverClass:hover {
+  background-color: #3cb372 !important;
+}
+
 /* Makes the entire app's parent display a flex. */
 #view {
   display: flex;

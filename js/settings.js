@@ -1,4 +1,26 @@
 // Settings Menu
+// Imports
+import { createErrorModal } from "./utils";
+
+// Getting the master file
+let master;
+async function getMasterfile() {
+  const rawMasterFile = await fetch("../api/getMaster", {
+    method: "GET",
+  });
+
+  if (rawMasterFile.ok) {
+    const masterData = await rawMasterFile.json();
+    master = masterData;
+    return true;
+  } else {
+    createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+    return false;
+  }
+}
+
+// Save button
+const saveSettingsButton = document.querySelector("#saveSettingsButton");
 // Different tabs
 const keybindsTab = document.querySelector("#keybindsTab");
 const manageTab = document.querySelector("#manageTab");
@@ -19,10 +41,6 @@ const allTabs = [
   { name: "keybinds", element: keybindsTab },
   { name: "manage", element: manageTab },
 ];
-
-manageTab.addEventListener("click", (e) => {
-  hideAllPages();
-});
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -46,4 +64,20 @@ function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
 }
 
-addTabListeners();
+let saveButtonInterval = null;
+function checkForSettings() {
+  saveButtonInterval = setInterval(() => {
+    if (settingsChanged) {
+      saveSettingsButton.style.opacity = 1;
+    } else {
+      saveSettingsButton.style.opacity = 0.5;
+    }
+  }, 1000);
+}
+
+// Waits for the masterfile before adding the event listeners for the tabs.
+if (await getMasterfile()) {
+  console.log(master);
+  addTabListeners();
+  checkForSettings();
+}
