@@ -1,6 +1,6 @@
 // Settings Menu
 // Imports
-import { createErrorModal } from "./utils";
+import { createErrorModal, createInfoModal } from "./utils";
 
 // Getting the master file
 let master;
@@ -20,7 +20,22 @@ async function getMasterfile() {
 }
 
 async function updateMasterfile(updateData) {
-  const masterUpdate = await fetch("../api/updateMaster")
+  console.log(updateData);
+  const masterUpdate = await fetch("../api/updateMaster", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      data: updateData,
+    }),
+  });
+
+  if (masterUpdate.ok) {
+    console.log("Successfully updated settings.");
+    createInfoModal("Successfully updated settings.");
+  } else {
+    console.error("Failed to update settings.");
+    createErrorModal(`Failed to update settings. ${masterUpdate.status}`);
+  }
 }
 
 /*
@@ -45,9 +60,7 @@ const allTabs = [
 
 // Array of every page that shows up when you click a tab.
 const autosaveInterval = document.querySelector("#autosaveInterval");
-const allPages = {
-  manage: [autosaveInterval],
-};
+const allSettings = [autosaveInterval];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -66,15 +79,18 @@ function hideAllPages() {
   }
 }
 
+// Loads settings data before anything else is shown.
+// Without this, values which weren't loaded are set to 0 / null.
+function preLoadSettingsData() {
+  // Applies values into the settings as preview values.
+  for (let i = 0; i < allSettings.length; i++) {
+    allSettings[i].value = master[allSettings[i].id];
+  }
+}
+
 // Shows a given page.
 function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
-  // Gets all the settings from the current page.
-  const currentPageSettings = allPages[pageName];
-  // Applies values into the settings as preview values.
-  for (let i = 0; i < currentPageSettings.length; i++) {
-    currentPageSettings[i].value = master[currentPageSettings[i].id];
-  }
 }
 
 // Saving the settings
@@ -94,11 +110,13 @@ saveSettingsButton.addEventListener("click", async (e) => {
   for (let j = 0; j < stringSettings.length; j++) {
     master[stringSettings[i].id] = stringSettings[i].value;
   }
-  console.log(master);
+  // Sends the updated data to the server.
+  updateMasterfile(master);
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
   console.log(master);
+  preLoadSettingsData();
   addTabListeners();
 }

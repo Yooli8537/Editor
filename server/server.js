@@ -153,6 +153,12 @@ app.get("/api/getMaster", async (req, res) => {
   }
 });
 
+app.post("/api/updateMaster", async (req, res) => {
+  console.log(req.body);
+  const { data } = req.body;
+  res.json({ success: true });
+});
+
 // Server routes
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
