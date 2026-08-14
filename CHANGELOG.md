@@ -25,6 +25,7 @@
 - Image resize now works.
 - When reloading the editor, the selected file is now highlighted again.
 - When closing the editor, the Tab title adjusts.
+- Cleaned up the code for all files (except for `sidebar.js`).
 
 ## v1.2.0-beta - Autosaves
 
