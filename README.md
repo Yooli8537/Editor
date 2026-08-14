@@ -20,21 +20,23 @@ This is a Web-based Editor which can run locally or on a home server.
   - Bold
   - Italic
   - Underlined
+  - Highlighting
   - Inline Code
   - Tables
   - Links
+  - Images (copy-paste)
 - Sidebar allowing for easy navigation of the Folder Structure
 - Search Bar
 - Undo / Redo
 - Export Documents as .pdf files.
 - Always continue where you left off with URLs for any page.
-- Add Images and never delete them! *Seriously, they aren't deleted automatically right now, so they'll clog up storage*
-- Avoid losing Data with Autosaves
+- Avoid losing Data with Autosaves.
+- Configure the app to your liking with the Settings page (WIP).
 
 ## Installation
 
-1. Clone the Repo using `git clone https://github.com/Yooli8537/Editor`.
-2. Run `npm install`.
+1. Clone the repository using `git clone https://github.com/Yooli8537/Editor` or download a recent release and unzip it.
+2. Run `npm install` within the repository's directory.
 3. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
 
 ## Update Guide
@@ -50,10 +52,7 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ### Priority
 
-- Image resize doesn't work.
 - Renaming a Folder in which a file is currently open doesn't update the file's path, thus making saving and other operations impossible.
-- Helptexts within submenus do not disappear when you click on the function, they just stick around.
-- When switching between Documents with images inside them, the images are replaced with the images of the previously opened document, but only inside the browser, not the file itself.
 - Sidebar Code is geuinely impossible to understand. 1000 previousentries but they're never defined and all have a different use. Help.
 
 ### To be fixed
@@ -61,7 +60,6 @@ This is a Web-based Editor which can run locally or on a home server.
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
 - Can't search with `Enter` :(
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
-- Importing Tables from Excel (and likely other sources) makes tables bigger than mount Everest.
 - Empty Links style as links and link to the root of the app.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
 - Confirmation Modals can't be confirmed with the Enter Key.
@@ -72,6 +70,9 @@ This is a Web-based Editor which can run locally or on a home server.
 - Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
 - When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
 - When renaming a file, it will likely not recognize its previous autosaves.
+- Leaving an unsaved document highlights the newly selected one, even if you press "back".
+- Clicking on the already active & unsaved document on the sidebar gives out both an autosave restoration and discard changes modal.
+- Importing tables from Excel (and likely other sources) adds an image and a table.
 
 ## Planned Features
 
@@ -79,11 +80,8 @@ This is a Web-based Editor which can run locally or on a home server.
 
 - Refactor Code for the single-function principle
 - Full Image support
-  - Unused Images should be deleted from the Server.
   - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
 - Collapsing / Expanding Folders
-- Some kind of highlighting
-- Extension: Audio
 
 ### Functional
 
@@ -94,18 +92,21 @@ This is a Web-based Editor which can run locally or on a home server.
   - Display
     - Dark / Light Mode
     - Amount of Characters before "..."
-  - Saving Config
-    - Autosaving Interval
-    - Number of Backed-Up Versions
   - Edit Formats
-  - Info (Lucide & TipTap credit, etc.)
+  - Manage
+    - Storage
+      - Maximum image size (in mb)
+      - Maximum PDF export size
+    - Saving config
+      - Number of backed-up versions
 - Containerization
 - Language Selection List for Codeblocks
 - Allow the user to save a Document when Discard Button is clicked.
 - Advanced Images
   - Label Images
-  - Hovering over an Image shows it's label.
+  - Hovering over an Image shows its label.
   - Image labels can be searched through.
+  - Different Image positions (left / right)
 - Support long names by replacing them with "..." if they get >25 characters long. Cap at 50 instead of 30.
 
 ### Cosmetic

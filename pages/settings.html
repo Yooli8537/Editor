@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Settings</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <script type="module" src="../js/settings.js" defer></script>
+    <link rel="icon" href="../assets/icons/settings.svg">
+</head>
+
+<body>
+    <div id="titleBar">
+        <h1>Settings</h1>
+        <button type="submit" id="saveSettingsButton" class="hoverClass">
+            <img src="../assets/function/save.svg"> Save
+        </button>
+    </div>
+    <hr>
+    <div id="settingsView">
+        <div id="settingsSidebar">
+            <div id="displayTab" class="tab hoverClass">
+                <img src="../assets/settings/display.svg" class="tabIcon">
+                <p>Display</p>
+            </div>
+            <div id="formatsTab" class="tab hoverClass">
+                <img src="../assets/settings/format.svg" class="tabIcon">
+                <p>Formats</p>
+            </div>
+            <div id="keybindsTab" class="tab hoverClass">
+                <img src="../assets/settings/keybinds.svg" class="tabIcon">
+                <p>Keybinds</p>
+            </div>
+            <div id="manageTab" class="tab hoverClass">
+                <img src="../assets/settings/manage.svg" class="tabIcon">
+                <p>Manage</p>
+            </div>
+            <div id="infoTab" class="tab hoverClass">
+                <img src="../assets/settings/info.svg" class="tabIcon">
+                <p>Info</p>
+            </div>
+        </div>
+        <hr class="vertical separator">
+        <div id="settingsPage">
+
+            <div id="manage" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/function/save.svg" class="groupIcon">
+                        <p>Save Config</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Autosave Interval (seconds)</div>
+                            <div class="settingDescription">Set the amount of time the server waits before attempting to
+                                create another autosave. Note that each autosave overwrites the previous one, so the
+                                cost of autosaving is mostly network traffic and not having enough storage for it.
+                                Automatically rounded to the nearest 0.1s.</div>
+                            <div class="settingDefault">Default: 10s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="autosaveInterval">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/storage.svg" class="groupIcon">
+                        <p>Storage</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Clear unused Images</div>
+                            <div class="settingDescription">Searches through all your documents and removes any unused
+                                images from the server storage. This may take a while if you have a lot of documents.
+                            </div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" class="button hoverClass" id="clearImagesButton">Clear Images</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="keybinds" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p><del>Keybinds</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="display" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p><del>Display</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="formats" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p><del>Formats</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="info" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/info.svg" class="groupIcon">
+                        <p>Info</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Version</div>
+                            <div>You are currently on Editor version <i>v1.3.0-beta.</i></div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" class="button hoverClass">
+                                <a href="https://github.com/Yooli8537/Editor/releases" target="_blank">Check for new
+                                    Versions</a></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/credits.svg" class="groupIcon">
+                        <p>Credits</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle"><img src="../assets/icons/tiptap.svg"></div>
+                            <div>TipTap is a free and Open-Source Editor which you can set up easily for your browser.
+                                TipTap's easy and intuitive Editor and Extensions are the backbone of this entire app.
+                            </div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" class="button hoverClass">
+                                <a href="https://tiptap.dev/" target="_blank">Visit TipTap!</a></button>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle settingIcon"><img src="../assets/icons/lucide.svg"> Lucide</div>
+                            <div>Lucide provides thousands of beautiful icons for anyone to use, so I took advantage of
+                                that whilst developing the app. If you ever need a nice icon, Lucide probably has the
+                                right one for you.
+                            </div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" class="button hoverClass">
+                                <a href="https://lucide.dev/" target="_blank">Visit Lucide!</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -5,24 +5,23 @@ import {
   createPromptModal,
   createErrorModal,
 } from "./utils";
-import { checkForAutosave, closeEditor } from "./editor";
+import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
 import { getState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
 const rootButton = document.querySelector("#rootButton");
-const editorView = document.querySelector("#editorView");
 
-let searchIsOpen;
+let searchIsOpen = false;
 
-// Creating Elements
+// Creates the wrapper for sidebar elements.
 function createWrapper() {
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper");
   return wrapper;
 }
 
-// Creating Search
+// Creating search
 let key = "";
 function createSearch() {
   const searchWrapper = document.createElement("div");
@@ -33,7 +32,7 @@ function createSearch() {
   input.classList.add("searchField");
   input.type = "text";
 
-  // Sets the Search Key at the top.
+  // Sets the search key into the search bar after a search.
   if (searchIsOpen) {
     input.value = key;
   }
@@ -42,6 +41,7 @@ function createSearch() {
   icon.classList.add("sidebarButton");
   icon.src = "../assets/function/search.svg";
 
+  // When the search icon is clicked, the search is activated.
   icon.addEventListener("click", async () => {
     key = input.value;
     if (!key) return;
@@ -53,10 +53,10 @@ function createSearch() {
       const results = await search.json();
       searchIsOpen = true;
 
-      // Replacing Sidebar with Results
       folderStructure.innerHTML = "";
       folderStructure.appendChild(createSearch());
 
+      // Replacing Sidebar with Results
       results.forEach((result) => {
         const wrapper = createWrapper();
         const file = createFile(
@@ -74,6 +74,7 @@ function createSearch() {
   });
 
   if (searchIsOpen) {
+    // Creating close button to close the search.
     const closeButton = document.createElement("img");
     closeButton.classList.add("sidebarButton");
     closeButton.src = "../assets/function/cancel.svg";
@@ -122,7 +123,7 @@ function createFile(entry, previousEntry) {
         `?path=${previousEntry}&document=${entry.name}`,
       ); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
-      checkForAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
+      loadAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
@@ -132,12 +133,13 @@ function createFile(entry, previousEntry) {
     checkForSelectedFile(previousEntry + entry.name, file);
   });
 
+  // Checks for the selected file on startup.
   checkForSelectedFile(previousEntry + entry.name, file);
 
   return file;
 }
 
-// Setting Sidebar Icon
+// Creating an icon for the sidebar
 function setIcon(iconPath) {
   const icon = document.createElement("img");
   icon.classList.add("sidebarIcon");
@@ -155,14 +157,17 @@ function createFolderActions(path, previousEntry) {
   createButton.classList.add("hoverButton", "sidebarIcon");
   createButton.src = "../assets/function/plus.svg";
 
-  // Dropdown
+  // Dropdown to give choice between Folder & File.
   createButton.addEventListener("click", (e) => {
     e.stopPropagation();
     buttons.appendChild(createCreationDropdown(buttons, path, previousEntry));
   });
 
   document.addEventListener("click", () => {
-    removeDropdowns();
+    // Removes the creationDropdown when clicking anywhere.
+    document
+      .querySelectorAll(".creationDropdown")
+      .forEach((creationDropdown) => creationDropdown.remove());
   });
 
   const renameButton = document.createElement("img");
@@ -211,7 +216,6 @@ function createFolderActions(path, previousEntry) {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: path,
             folderPath: previousEntry + path,
           }),
         });
@@ -255,7 +259,6 @@ function createFileActions(path, previousEntry) {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: path,
             folderPath: previousEntry + path,
           }),
         });
@@ -342,13 +345,13 @@ export async function buildSidebar() {
   folderStructure.appendChild(createSearch());
 
   renderEntries(data, 0, "");
+  console.log("Sidebar ready!");
 }
-
-buildSidebar();
 
 // Checks if the current file is selected and highlights it if true.
 export function checkForSelectedFile(file, sidebarFile) {
   if (getState("currentDocument") === file) {
+    console.log();
     const selectedDocs = document.querySelectorAll(".selected");
     for (let i = 0; i < selectedDocs.length; i++) {
       selectedDocs[i].classList.remove("selected");
@@ -357,13 +360,13 @@ export function checkForSelectedFile(file, sidebarFile) {
   }
 }
 
-// Dropdown to choose between File & Folder
+// creationDropdown to choose between File & Folder
 function createCreationDropdown(parent, path, previousEntry) {
-  const dropdown = document.createElement("div");
-  dropdown.classList.add("dropdown");
+  const creationDropdown = document.createElement("div");
+  creationDropdown.classList.add("creationDropdown");
 
   const fileButton = document.createElement("div");
-  fileButton.classList.add("dropdownOption");
+  fileButton.classList.add("creationDropdownOption");
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
@@ -390,7 +393,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   });
 
   const folderButton = document.createElement("div");
-  folderButton.classList.add("dropdownOption");
+  folderButton.classList.add("creationDropdownOption");
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
@@ -416,24 +419,18 @@ function createCreationDropdown(parent, path, previousEntry) {
     });
   });
 
-  dropdown.appendChild(fileButton);
-  dropdown.appendChild(folderButton);
+  creationDropdown.appendChild(fileButton);
+  creationDropdown.appendChild(folderButton);
 
   const position = parent.getBoundingClientRect();
-  dropdown.style.position = "absolute";
-  dropdown.style.top = position.top + "px";
-  dropdown.style.left = position.right + "px";
+  creationDropdown.style.position = "absolute";
+  creationDropdown.style.top = position.top + "px";
+  creationDropdown.style.left = position.right + "px";
 
-  return dropdown;
+  return creationDropdown;
 }
 
-function removeDropdowns() {
-  document
-    .querySelectorAll(".dropdown")
-    .forEach((dropdown) => dropdown.remove());
-}
-
-// Creating new Notebook
+// Creating a new notebook
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 

@@ -3,58 +3,48 @@ body {
   font-weight: 500;
 }
 
-.hidden {
-  display: none;
+a {
+  cursor: pointer;
 }
 
-#view {
-  display: flex;
-}
-
-#contentView {
-  width: 79vw;
-}
-
-#wrapper {
-  border: 3px solid #000;
-  border-radius: 8px;
-}
-
-.createButton {
-  font-size: larger;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.centerItems {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* Vertical separator */
 hr.vertical {
-  width: 1px;
-  height: auto;
+  width: 2px;
+  height: inherit;
   margin-left: 2px;
   margin-right: 2px;
   border: none;
   background-color: #000;
 }
 
-.dropdown {
-  background-color: #eeeeee;
-  padding: 2px;
-  border: 1px solid #000;
-  border-radius: 5px;
+.hidden {
+  display: none;
 }
 
-.dropdownOption:hover {
-  padding: 2px;
+/* Class with special properties when hovered over. */
+.hoverClass {
   cursor: pointer;
-  background-color: #3cb372cc;
-  border-radius: 3px;
+}
+.hoverClass:hover {
+  background-color: #3cb372 !important;
 }
 
+/* Makes the entire app's parent display a flex. */
+#view {
+  display: flex;
+}
+
+/* Settings button */
+#settingsButton {
+  height: 4%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
+/* Modal CSS */
+/* Modal body */
 .modal {
   display: flex;
   flex-direction: column;
@@ -73,12 +63,14 @@ hr.vertical {
   padding: 10px;
 }
 
+/* Input field within a modal. */
 .inputField {
   margin: 5px;
   background-color: #dddddd;
   width: 90%;
 }
 
+/* Field which contains buttons within a modal. */
 .modalButtons {
   display: flex;
   justify-content: flex-end;
@@ -86,11 +78,13 @@ hr.vertical {
   margin-top: 10px;
 }
 
+/* Buttons within the field for buttons within a modal. */
 .modalButton {
   cursor: pointer;
   vertical-align: middle;
 }
 
+/* A button within a modal with text written on it instead of an icon. */
 .modalTextButton {
   cursor: pointer;
   vertical-align: middle;
@@ -100,6 +94,7 @@ hr.vertical {
   padding: 2px;
 }
 
+/* The background that shows up when a modal is created. */
 .clickable {
   position: fixed;
   top: 0;
@@ -110,6 +105,12 @@ hr.vertical {
   z-index: 10;
 }
 
+/* Highlighting buttons within modals. */
 .highlight {
   background-color: #55c788cc;
+}
+
+/* Error message within modals. */
+.errorMsg {
+  color: #ff0000;
 }

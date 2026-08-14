@@ -8,6 +8,7 @@ import FileHandler from "@tiptap/extension-file-handler";
 import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
+import Highlight from "@tiptap/extension-highlight";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -41,6 +42,7 @@ const extensions = [
   TableKit,
   ListKit,
   Image.configure({
+    inline: true,
     resize: {
       enabled: true,
       directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
@@ -58,18 +60,15 @@ const extensions = [
         editor.chain().setImage({ src: url }).run();
       }
     },
-    onDrop: async (editor, files, pos) => {
-      for (const file of files) {
-        const url = await uploadImage(file);
-        editor.chain().setImage({ src: url }).run();
-      }
-    },
   }),
   Emoji,
   CodeBlockLowlight.configure({
     lowlight,
     enableTabIndentation: true,
     tabSize: 2,
+  }),
+  Highlight.configure({
+    multicolor: true,
   }),
 ];
 
@@ -112,9 +111,18 @@ let currentDocument;
 let currentEntry;
 let currentPreviousEntry;
 
-// Checks for an autosave and prompts the user to restore it.
-export async function checkForAutosave(fileData, document, path) {
+// Checks for an autosave
+export function checkForAutosave(document) {
   if (getState("unsavedFiles").indexOf(document) > -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Prompts the user to restore the autosave
+export async function loadAutosave(fileData, document, path) {
+  if (checkForAutosave(document)) {
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
@@ -142,7 +150,6 @@ export async function checkForAutosave(fileData, document, path) {
       },
     );
   } else {
-    // Loads document with Data from the file if no Autosave is found.
     loadDocument(fileData, document, path);
   }
 }
@@ -216,6 +223,10 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
+    if (checkForAutosave(currentEntry)) {
+      removeAutosave();
+    }
+
     currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
     documentTitle.textContent = newName;
@@ -296,6 +307,7 @@ const codeBlockButton = document.querySelector("#codeBlock");
 const boldButton = document.querySelector("#bold");
 const italicButton = document.querySelector("#italic");
 const underlineButton = document.querySelector("#underline");
+const highlightButton = document.querySelector("#highlight");
 const inlineCodeButton = document.querySelector("#code");
 const tableCreateButton = document.querySelector("#tableCreate");
 const tableDeleteButton = document.querySelector("#tableDelete");
@@ -341,7 +353,7 @@ setHelpText(headings, "Headings");
 headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
-  createSubmenu(headingsButton, headingItems);
+  createSubmenu(headingsButton, headingItems, 1);
 });
 
 // Items for the Lists Submenu
@@ -367,7 +379,7 @@ setHelpText(listsButton, "Lists");
 listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(listsButton, listItems);
+  createSubmenu(listsButton, listItems, 1);
 });
 
 setHelpText(codeBlockButton, "Code Block");
@@ -392,6 +404,88 @@ setHelpText(underlineButton, "Underline");
 underlineButton.addEventListener("click", (e) => {
   e.preventDefault();
   editor.chain().focus().toggleUnderline().run();
+});
+
+const highlightItems = [
+  {
+    icon: "yellow.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#ffff00" }).run(),
+    helpText: "Yellow",
+  },
+  {
+    icon: "orange.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#ff6600" }).run(),
+    helpText: "Orange",
+  },
+  {
+    icon: "red.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#ff0000" }).run(),
+    helpText: "Red",
+  },
+  {
+    icon: "pink.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#ff70f3" }).run(),
+    helpText: "Pink",
+  },
+  {
+    icon: "magenta.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#ff00ea" }).run(),
+    helpText: "Magenta",
+  },
+  {
+    icon: "purple.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#8000ff" }).run(),
+    helpText: "Purple",
+  },
+  {
+    icon: "blue.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#0000ff" }).run(),
+    helpText: "Blue",
+  },
+  {
+    icon: "light-blue.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#007bff" }).run(),
+    helpText: "Light Blue",
+  },
+  {
+    icon: "aqua.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#00ffd5" }).run(),
+    helpText: "Aqua",
+  },
+  {
+    icon: "lime.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#00ff4c" }).run(),
+    helpText: "Lime",
+  },
+  {
+    icon: "dark-green.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#026b00" }).run(),
+    helpText: "Dark Green",
+  },
+  {
+    icon: "brown.svg",
+    action: () =>
+      editor.chain().focus().setHighlight({ color: "#803900" }).run(),
+    helpText: "Brown",
+  },
+];
+
+setHelpText(highlightButton, "Highlight (click to remove)");
+highlightButton.addEventListener("click", (e) => {
+  e.stopPropagation();
+  editor.chain().focus().unsetHighlight().run();
+  createSubmenu(highlightButton, highlightItems, 4);
 });
 
 setHelpText(inlineCodeButton, "Inline Code");
@@ -437,7 +531,7 @@ setHelpText(tableCreateButton, "Table Actions");
 tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(tableCreateButton, tableCreateItems);
+  createSubmenu(tableCreateButton, tableCreateItems, 2);
 });
 
 const tableDeleteItems = [
@@ -462,7 +556,7 @@ setHelpText(tableDeleteButton, "Table delete Actions");
 tableDeleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(tableDeleteButton, tableDeleteItems);
+  createSubmenu(tableDeleteButton, tableDeleteItems, 1);
 });
 
 const linkEditButtons = [
@@ -491,7 +585,7 @@ setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(linkButton, linkEditButtons);
+  createSubmenu(linkButton, linkEditButtons, 1);
 });
 
 // Functional Buttons
@@ -500,8 +594,16 @@ exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
-  // Selects the first result, which should always be the Editor if things are working properly. The HTML is used to Export the Document.
-  const exportDocument = editorLocation[0].outerHTML;
+
+  // Getting raw HTML to process images (change src).
+  // Selects the first result, which should always be the Editor if things are working properly.
+  const rawDocHTML = editorLocation[0].cloneNode(true);
+  const documentImages = rawDocHTML.querySelectorAll("img");
+  for (let i = 0; i < documentImages.length; i++) {
+    documentImages[i].src = documentImages[i].src;
+  }
+
+  const exportDocument = rawDocHTML.outerHTML;
 
   createConfirmModal(
     "Are you sure you want to Export the current Document?",
@@ -558,14 +660,11 @@ discardButton.addEventListener("click", (e) => {
         console.log("Changes Discarded.");
         setState("currentDocument", null);
         buildSidebar();
-        history.pushState(null, "", "/");
       },
     );
   } else {
     closeEditor();
-    setState("currentDocument", null);
     buildSidebar();
-    history.pushState(null, "", "/");
   }
 });
 
@@ -583,8 +682,10 @@ async function pushSaveData() {
   // Error handling
   if (response.ok) {
     console.log("Successfully saved Document.");
-    removeAutosave();
     editorIsSaved = true;
+    if (checkForAutosave(currentEntry)) {
+      removeAutosave();
+    }
     updateSaveIcons();
   } else if (response.status === 404) {
     createErrorModal("Couldn't find File to save.");
@@ -659,32 +760,35 @@ setInterval(() => {
   updateSaveIcons();
 }, 1000);
 
-// Requests a new autosave every 10s.
-setInterval(async () => {
-  const saveData = editor.getJSON();
+let autosave = null;
+// Initializes the autosave.
+async function initAutosave(autosaveInterval) {
+  autosave = setInterval(async () => {
+    const saveData = editor.getJSON();
 
-  if (editorIsSaved === false) {
-    // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
-    if (!checkState("unsavedFiles", currentEntry)) {
-      addState("unsavedFiles", currentEntry);
-    }
-    const autosave = await fetch("api/autosave", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        saveData: saveData,
-        folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
-        name: currentEntry, // currentEntry is the file's name.
-      }),
-    });
+    if (editorIsSaved === false) {
+      // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
+      if (!checkState("unsavedFiles", currentEntry)) {
+        addState("unsavedFiles", currentEntry);
+      }
+      const autosave = await fetch("api/autosave", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          saveData: saveData,
+          folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
+          name: currentEntry, // currentEntry is the file's name.
+        }),
+      });
 
-    if (autosave.ok) {
-      console.log(
-        `Successfully created Autosave for document ${currentEntry}.`,
-      );
+      if (autosave.ok) {
+        console.log(
+          `Successfully created Autosave for document ${currentEntry}.`,
+        );
+      }
     }
-  }
-}, 10000);
+  }, autosaveInterval);
+}
 
 // Removes any autosaves from the server.
 async function removeAutosave() {
@@ -707,13 +811,18 @@ async function removeAutosave() {
 export function closeEditor() {
   editorView.classList.add("hidden");
   console.log("Editor Closed.");
+  setState("currentDocument", null);
+  history.pushState(null, "", "/");
+  document.title = "Editor";
   editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
 // Opens Document from URL if one is present.
-async function onFirstStart() {
-  // Loads Data from master.json into state.js
-  getMaster();
+export async function onFirstStart() {
+  // Loads Data from master.json and activates autosave upon success.
+  if (await getMaster()) {
+    initAutosave(getState("autosaveInterval") * 1000);
+  }
 
   const params = new URLSearchParams(window.location.search);
   const path = params.get("path");
@@ -722,7 +831,6 @@ async function onFirstStart() {
   // Stops auto-open if no document is provided.
   if (document === null) {
     console.log("App ready!");
-    return;
   } else {
     // Getting the Document from the URL.
     const response = await fetch(
@@ -735,7 +843,7 @@ async function onFirstStart() {
     if (response.ok) {
       const fileData = await response.json();
       setState("currentDocument", path + document);
-      checkForAutosave(fileData, document, path);
+      loadAutosave(fileData, document, path);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
     } else {
@@ -743,6 +851,8 @@ async function onFirstStart() {
     }
   }
   console.log("Editor ready!");
+
+  buildSidebar();
 }
 
 onFirstStart();

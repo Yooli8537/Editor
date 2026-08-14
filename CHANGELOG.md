@@ -1,5 +1,36 @@
 # Changelog
 
+## v1.3.0-beta - Settings & Image clearing
+
+### Added
+
+- Text Highlighting! It's pretty! I guess.
+- Settings Menu - Explore a new tab full of configuration! Well, not yet, but in the future. Current settings:
+  - Autosave Interval
+  - Clear unused Images - Automatically clears all unused images from the server storage! It's pretty quick too.
+- Many Settings sections are still under construction and will roll out over time. The reason I implemented the settings I did is because autosaveInterval was a good start to get all the code working, and the image clear was deeply necessary.
+
+### Changed
+
+- Images are now styled as inline.
+- Cleaned up the code for all files to make sure it can all be easily read & understood (except for `sidebar.js`).
+- Corrected license.
+- Updated Tab Icons.
+
+### Removed
+
+- Removed Image Drag & Drop due to issues with duplicating images.
+
+### Fixed
+
+- Saving a file no longer sends unnecessary `DELETE` request to the server.
+- Helptexts within submenus do now disappear when you click on the function.
+- Images now render correctly when a Document is exported. This is the fix btw:
+`documentImages[i].src = documentImages[i].src;`
+- Image resize now works.
+- When reloading the editor, the selected file is now highlighted again.
+- When closing the editor, the Tab title adjusts.
+
 ## v1.2.0-beta - Autosaves
 
 ### Added

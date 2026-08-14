@@ -4,10 +4,7 @@ Non-Commercial Redistribution License
 
 Permission is granted to use, copy, modify, and distribute this software for personal, educational or non-commercial purposes.
 
-Playing this software, streaming it, recording it, or creating monetized content (such as videos, livestreams, or articles) that features or showcases this software is explicitly permitted and does not require separate permission, even if such content generates revenue for its creator.
-
-Redistribution of this software, in original or modified form - including but not limited to reuploading, repackaging or selling copies - requires prior written permission from the copyright holder.
-This applies whenever the redistribution itself is monetized.
+Redistribution of this software, in original or modified form - including but not limited to reuploading, repackaging or selling copies - requires prior written permission from the copyright holder. This applies whenever the redistribution itself is monetized.
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
