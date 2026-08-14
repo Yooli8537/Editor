@@ -60,7 +60,7 @@ const allTabs = [
   { name: "manage", element: manageTab },
 ];
 
-// Array of every page that shows up when you click a tab.
+// Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const allSettings = [autosaveInterval];
 
@@ -78,6 +78,9 @@ function addTabListeners() {
 function hideAllPages() {
   for (let i = 0; i < allTabs.length; i++) {
     document.querySelector(`#${allTabs[i].name}`).classList.add("hidden");
+    document
+      .querySelector(`#${allTabs[i].name}Tab`)
+      .classList.remove("tabHighlight");
   }
 }
 
@@ -93,6 +96,7 @@ function preLoadSettingsData() {
 // Shows a given page.
 function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
+  document.querySelector(`#${pageName}Tab`).classList.add("tabHighlight");
 }
 
 // Saving the settings
