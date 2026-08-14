@@ -18,7 +18,14 @@ async function getMasterfile() {
     return false;
   }
 }
-
+/*
+// Warns before reloading / closing the settings.
+window.addEventListener("beforeunload", (e) => {
+  e.preventDefault();
+  e.returnValue = "";
+  console.log("WARN");
+});
+*/
 // Save button
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
 // Different tabs
@@ -30,6 +37,12 @@ const allTabs = [
   { name: "keybinds", element: keybindsTab },
   { name: "manage", element: manageTab },
 ];
+
+// Array of every page that shows up when you click a tab.
+const autosaveInterval = document.querySelector("#autosaveInterval");
+const allPages = {
+  manage: [autosaveInterval],
+};
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -48,10 +61,26 @@ function hideAllPages() {
   }
 }
 
+let hf = "autosaveInterval"
+
 // Shows a given page.
 function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
+  const currentPageSettings = allPages[pageName];
+  for (let i = 0; i < currentPageSettings.length; i++) {
+    currentPageSettings[i].value = master[currentPageSettings[i].id];
+  }
 }
+
+// Saving the settings
+const allSettingsElements = [autosaveInterval];
+
+saveSettingsButton.addEventListener("click", async (e) => {
+  console.log(autosaveInterval.value);
+  for (let i = 0; i < master.length; i++) {
+    console.log(i);
+  }
+});
 
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {

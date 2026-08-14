@@ -41,25 +41,24 @@
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
-                            <div class="settingTitle">Maximum File upload Size (Megabytes)</div>
-                            <div class="settingDescription">Set the maximum size a file being uploaded to the server can
-                                be
-                                (images / attachments).</div>
-                            <div class="settingDefault">Default: 10</div>
+                            <div class="settingTitle">Autosave Interval (milliseconds)</div>
+                            <div class="settingDescription">Set the amount of time the server waits before attempting to
+                                create another autosave. Automatically rounded to the nearest 0.1s.</div>
+                            <div class="settingDefault">Default: 10000ms (10s)</div>
                         </div>
                         <div class="settingValue">
-                            <input type="number" id="maxFileUploadSize">
+                            <input type="number" id="autosaveInterval">
                         </div>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
-                            <div class="settingTitle">Autosave Interval (seconds)</div>
-                            <div class="settingDescription">Set the amount of time the server waits before attempting to
-                                create another autosave. Automatically rounded to the nearest 0.1s.</div>
-                            <div class="settingDefault">Default: 10s</div>
+                            <div class="settingTitle">Clear unused Images</div>
+                            <div class="settingDescription">Searches through all your documents and removes any unused
+                                images from the server storage. This may take a while if you have a lot of documents.
+                            </div>
                         </div>
                         <div class="settingValue">
-                            <input type="number" id="autosaveInterval">
+                            <button type="submit" class="button" id="clearImagesButton">Clear Images</button>
                         </div>
                     </div>
                 </div>
@@ -75,7 +74,7 @@
                         <div class="settingInfo">
                             <div class="settingTitle">Save Document</div>
                             <div class="settingDescription">Keybind to save the currently open document.</div>
-                            <div class="settingDefault">Default: Ctrl + S</div>
+                            <div class="settingDefault">Default: Unbound</div>
                         </div>
                         <div class="settingValue">
                             <input type="number" id="saveKeybind">
