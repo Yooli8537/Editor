@@ -50,6 +50,7 @@ window.addEventListener("beforeunload", (e) => {
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
 // Different tabs
 const displayTab = document.querySelector("#displayTab");
+const formatsTab = document.querySelector("#formatsTab");
 const keybindsTab = document.querySelector("#keybindsTab");
 const manageTab = document.querySelector("#manageTab");
 const infoTab = document.querySelector("#infoTab");
@@ -57,6 +58,7 @@ const infoTab = document.querySelector("#infoTab");
 // Array of every tab
 const allTabs = [
   { name: "display", element: displayTab },
+  { name: "formats", element: formatsTab },
   { name: "keybinds", element: keybindsTab },
   { name: "manage", element: manageTab },
   { name: "info", element: infoTab },
