@@ -19,6 +19,7 @@ async function getMasterfile() {
   }
 }
 
+// Sends updated settings to the masterfile.
 async function updateMasterfile(updateData) {
   const masterUpdate = await fetch("../api/updateMaster", {
     method: "PUT",
@@ -111,6 +112,14 @@ saveSettingsButton.addEventListener("click", async (e) => {
   }
   // Sends the updated data to the server.
   updateMasterfile([master]);
+});
+
+// Buttons
+const clearImagesButton = document.querySelector("#clearImagesButton");
+clearImagesButton.addEventListener("click", async (e) => {
+  const clear = await fetch("../api/cleanImages", {
+    method: "DELETE",
+  });
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.
