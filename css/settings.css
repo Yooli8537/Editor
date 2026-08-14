@@ -141,4 +141,5 @@ hr.separator {
   padding: 5%;
   border: 2px solid #000000;
   border-radius: 5px;
+  cursor: pointer;
 }
