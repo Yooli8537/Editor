@@ -18,6 +18,11 @@ async function getMasterfile() {
     return false;
   }
 }
+
+async function updateMasterfile(updateData) {
+  const masterUpdate = await fetch("../api/updateMaster")
+}
+
 /*
 // Warns before reloading / closing the settings.
 window.addEventListener("beforeunload", (e) => {
@@ -61,25 +66,35 @@ function hideAllPages() {
   }
 }
 
-let hf = "autosaveInterval"
-
 // Shows a given page.
 function showPage(pageName) {
   document.querySelector(`#${pageName}`).classList.remove("hidden");
+  // Gets all the settings from the current page.
   const currentPageSettings = allPages[pageName];
+  // Applies values into the settings as preview values.
   for (let i = 0; i < currentPageSettings.length; i++) {
     currentPageSettings[i].value = master[currentPageSettings[i].id];
   }
 }
 
 // Saving the settings
-const allSettingsElements = [autosaveInterval];
+// All the settings which are a number value.
+const numberSettings = [autosaveInterval];
+// All the settings which are a string value.
+const stringSettings = [];
 
 saveSettingsButton.addEventListener("click", async (e) => {
-  console.log(autosaveInterval.value);
-  for (let i = 0; i < master.length; i++) {
-    console.log(i);
+  // Looping through all the number settings and saving them to the master variable.
+  for (let i = 0; i < numberSettings.length; i++) {
+    // .value returns a string, so it has to be converted into a number first.
+    master[numberSettings[i].id] = Number(numberSettings[i].value);
   }
+
+  // Looping through all the string settings and saving them to the master variable.
+  for (let j = 0; j < stringSettings.length; j++) {
+    master[stringSettings[i].id] = stringSettings[i].value;
+  }
+  console.log(master);
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.

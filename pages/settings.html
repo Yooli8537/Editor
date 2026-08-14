@@ -41,10 +41,12 @@
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
-                            <div class="settingTitle">Autosave Interval (milliseconds)</div>
+                            <div class="settingTitle">Autosave Interval (seconds)</div>
                             <div class="settingDescription">Set the amount of time the server waits before attempting to
-                                create another autosave. Automatically rounded to the nearest 0.1s.</div>
-                            <div class="settingDefault">Default: 10000ms (10s)</div>
+                                create another autosave. Note that each autosave overwrites the previous one, so the
+                                cost of autosaving is mostly network traffic and not having enough storage for it.
+                                Automatically rounded to the nearest 0.1s.</div>
+                            <div class="settingDefault">Default: 10s</div>
                         </div>
                         <div class="settingValue">
                             <input type="number" id="autosaveInterval">
@@ -77,7 +79,7 @@
                             <div class="settingDefault">Default: Unbound</div>
                         </div>
                         <div class="settingValue">
-                            <input type="number" id="saveKeybind">
+                            Oh boy how am I gonna implement this
                         </div>
                     </div>
                 </div>

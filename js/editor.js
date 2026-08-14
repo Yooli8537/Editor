@@ -821,7 +821,7 @@ export function closeEditor() {
 export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
   if (await getMaster()) {
-    initAutosave(getState("autosaveInterval"));
+    initAutosave(getState("autosaveInterval") * 1000);
   }
 
   const params = new URLSearchParams(window.location.search);
