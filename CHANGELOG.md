@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.3.1 - Full release
+
+### Added
+
+- Contribution tab under info in the settings.
+
+### Fixed
+
+- Missing `master.json` properties are no longer added when nothing was actually missing.
+
 ## v1.3.0-beta - Settings & Image clearing
 
 ### Added
