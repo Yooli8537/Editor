@@ -1,6 +1,6 @@
 # Editor
 
-This is a Web-based Editor which can run locally or on a home server.
+This is a Web-based Editor which can run locally or on a home server. The project is powered by an Express and Vite server, with Tiptap extensions powering the editor itself. It's easy to keep your documents organized with a sidebar including as many levels of folders as your heart desires and a search, so that you can always find what you're looking for.
 
 ## Contents
 
@@ -12,6 +12,8 @@ This is a Web-based Editor which can run locally or on a home server.
 - [Notes](#notes)
 
 ## Features
+
+![Editor Preview](assets/editor_preview.png)
 
 - Different Styles
   - Headings
@@ -35,16 +37,10 @@ This is a Web-based Editor which can run locally or on a home server.
 
 ## Installation
 
-1. Clone the repository using `git clone https://github.com/Yooli8537/Editor` or download a recent release and unzip it.
-2. Run `npm install` within the repository's directory.
-3. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
-
-## Update Guide
-
-**This Guide only works if you keep your local clone of the Repo connected to the original repo.**
-*I also don't know if it works at all since I'm the one updating things*
-
-- Run `git pull`.
+1. Install [Node.js](https://nodejs.org/) and [git](https://git-scm.com/).
+2. Clone the repository using `git clone https://github.com/Yooli8537/Editor` or download a recent release and unzip it.
+3. Run `npm install` within the repository's directory.
+4. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
 
 ## Known Issues
 
@@ -58,7 +54,7 @@ This is a Web-based Editor which can run locally or on a home server.
 ### To be fixed
 
 - Links without https:// (or http://) redirect the user to a nonexistent URL within the application. https:// should be added automatically.
-- Can't search with `Enter` :(
+- Can't search with `Enter`.
 - When renaming Folders in different directories in a series, the chain eventually breaks and causes a (500) Error.
 - Empty Links style as links and link to the root of the app.
 - The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
