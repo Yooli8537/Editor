@@ -16,6 +16,17 @@ const imageFolderPath = path.join(dataFolderPath, "images");
 const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
 const masterFilePath = path.join(dataFolderPath, "master.json");
 
+// Server routes
+const documentsRoute = require("./routes/documents");
+const exportRoute = require("./routes/export");
+const autosaveRoute = require("./routes/autosave");
+
+app.use(express.json());
+app.use(express.static(rootPath));
+app.use(documentsRoute);
+app.use(exportRoute);
+app.use(autosaveRoute);
+
 const userDataFolders = [
   { name: "Data", path: dataFolderPath },
   { name: "Autosaves", path: autosavesFolderPath },
@@ -153,22 +164,18 @@ app.get("/api/getMaster", async (req, res) => {
   }
 });
 
-app.post("/api/updateMaster", async (req, res) => {
-  console.log(req.body);
+app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
-  res.json({ success: true });
+
+  try {
+    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    console.log("Successfully updated masterfile.");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Couldn't update masterfile.");
+    res.status(500).json({ error: err });
+  }
 });
-
-// Server routes
-const documentsRoute = require("./routes/documents");
-const exportRoute = require("./routes/export");
-const autosaveRoute = require("./routes/autosave");
-
-app.use(express.json());
-app.use(express.static(rootPath));
-app.use(documentsRoute);
-app.use(exportRoute);
-app.use(autosaveRoute);
 
 // Sends index.html to the client.
 app.get("/", (req, res) => {

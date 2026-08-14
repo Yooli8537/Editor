@@ -20,9 +20,8 @@ async function getMasterfile() {
 }
 
 async function updateMasterfile(updateData) {
-  console.log(updateData);
   const masterUpdate = await fetch("../api/updateMaster", {
-    method: "POST",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       data: updateData,
@@ -111,7 +110,7 @@ saveSettingsButton.addEventListener("click", async (e) => {
     master[stringSettings[i].id] = stringSettings[i].value;
   }
   // Sends the updated data to the server.
-  updateMasterfile(master);
+  updateMasterfile([master]);
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.

@@ -406,7 +406,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
   // fileData[0] since everything in JSON is stored in one array.
   fileData[0].content = saveData;
 
-  fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf8");
+  fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf-8");
   res.json({ success: true });
 });
 
