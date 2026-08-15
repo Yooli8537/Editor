@@ -7,7 +7,6 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 - [Features](#features)
 - [Installation](#installation)
 - [Known Issues](#known-issues)
-- [Planned Features](#planned-features)
 - [Notes](#notes)
 
 ## Features
@@ -44,65 +43,6 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 ## Known Issues
 
 - Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)
-
-### To be fixed
-
-- The delete confirmation Modal for a Notebook says its a folder, which is technically correct and is too technically inconvenient to change for me to care.
-- Confirmation Modals can't be confirmed with the Enter Key.
-- Pasting in Code from Word which was pasted in from VSC or Code copied directly from GitHub makes the line spacing very big.
-- Sometimes, most of a Code Block will just be defined as a String by the Syntax highlighting. Likely due to the MD formatting (``````).
-- Sometimes, Helptexts appear in the top left corner instead of the spot they should be in. May be another Submenu issue.
-- TipTap's emoji Extension doesn't work.
-- Files with the same name in different directories will overwrite each other when autosaving. Add support for this, maybe by creating the same folderstructure in the autosaves folder right when a new notebook / folder is created.
-- When reloading a page, there's a chance that the `master.json` isn't loaded into the state correctly, thus creating an error.
-- When renaming a file, it will likely not recognize its previous autosaves.
-- Leaving an unsaved document highlights the newly selected one, even if you press "back".
-- Clicking on the already active & unsaved document on the sidebar gives out both an autosave restoration and discard changes modal.
-- Importing tables from Excel (and likely other sources) adds an image and a table.
-
-## Planned Features
-
-### Priority
-
-- Refactor Code for the single-function principle
-- Full Image support
-  - Allow different ways of putting Text around an Image instead of it just not allowing Text next to it.
-- Collapsing / Expanding Folders
-
-### Functional
-
-- Backups of previous 5 versions of a document
-- Moving folders & files using drag & drop.
-- Settings Menu
-  - Keybinds
-  - Display
-    - Dark / Light Mode
-    - Amount of Characters before "..."
-  - Edit Formats
-  - Manage
-    - Storage
-      - Maximum image size (in mb)
-      - Maximum PDF export size
-    - Saving config
-      - Number of backed-up versions
-- Containerization
-- Language Selection List for Codeblocks
-- Allow the user to save a Document when Discard Button is clicked.
-- Advanced Images
-  - Label Images
-  - Hovering over an Image shows its label.
-  - Image labels can be searched through.
-  - Different Image positions (left / right)
-- Support long names by replacing them with "..." if they get >25 characters long. Cap at 50 instead of 30.
-
-### Cosmetic
-
-- Page separation
-- A4 Toggle
-- "No Results" message when searching and no results come up.
-- Dark Mode
-- A nicer 404 page
-- Discard Button warning Color
 
 ## Notes
 
