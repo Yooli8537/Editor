@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v.1.4.0 - Folder Collapsing & Improvements
 
 ### Added
 
