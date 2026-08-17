@@ -135,11 +135,21 @@
             <div id="display" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Display</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                        <img src="../assets/settings/sidebar.svg" class="groupIcon">
+                        <p>Sidebar</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Name cutoff (characters)</div>
+                            <div class="settingDescription">
+                                Set how many characters it takes until a folder's or file's name is cut off on the
+                                sidebar. Note that very long names will cause issues with display and the filesystem.
+                            </div>
+                            <div class="settingDefault">Default: 20 characters</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="sliceIndex">
+                        </div>
                     </div>
                 </div>
             </div>

@@ -72,7 +72,14 @@ const confirmSave = document.querySelector("#confirmSave");
 const updateCollapsedFolders = document.querySelector(
   "#updateCollapsedFolders",
 );
-const allSettings = [autosaveInterval, confirmSave, updateCollapsedFolders];
+const sliceIndex = document.querySelector("#sliceIndex");
+
+const allSettings = [
+  autosaveInterval,
+  confirmSave,
+  updateCollapsedFolders,
+  sliceIndex,
+];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -111,7 +118,7 @@ function showPage(pageName) {
 
 // Saving the settings
 // All the settings which are a number value.
-const numberSettings = [autosaveInterval, updateCollapsedFolders];
+const numberSettings = [autosaveInterval, updateCollapsedFolders, sliceIndex];
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.

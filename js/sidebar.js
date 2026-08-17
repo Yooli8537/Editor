@@ -115,9 +115,10 @@ function createSearch() {
 }
 
 // Cuts the name of a file / folder off after a certain number of characters.
+let sliceIndex;
 function sliceName(name) {
   console.log(name);
-  return name.slice(0, 20) + "...";
+  return name.slice(0, sliceIndex) + "...";
 }
 
 // Creating Folder to be rendered on the Sidebar
@@ -126,7 +127,7 @@ function createFolder(entry) {
   folder.classList.add("folder");
 
   let folderName = entry.name;
-  if (folderName.length > 20) {
+  if (folderName.length > sliceIndex) {
     folderName = sliceName(folderName);
   }
 
@@ -140,7 +141,7 @@ function createFile(entry, previousEntry) {
   file.classList.add("file");
 
   let fileName = entry.name.slice(0, -5);
-  if (fileName.length > 20) {
+  if (fileName.length > sliceIndex) {
     fileName = sliceName(fileName);
   }
 
@@ -428,6 +429,8 @@ function renderEntries(entries, indentlevel, previousEntry) {
 }
 
 export async function buildSidebar() {
+  // Setting variables
+  sliceIndex = getState("sliceIndex");
   // Getting data
   const response = await fetch("api/documents", {
     method: "GET",

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Long file & folder names are now shortened after 20 characters. This can be adjusted in the settings.
+
 ### Fixed
 
 - If an integer setting's value is 0 or below, it will not save to the master.
