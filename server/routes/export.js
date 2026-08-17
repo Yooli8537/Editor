@@ -27,7 +27,14 @@ async function setExtensions() {
     StarterKit.configure({
       codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
     }),
-    TableKit,
+    TableKit.configure({
+      table: {
+        resizable: true,
+        renderWrapper: true,
+        handleWidth: 5,
+        cellMinWidth: 25,
+      },
+    }),
     ListKit,
     Image.configure({
       inline: true,
@@ -54,6 +61,9 @@ async function setExtensions() {
       lowlight,
       enableTabIndentation: true,
       tabSize: 2,
+    }),
+    Highlight.configure({
+      multicolor: true,
     }),
   ];
 }
