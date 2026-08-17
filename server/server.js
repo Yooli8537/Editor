@@ -48,21 +48,6 @@ for (let i = 0; i < userDataFolders.length; i++) {
   }
 }
 
-// Masterfile to store config across sessions
-if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[{}]
-`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
-  console.warn("Created missing Master JSON File.");
-  console.log(
-    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
-  );
-}
-
-// Checks for deprecated and missing masterfile properties.
-deleteDeprecatedMasterProperties();
-addMissingMasterProperties();
-
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
 async function updateMasterfile(masterFile) {
@@ -125,11 +110,12 @@ async function addMissingMasterProperties() {
     autosaveInterval: 10,
     helpTextHoverTime: 15,
     confirmSave: true,
+    collapsedFolders: [],
   };
 
   // Adds all the missing properties
   for (const key in allProperties) {
-    if (!masterFile[0][key]) {
+    if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
       console.log(`Added missing masterfile property "${key}".`);
       changesMade = true;
@@ -149,6 +135,21 @@ async function addMissingMasterProperties() {
     );
   }
 }
+
+// Masterfile to store config across sessions
+if (!fs.existsSync(masterFilePath)) {
+  const masterFileContent = `[{}]
+`;
+  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  console.warn("Created missing Master JSON File.");
+  console.log(
+    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+  );
+}
+
+// Checks for deprecated and missing masterfile properties.
+deleteDeprecatedMasterProperties();
+addMissingMasterProperties();
 
 app.get("/api/getMaster", async (req, res) => {
   try {
