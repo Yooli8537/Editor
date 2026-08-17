@@ -178,6 +178,28 @@ app.put("/api/updateMaster", async (req, res) => {
   }
 });
 
+// Updates a certain master.json property.
+app.put("/api/updateMasterProperty", async (req, res) => {
+  const { property, newValue } = req.body;
+
+  try {
+    // Gets master data
+    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Updates given property
+    masterFile[0][property].value = newValue;
+
+    // Updates the master.
+    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    console.log("Successfully updated masterfile.");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Couldn't update masterfile.");
+    res.status(500).json({ error: err });
+  }
+});
+
 // Sends index.html to the client.
 app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));

@@ -5,17 +5,17 @@ let state = {
   currentDocument: null,
 };
 
-// Gets the given state
+// Gets the given state's value.
 export function getState(parameter) {
   return state[parameter];
 }
 
-// Overwrites a State with the passed value
+// Overwrites a state with the passed value.
 export function setState(parameter, value) {
   state[parameter] = value;
 }
 
-// Checks State Array for a certain value, then returns true / false
+// Checks a state array for a certain value, then returns true / false.
 export function checkState(parameter, value) {
   const stateArray = getState(parameter); // Gets the Array Data
   const findIndex = stateArray.indexOf(value);
@@ -26,12 +26,12 @@ export function checkState(parameter, value) {
   return false;
 }
 
-// Adds to a State Array
+// Adds to a state array.
 export function addState(parameter, value) {
   state[parameter].push(value);
 }
 
-// Removes from a State Array
+// Removes from a state array
 export function rmState(parameter, value) {
   const stateArray = getState(parameter); // Gets the Array Data
   const rmIndex = stateArray.indexOf(value);
@@ -41,4 +41,22 @@ export function rmState(parameter, value) {
   }
   // Updates Data
   setState(parameter, stateArray);
+}
+
+// Sends a certain state to be updated in the master.
+export async function sendState(parameter) {
+  const masterUpdate = await fetch("../api/updateMasterProperty", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      property: parameter,
+      newValue: getState(parameter),
+    }),
+  });
+
+  if (masterUpdate.ok) {
+    return true;
+  } else {
+    return false;
+  }
 }
