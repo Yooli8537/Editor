@@ -6,7 +6,7 @@ import {
   createErrorModal,
 } from "./utils";
 import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
-import { getState, setState } from "./state";
+import { addState, checkState, getState, rmState, setState } from "./state";
 
 const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
@@ -151,11 +151,42 @@ function createFile(entry, previousEntry) {
   return file;
 }
 
+const expandedIcon = "../assets/function/expanded.svg";
+const collapsedIcon = "../assets/function/collapsed.svg";
+// Toggles expanded folders on the sidebar.
+function toggleExpanded(path) {
+  // If the folder is collapsed, it's expanded.
+  if (checkState("collapsedFolders", path)) {
+    rmState("collapsedFolders", path);
+    return expandedIcon;
+  } else {
+    addState("collapsedFolders", path);
+    return collapsedIcon;
+  }
+}
+
 // Creating an icon for the sidebar
-function setIcon(iconPath) {
+function setIcon(iconPath, path) {
+  // Current icon for collapsed / expanded.
+  let currentIcon = expandedIcon;
   const icon = document.createElement("img");
   icon.classList.add("sidebarIcon");
   icon.src = iconPath;
+
+  if (iconPath !== "../assets/function/file.svg") {
+    icon.addEventListener("mouseenter", () => {
+      icon.src = currentIcon;
+    });
+
+    icon.addEventListener("mouseleave", () => {
+      icon.src = iconPath;
+    });
+
+    icon.addEventListener("click", () => {
+      currentIcon = toggleExpanded(path);
+      icon.src = currentIcon;
+    });
+  }
   return icon;
 }
 
@@ -316,9 +347,19 @@ function renderEntries(entries, indentlevel, previousEntry) {
       folder.appendChild(createFolderActions(entries[i].name, previousEntry));
 
       if (indentlevel === 0) {
-        wrapper.appendChild(setIcon("../assets/function/notebook.svg"));
+        wrapper.appendChild(
+          setIcon(
+            "../assets/function/notebook.svg",
+            previousEntry + entries[i].name,
+          ),
+        );
       } else {
-        wrapper.appendChild(setIcon("../assets/function/folder.svg"));
+        wrapper.appendChild(
+          setIcon(
+            "../assets/function/folder.svg",
+            previousEntry + entries[i].name,
+          ),
+        );
       }
 
       wrapper.appendChild(folder);
@@ -337,7 +378,7 @@ function renderEntries(entries, indentlevel, previousEntry) {
       const wrapper = createWrapper();
       const file = createFile(entries[i], previousEntry);
       file.appendChild(createFileActions(entries[i].name, previousEntry));
-      wrapper.appendChild(setIcon("../assets/function/file.svg"));
+      wrapper.appendChild(setIcon("../assets/function/file.svg", ""));
       wrapper.appendChild(file);
       wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
       folderStructure.appendChild(wrapper);
