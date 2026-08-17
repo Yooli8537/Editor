@@ -6,7 +6,14 @@ import {
   createErrorModal,
 } from "./utils";
 import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
-import { addState, checkState, getState, rmState, setState } from "./state";
+import {
+  addState,
+  checkState,
+  getState,
+  rmState,
+  sendState,
+  setState,
+} from "./state";
 
 const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
@@ -167,24 +174,36 @@ function toggleExpanded(path) {
 
 // Creating an icon for the sidebar
 function setIcon(iconPath, path) {
-  // Current icon for collapsed / expanded.
-  let currentIcon = expandedIcon;
+  // Current icon for collapsed / expanded. Local variable so that different folders don't get the icon that they're not supposed to.
+  let currentIcon;
+  // Gets the correct icon between expanded / collapsed.
+  if (checkState("collapsedFolders", path)) {
+    currentIcon = collapsedIcon;
+  } else {
+    currentIcon = expandedIcon;
+  }
+
   const icon = document.createElement("img");
   icon.classList.add("sidebarIcon");
   icon.src = iconPath;
 
   if (iconPath !== "../assets/function/file.svg") {
+    // Hovering shows whether the folder is collapsed.
     icon.addEventListener("mouseenter", () => {
       icon.src = currentIcon;
     });
 
+    // Reset icon
     icon.addEventListener("mouseleave", () => {
       icon.src = iconPath;
     });
 
+    // Clicking toggles expanded / collapsed.
     icon.addEventListener("click", () => {
       currentIcon = toggleExpanded(path);
       icon.src = currentIcon;
+      // Refreshes sidebar
+      buildSidebar();
     });
   }
   return icon;
@@ -366,7 +385,11 @@ function renderEntries(entries, indentlevel, previousEntry) {
       wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
       folderStructure.appendChild(wrapper);
 
-      if (entries[i].children.length > 0) {
+      if (
+        // Cancels rendering if the folder is collapsed.
+        entries[i].children.length > 0 &&
+        !checkState("collapsedFolders", previousEntry + entries[i].name)
+      ) {
         renderEntries(
           entries[i].children,
           indentlevel + 1,
@@ -503,3 +526,8 @@ rootButton.addEventListener("click", async (e) => {
     }
   });
 });
+
+// Updates master.json property "collapsedFolders" every 10s.
+setInterval(() => {
+  sendState("collapsedFolders");
+}, 5000);
