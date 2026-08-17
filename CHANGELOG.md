@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- Settings
+  - Confirm Save: The modal prompting the user to confirm a save can now be turned off.
+
 ### Changed
 
 - To remove a highlight, the user now simply has to click on the same color as the text is highlighted in, making it more intuitive.

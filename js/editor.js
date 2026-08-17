@@ -703,13 +703,17 @@ function saveEditor(isRestoration) {
     if (isRestoration) {
       pushSaveData();
     } else {
-      createConfirmModal(
-        "Are you sure you want to save this File?",
-        "Back to Editor",
-        "Save File",
-        () => {},
-        pushSaveData,
-      );
+      if (getState("confirmSave")) {
+        createConfirmModal(
+          "Are you sure you want to save this File?",
+          "Back to Editor",
+          "Save File",
+          () => {},
+          pushSaveData,
+        );
+      } else {
+        pushSaveData();
+      }
     }
   } else {
     // No changes = no need to update
