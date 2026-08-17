@@ -13,21 +13,6 @@ const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
 const masterFilePath = path.join(dataFolderPath, "master.json");
 
-// Updates master.json
-router.put("/api/updateMaster", async (req, res) => {
-  const { data } = req.body;
-  findImages(notebooksFolderPath);
-
-  try {
-    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
-    console.log("Successfully updated masterfile.");
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Couldn't update masterfile.");
-    res.status(500).json({ error: err });
-  }
-});
-
 // Cleans unused images from the server.
 let unusedImages = [];
 router.delete("/api/cleanImages", async (req, res) => {

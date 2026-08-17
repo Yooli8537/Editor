@@ -151,6 +151,7 @@ if (!fs.existsSync(masterFilePath)) {
 deleteDeprecatedMasterProperties();
 addMissingMasterProperties();
 
+// Gets master.json
 app.get("/api/getMaster", async (req, res) => {
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -160,6 +161,20 @@ app.get("/api/getMaster", async (req, res) => {
   } catch (err) {
     console.error("Couldn't load Masterfile.");
     console.error(err);
+  }
+});
+
+// Updates master.json
+app.put("/api/updateMaster", async (req, res) => {
+  const { data } = req.body;
+
+  try {
+    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    console.log("Successfully updated masterfile.");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Couldn't update masterfile.");
+    res.status(500).json({ error: err });
   }
 });
 
