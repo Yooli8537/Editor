@@ -21,8 +21,39 @@ function createWrapper() {
   return wrapper;
 }
 
-// Creating search
+// Searching
 let key = "";
+// Gets search results from the server and applies them to the sidebar.
+async function doSearch(input) {
+  key = input.value;
+  if (!key) return;
+  const search = await fetch(`api/documents/search?key=${key}`, {
+    method: "GET",
+  });
+
+  if (search.ok) {
+    const results = await search.json();
+    searchIsOpen = true;
+
+    folderStructure.innerHTML = "";
+    folderStructure.appendChild(createSearch());
+
+    // Replacing Sidebar with Results
+    results.forEach((result) => {
+      const wrapper = createWrapper();
+      const file = createFile(
+        { name: result.name, isFolder: false },
+        result.folderPath + "/",
+      );
+      file.appendChild(createFileActions(result.name, result.folderPath + "/"));
+      wrapper.appendChild(setIcon("../assets/function/file.svg"));
+      wrapper.appendChild(file);
+      folderStructure.appendChild(wrapper);
+    });
+  }
+}
+
+// Creating search field & operations
 function createSearch() {
   const searchWrapper = document.createElement("div");
   searchWrapper.classList.add("wrapper");
@@ -42,34 +73,15 @@ function createSearch() {
   icon.src = "../assets/function/search.svg";
 
   // When the search icon is clicked, the search is activated.
-  icon.addEventListener("click", async () => {
-    key = input.value;
-    if (!key) return;
-    const search = await fetch(`api/documents/search?key=${key}`, {
-      method: "GET",
-    });
+  icon.addEventListener("click", () => {
+    doSearch(input);
+  });
 
-    if (search.ok) {
-      const results = await search.json();
-      searchIsOpen = true;
-
-      folderStructure.innerHTML = "";
-      folderStructure.appendChild(createSearch());
-
-      // Replacing Sidebar with Results
-      results.forEach((result) => {
-        const wrapper = createWrapper();
-        const file = createFile(
-          { name: result.name, isFolder: false },
-          result.folderPath + "/",
-        );
-        file.appendChild(
-          createFileActions(result.name, result.folderPath + "/"),
-        );
-        wrapper.appendChild(setIcon("../assets/function/file.svg"));
-        wrapper.appendChild(file);
-        folderStructure.appendChild(wrapper);
-      });
+  // Enter activates search.
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      doSearch(input);
     }
   });
 

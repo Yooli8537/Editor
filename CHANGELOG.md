@@ -6,6 +6,7 @@
 
 - Settings
   - Confirm Save: The modal prompting the user to confirm a save can now be turned off.
+- Search is activated when pressing the enter key.
 
 ### Changed
 
