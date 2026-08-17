@@ -117,7 +117,6 @@ function createSearch() {
 // Cuts the name of a file / folder off after a certain number of characters.
 let sliceIndex;
 function sliceName(name) {
-  console.log(name);
   return name.slice(0, sliceIndex) + "...";
 }
 
