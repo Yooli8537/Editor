@@ -114,11 +114,23 @@ function createSearch() {
   }
 }
 
+// Cuts the name of a file / folder off after a certain number of characters.
+function sliceName(name) {
+  console.log(name);
+  return name.slice(0, 20) + "...";
+}
+
 // Creating Folder to be rendered on the Sidebar
 function createFolder(entry) {
   const folder = document.createElement("div");
   folder.classList.add("folder");
-  folder.textContent = entry.name;
+
+  let folderName = entry.name;
+  if (folderName.length > 20) {
+    folderName = sliceName(folderName);
+  }
+
+  folder.textContent = folderName;
   return folder;
 }
 
@@ -126,7 +138,13 @@ function createFolder(entry) {
 function createFile(entry, previousEntry) {
   const file = document.createElement("div");
   file.classList.add("file");
-  file.textContent = entry.name.slice(0, -5);
+
+  let fileName = entry.name.slice(0, -5);
+  if (fileName.length > 20) {
+    fileName = sliceName(fileName);
+  }
+
+  file.textContent = fileName;
 
   file.addEventListener("click", async (e) => {
     const response = await fetch(
@@ -142,7 +160,7 @@ function createFile(entry, previousEntry) {
         `?path=${previousEntry}&document=${entry.name}`,
       ); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
-      loadAutosave(fileData, entry.name, previousEntry); // Checks for an Autosave, which then loads the document.
+      loadAutosave(fileData, entry.name, previousEntry); // Checks for an autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
     } else if (response.status === 404) {
       createErrorModal("Couldn't find the File you were looking for.");
