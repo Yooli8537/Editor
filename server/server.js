@@ -48,27 +48,6 @@ for (let i = 0; i < userDataFolders.length; i++) {
   }
 }
 
-// Masterfile to store config across Sessions
-if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[
-  {
-    "unsavedFiles": [],
-    "autosaveInterval": 10,
-    "helpTextHoverTime": 15
-  }
-]
-`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
-  console.warn("Created missing Master JSON File.");
-  console.log(
-    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
-  );
-} else {
-  // If the masterfile is found, it's checked for any deprecated or missing properties, making updates to it automatic.
-  deleteDeprecatedMasterProperties();
-  addMissingMasterProperties();
-}
-
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
 async function updateMasterfile(masterFile) {
@@ -128,13 +107,15 @@ async function addMissingMasterProperties() {
   // Every property which should be in the masterfile.
   const allProperties = {
     unsavedFiles: [],
-    autosaveInterval: 10000,
+    autosaveInterval: 10,
     helpTextHoverTime: 15,
+    confirmSave: true,
+    collapsedFolders: [],
   };
 
   // Adds all the missing properties
   for (const key in allProperties) {
-    if (!masterFile[0][key]) {
+    if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
       console.log(`Added missing masterfile property "${key}".`);
       changesMade = true;
@@ -155,6 +136,22 @@ async function addMissingMasterProperties() {
   }
 }
 
+// Masterfile to store config across sessions
+if (!fs.existsSync(masterFilePath)) {
+  const masterFileContent = `[{}]
+`;
+  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  console.warn("Created missing Master JSON File.");
+  console.log(
+    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+  );
+}
+
+// Checks for deprecated and missing masterfile properties.
+deleteDeprecatedMasterProperties();
+addMissingMasterProperties();
+
+// Gets master.json
 app.get("/api/getMaster", async (req, res) => {
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -164,6 +161,43 @@ app.get("/api/getMaster", async (req, res) => {
   } catch (err) {
     console.error("Couldn't load Masterfile.");
     console.error(err);
+  }
+});
+
+// Updates master.json
+app.put("/api/updateMaster", async (req, res) => {
+  const { data } = req.body;
+
+  try {
+    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    console.log("Successfully updated masterfile.");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Couldn't update masterfile.");
+    res.status(500).json({ error: err });
+  }
+});
+
+// Updates a certain master.json property.
+app.put("/api/updateMasterProperty", async (req, res) => {
+  const { property, newValue } = req.body;
+
+  try {
+    // Gets master data
+    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Updates given property
+    masterFile[0][property] = newValue;
+
+    // Updates the master.
+    await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    console.log(`Successfully updated masterfile property ${property}.`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Couldn't update masterfile.");
+    console.error(err);
+    res.status(500).json({ error: err });
   }
 });
 

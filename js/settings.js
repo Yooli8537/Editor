@@ -31,7 +31,9 @@ async function updateMasterfile(updateData) {
 
   if (masterUpdate.ok) {
     console.log("Successfully updated settings.");
-    createInfoModal("Successfully updated settings.");
+    createInfoModal(
+      "Successfully updated settings. Reload the Editor to apply.",
+    );
   } else {
     console.error("Failed to update settings.");
     createErrorModal(`Failed to update settings. ${masterUpdate.status}`);
@@ -66,7 +68,8 @@ const allTabs = [
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const autosaveInterval = document.querySelector("#autosaveInterval");
-const allSettings = [autosaveInterval];
+const confirmSave = document.querySelector("#confirmSave");
+const allSettings = [autosaveInterval, confirmSave];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -108,6 +111,8 @@ function showPage(pageName) {
 const numberSettings = [autosaveInterval];
 // All the settings which are a string value.
 const stringSettings = [];
+// All the settings which are a boolean value.
+const boolSettings = [confirmSave];
 
 saveSettingsButton.addEventListener("click", async (e) => {
   // Looping through all the number settings and saving them to the master variable.
@@ -118,9 +123,19 @@ saveSettingsButton.addEventListener("click", async (e) => {
 
   // Looping through all the string settings and saving them to the master variable.
   for (let j = 0; j < stringSettings.length; j++) {
-    master[stringSettings[i].id] = stringSettings[i].value;
+    master[stringSettings[j].id] = stringSettings[j].value;
+  }
+
+  // Looping through all the boolean settings and saving them to the master variable.
+  for (let k = 0; k < boolSettings.length; k++) {
+    if (boolSettings[k].value == "True") {
+      master[boolSettings[k].id] = true;
+    } else {
+      master[boolSettings[k].id] = false;
+    }
   }
   // Sends the updated data to the server.
+  console.log(master);
   updateMasterfile([master]);
 });
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Settings
+  - Confirm Save: The modal prompting the user to confirm a save can now be turned off.
+- Search is activated when pressing the enter key.
+- Collapse & Expand Folders.
+
+### Changed
+
+- To remove a highlight, the user now simply has to click on the same color as the text is highlighted in, making it more intuitive.
+
+### Fixed
+
+- After freshly cloning a repository, the masterfile is now correctly configured after one server start, not requiring two.
+
 ## v1.3.1 - Full release
 
 ### Added
@@ -10,7 +27,7 @@
 
 - Missing `master.json` properties are no longer added when nothing was actually missing.
 
-## v1.3.0-beta - Settings & Image clearing
+## v1.3.0-beta - Highlighting, Settings and Improvements
 
 ### Added
 
