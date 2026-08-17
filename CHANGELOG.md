@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- If an integer setting's value is 0 or below, it will not save to the master.
+
 ## v1.4.1 - Table resizing & new Setting
 
 ### Added

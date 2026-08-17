@@ -121,7 +121,14 @@ saveSettingsButton.addEventListener("click", async (e) => {
   // Looping through all the number settings and saving them to the master variable.
   for (let i = 0; i < numberSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
-    master[numberSettings[i].id] = Number(numberSettings[i].value);
+    if (Number(numberSettings[i].value) <= 0) {
+      createErrorModal(
+        `${numberSettings[i].id} has a value of 0 or below. Cancelling save.`,
+      );
+      return;
+    } else {
+      master[numberSettings[i].id] = Number(numberSettings[i].value);
+    }
   }
 
   // Looping through all the string settings and saving them to the master variable.
