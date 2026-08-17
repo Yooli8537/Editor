@@ -122,7 +122,7 @@ async function addMissingMasterProperties() {
   // Every property which should be in the masterfile.
   const allProperties = {
     unsavedFiles: [],
-    autosaveInterval: 10000,
+    autosaveInterval: 10,
     helpTextHoverTime: 15,
     confirmSave: true,
   };
