@@ -6,6 +6,10 @@
 
 - To remove a highlight, the user now simply has to click on the same color as the text is highlighted in, making it more intuitive.
 
+###
+
+- After freshly cloning a repository, the masterfile is now correctly configured after one server start, not requiring two.
+
 ## v1.3.1 - Full release
 
 ### Added

@@ -48,26 +48,20 @@ for (let i = 0; i < userDataFolders.length; i++) {
   }
 }
 
-// Masterfile to store config across Sessions
+// Masterfile to store config across sessions
 if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[
-  {
-    "unsavedFiles": [],
-    "autosaveInterval": 10,
-    "helpTextHoverTime": 15
-  }
-]
+  const masterFileContent = `[{}]
 `;
   fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
   console.warn("Created missing Master JSON File.");
   console.log(
     "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
   );
-} else {
-  // If the masterfile is found, it's checked for any deprecated or missing properties, making updates to it automatic.
-  deleteDeprecatedMasterProperties();
-  addMissingMasterProperties();
 }
+
+// Checks for deprecated and missing masterfile properties.
+deleteDeprecatedMasterProperties();
+addMissingMasterProperties();
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
@@ -130,6 +124,7 @@ async function addMissingMasterProperties() {
     unsavedFiles: [],
     autosaveInterval: 10000,
     helpTextHoverTime: 15,
+    confirmSave: true,
   };
 
   // Adds all the missing properties
