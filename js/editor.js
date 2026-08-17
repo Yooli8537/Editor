@@ -410,81 +410,80 @@ const highlightItems = [
   {
     icon: "yellow.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#ffff00" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run(),
     helpText: "Yellow",
   },
   {
     icon: "orange.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#ff6600" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#ff6600" }).run(),
     helpText: "Orange",
   },
   {
     icon: "red.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#ff0000" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#ff0000" }).run(),
     helpText: "Red",
   },
   {
     icon: "pink.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#ff70f3" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#ff70f3" }).run(),
     helpText: "Pink",
   },
   {
     icon: "magenta.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#ff00ea" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#ff00ea" }).run(),
     helpText: "Magenta",
   },
   {
     icon: "purple.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#8000ff" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#8000ff" }).run(),
     helpText: "Purple",
   },
   {
     icon: "blue.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#0000ff" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#0000ff" }).run(),
     helpText: "Blue",
   },
   {
     icon: "light-blue.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#007bff" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#007bff" }).run(),
     helpText: "Light Blue",
   },
   {
     icon: "aqua.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#00ffd5" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#00ffd5" }).run(),
     helpText: "Aqua",
   },
   {
     icon: "lime.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#00ff4c" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#00ff4c" }).run(),
     helpText: "Lime",
   },
   {
     icon: "dark-green.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#026b00" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#026b00" }).run(),
     helpText: "Dark Green",
   },
   {
     icon: "brown.svg",
     action: () =>
-      editor.chain().focus().setHighlight({ color: "#803900" }).run(),
+      editor.chain().focus().toggleHighlight({ color: "#803900" }).run(),
     helpText: "Brown",
   },
 ];
 
-setHelpText(highlightButton, "Highlight (click to remove)");
+setHelpText(highlightButton, "Highlight");
 highlightButton.addEventListener("click", (e) => {
   e.stopPropagation();
-  editor.chain().focus().unsetHighlight().run();
   createSubmenu(highlightButton, highlightItems, 4);
 });
 

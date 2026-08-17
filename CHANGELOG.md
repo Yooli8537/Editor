@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- To remove a highlight, the user now simply has to click on the same color as the text is highlighted in, making it more intuitive.
+
 ## v1.3.1 - Full release
 
 ### Added
@@ -10,7 +16,7 @@
 
 - Missing `master.json` properties are no longer added when nothing was actually missing.
 
-## v1.3.0-beta - Settings & Image clearing
+## v1.3.0-beta - Highlighting, Settings and Improvements
 
 ### Added
 
