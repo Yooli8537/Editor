@@ -69,7 +69,10 @@ const allTabs = [
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
-const allSettings = [autosaveInterval, confirmSave];
+const updateCollapsedFolders = document.querySelector(
+  "#updateCollapsedFolders",
+);
+const allSettings = [autosaveInterval, confirmSave, updateCollapsedFolders];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -108,7 +111,7 @@ function showPage(pageName) {
 
 // Saving the settings
 // All the settings which are a number value.
-const numberSettings = [autosaveInterval];
+const numberSettings = [autosaveInterval, updateCollapsedFolders];
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.

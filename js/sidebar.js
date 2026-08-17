@@ -528,6 +528,11 @@ rootButton.addEventListener("click", async (e) => {
 });
 
 // Updates master.json property "collapsedFolders" every 10s.
-setInterval(() => {
-  sendState("collapsedFolders");
-}, 5000);
+export function createCollapsedFoldersUpdateInterval() {
+  setInterval(
+    () => {
+      sendState("collapsedFolders");
+    },
+    getState("updateCollapsedFolders") * 1000,
+  );
+}

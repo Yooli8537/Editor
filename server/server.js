@@ -111,6 +111,7 @@ async function addMissingMasterProperties() {
     helpTextHoverTime: 15,
     confirmSave: true,
     collapsedFolders: [],
+    updateCollapsedFolders: 15,
   };
 
   // Adds all the missing properties

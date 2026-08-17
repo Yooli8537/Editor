@@ -25,7 +25,7 @@ import {
   createInfoModal,
   getMaster,
 } from "./utils";
-import { buildSidebar } from "./sidebar";
+import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { addState, checkState, getState, rmState, setState } from "./state";
 
 // HTML Elements
@@ -39,7 +39,14 @@ const extensions = [
   StarterKit.configure({
     codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
   }),
-  TableKit,
+  TableKit.configure({
+    table: {
+      resizable: true,
+      renderWrapper: true,
+      handleWidth: 5,
+      cellMinWidth: 25,
+    },
+  }),
   ListKit,
   Image.configure({
     inline: true,
@@ -856,6 +863,7 @@ export async function onFirstStart() {
   console.log("Editor ready!");
 
   buildSidebar();
+  createCollapsedFoldersUpdateInterval();
 }
 
 onFirstStart();

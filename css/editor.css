@@ -121,3 +121,11 @@
   border: 2px solid rgb(88, 88, 88);
   border-radius: 50%;
 }
+
+.ProseMirror.resize-cursor {
+  cursor: col-resize;
+}
+
+.ProseMirror .column-resize-handle {
+  cursor: col-resize;
+}

@@ -32,6 +32,7 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 - Always continue where you left off with URLs for any page.
 - Avoid losing Data with Autosaves.
 - Configure the app to your liking with the Settings page (WIP).
+- Collapse and Expand folders to keep the stuff you don't need out of sight and out of mind.
 
 ## Installation
 
