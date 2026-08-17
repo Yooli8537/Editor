@@ -46,7 +46,6 @@ export function rmState(parameter, value) {
 // Sends a certain state to be updated in the master.
 export async function sendState(parameter) {
   const stateValue = getState(parameter);
-  console.log(stateValue);
   const masterUpdate = await fetch("../api/updateMasterProperty", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

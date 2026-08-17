@@ -25,7 +25,7 @@ import {
   createInfoModal,
   getMaster,
 } from "./utils";
-import { buildSidebar } from "./sidebar";
+import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { addState, checkState, getState, rmState, setState } from "./state";
 
 // HTML Elements
@@ -856,6 +856,7 @@ export async function onFirstStart() {
   console.log("Editor ready!");
 
   buildSidebar();
+  createCollapsedFoldersUpdateInterval();
 }
 
 onFirstStart();

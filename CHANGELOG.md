@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Settings
+  - Update collapsed Folders: How long the delay between updates to the master property "collapsedFolders" is.
+
 ## v.1.4.0 - Folder Collapsing & Improvements
 
 ### Added
