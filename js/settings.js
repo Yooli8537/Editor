@@ -55,7 +55,7 @@ const generalTab = document.querySelector("#generalTab");
 const displayTab = document.querySelector("#displayTab");
 const formatsTab = document.querySelector("#formatsTab");
 const keybindsTab = document.querySelector("#keybindsTab");
-const manageTab = document.querySelector("#manageTab");
+const serverTab = document.querySelector("#serverTab");
 const infoTab = document.querySelector("#infoTab");
 
 // Array of every tab
@@ -64,7 +64,7 @@ const allTabs = [
   { name: "display", element: displayTab },
   { name: "formats", element: formatsTab },
   { name: "keybinds", element: keybindsTab },
-  { name: "manage", element: manageTab },
+  { name: "server", element: serverTab },
   { name: "info", element: infoTab },
 ];
 
