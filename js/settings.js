@@ -24,7 +24,7 @@ const allTabs = [
   { name: "info", element: infoTab },
 ];
 
-// Array of every setting which can be set (so it excludes one-time actions like the image clear).
+// All the settings
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
 const updateCollapsedFolders = document.querySelector(
@@ -33,8 +33,11 @@ const updateCollapsedFolders = document.querySelector(
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
 const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
+const warningLogs = document.querySelector("#warningLogs");
+const successLogs = document.querySelector("#successLogs");
+const detailLogs = document.querySelector("#detailLogs");
 
-// All the settings
+// Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
   autosaveInterval,
   confirmSave,
@@ -42,6 +45,9 @@ const allSettings = [
   sliceIndex,
   maxCharacterLength,
   helpTextHoverTime,
+  warningLogs,
+  successLogs,
+  detailLogs,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -54,7 +60,7 @@ const numberSettings = [
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
-const boolSettings = [confirmSave];
+const boolSettings = [confirmSave, warningLogs, successLogs, detailLogs];
 
 // Getting the master file
 let master;
@@ -128,7 +134,20 @@ function hideAllPages() {
 function preLoadSettingsData() {
   // Applies values into the settings as preview values.
   for (let i = 0; i < allSettings.length; i++) {
-    allSettings[i].value = master[allSettings[i].id];
+    if (
+      numberSettings.includes(allSettings[i]) ||
+      stringSettings.includes(allSettings[i])
+    ) {
+      allSettings[i].value = master[allSettings[i].id];
+    } else {
+      // Value of a boolean setting within the master.
+      let settingMasterValue = master[allSettings[i].id];
+      if (settingMasterValue === true) {
+        allSettings[i].value = "True";
+      } else {
+        allSettings[i].value = "False";
+      }
+    }
   }
 }
 

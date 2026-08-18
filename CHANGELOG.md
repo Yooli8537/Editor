@@ -17,6 +17,7 @@
 
 - If an integer setting's value is 0 or below, it will not save to the master.
 - Submenu helptexts will no longer appear in the top left corner if their parent was clicked before they appeared.
+- Boolean settings are now preloaded & saved correctly.
 
 ## v1.4.1 - Table resizing & new Setting
 
