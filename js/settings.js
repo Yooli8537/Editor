@@ -9,7 +9,7 @@ const generalTab = document.querySelector("#generalTab");
 const displayTab = document.querySelector("#displayTab");
 const formatsTab = document.querySelector("#formatsTab");
 const keybindsTab = document.querySelector("#keybindsTab");
-const serverTab = document.querySelector("#serverTab");
+const storageTrafficTab = document.querySelector("#storageTrafficTab");
 const developerTab = document.querySelector("#developerTab");
 const infoTab = document.querySelector("#infoTab");
 
@@ -19,7 +19,7 @@ const allTabs = [
   { name: "display", element: displayTab },
   { name: "formats", element: formatsTab },
   { name: "keybinds", element: keybindsTab },
-  { name: "server", element: serverTab },
+  { name: "storageTraffic", element: storageTrafficTab },
   { name: "developer", element: developerTab },
   { name: "info", element: infoTab },
 ];
