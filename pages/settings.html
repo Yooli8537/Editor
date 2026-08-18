@@ -45,10 +45,6 @@
                 <img src="../assets/settings/server.svg" class="tabIcon">
                 <p>Server</p>
             </div>
-            <div id="developerTab" class="tab hoverClass">
-                <img src="../assets/settings/developer.svg" class="tabIcon">
-                <p>Developer</p>
-            </div>
             <div id="infoTab" class="tab hoverClass">
                 <img src="../assets/settings/info.svg" class="tabIcon">
                 <p>Info</p>
@@ -230,17 +226,51 @@
                         <img src="../assets/settings/server-logs.svg" class="groupIcon">
                         <p>Server Logs</p>
                     </div>
-                </div>
-            </div>
-
-            <div id="developer" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Developer</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Warning Logs</div>
+                            <div class="settingDescription">
+                                Logs which warn you if something could be going wrong.
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="warningLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Success Logs</div>
+                            <div class="settingDescription">
+                                Logs which come out whenever an operation is completed successfully (such as renaming,
+                                creating a new file, etc.).
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="successLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Detailed Logs</div>
+                            <div class="settingDescription">
+                                Extra logs which give you additional information about what's going on under the hood.
+                            </div>
+                            <div class="settingDefault">Default: False</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="detailLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
