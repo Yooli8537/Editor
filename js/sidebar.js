@@ -147,6 +147,14 @@ function createFile(entry, previousEntry) {
   file.textContent = fileName;
 
   file.addEventListener("click", async (e) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pathParam = urlParams.get("path");
+    const documentParam = urlParams.get("document");
+
+    if (pathParam === previousEntry && documentParam === entry.name) {
+      return;
+    }
+
     const response = await fetch(
       `api/documents/getFile?folderPath=${previousEntry}&name=${entry.name}`,
       {

@@ -18,6 +18,7 @@
 - If an integer setting's value is 0 or below, it will not save to the master.
 - Submenu helptexts will no longer appear in the top left corner if their parent was clicked before they appeared.
 - Boolean settings are now preloaded & saved correctly.
+- If you click on a document which is already open and unsaved, it won't produce any modals warning you to not leave and won't overwrite your changes.
 
 ## v1.4.1 - Table resizing & new Setting
 
