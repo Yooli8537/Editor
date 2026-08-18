@@ -154,7 +154,7 @@ if (!fs.existsSync(masterFilePath)) {
 deleteDeprecatedMasterProperties();
 addMissingMasterProperties();
 
-// Gets master.json
+// Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -167,7 +167,7 @@ app.get("/api/getMaster", async (req, res) => {
   }
 });
 
-// Updates master.json
+// Updates master.json from client.
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
 
