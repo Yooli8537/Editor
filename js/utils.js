@@ -101,7 +101,7 @@ export function createPromptModal(prompt, inputContent, onSubmit) {
   const inputField = document.createElement("input");
   inputField.classList.add("inputField");
   inputField.type = "text";
-  inputField.maxLength = 30;
+  inputField.maxLength = getState("maxCharacterLength");
   inputField.value = inputContent; // Adds the previous value to the input field.
 
   // Confirm with enter key
