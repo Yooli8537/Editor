@@ -2,6 +2,55 @@
 // Imports
 import { createErrorModal, createInfoModal } from "./utils";
 
+// Save button
+const saveSettingsButton = document.querySelector("#saveSettingsButton");
+// Different tabs
+const generalTab = document.querySelector("#generalTab");
+const displayTab = document.querySelector("#displayTab");
+const formatsTab = document.querySelector("#formatsTab");
+const keybindsTab = document.querySelector("#keybindsTab");
+const serverTab = document.querySelector("#serverTab");
+const infoTab = document.querySelector("#infoTab");
+
+// Array of every tab
+const allTabs = [
+  { name: "general", element: generalTab },
+  { name: "display", element: displayTab },
+  { name: "formats", element: formatsTab },
+  { name: "keybinds", element: keybindsTab },
+  { name: "server", element: serverTab },
+  { name: "info", element: infoTab },
+];
+
+// Array of every setting which can be set (so it excludes one-time actions like the image clear).
+const autosaveInterval = document.querySelector("#autosaveInterval");
+const confirmSave = document.querySelector("#confirmSave");
+const updateCollapsedFolders = document.querySelector(
+  "#updateCollapsedFolders",
+);
+const sliceIndex = document.querySelector("#sliceIndex");
+const maxCharacterLength = document.querySelector("#maxCharacterLength");
+
+// All the settings
+const allSettings = [
+  autosaveInterval,
+  confirmSave,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+];
+// All the settings which are a number value.
+const numberSettings = [
+  autosaveInterval,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+];
+// All the settings which are a string value.
+const stringSettings = [];
+// All the settings which are a boolean value.
+const boolSettings = [confirmSave];
+
 // Getting the master file
 let master;
 async function getMasterfile() {
@@ -48,42 +97,6 @@ window.addEventListener("beforeunload", (e) => {
   console.log("WARN");
 });
 */
-// Save button
-const saveSettingsButton = document.querySelector("#saveSettingsButton");
-// Different tabs
-const generalTab = document.querySelector("#generalTab");
-const displayTab = document.querySelector("#displayTab");
-const formatsTab = document.querySelector("#formatsTab");
-const keybindsTab = document.querySelector("#keybindsTab");
-const serverTab = document.querySelector("#serverTab");
-const infoTab = document.querySelector("#infoTab");
-
-// Array of every tab
-const allTabs = [
-  { name: "general", element: generalTab },
-  { name: "display", element: displayTab },
-  { name: "formats", element: formatsTab },
-  { name: "keybinds", element: keybindsTab },
-  { name: "server", element: serverTab },
-  { name: "info", element: infoTab },
-];
-
-// Array of every setting which can be set (so it excludes one-time actions like the image clear).
-const autosaveInterval = document.querySelector("#autosaveInterval");
-const confirmSave = document.querySelector("#confirmSave");
-const updateCollapsedFolders = document.querySelector(
-  "#updateCollapsedFolders",
-);
-const sliceIndex = document.querySelector("#sliceIndex");
-const maxCharacterLength = document.querySelector("#maxCharacterLength");
-
-const allSettings = [
-  autosaveInterval,
-  confirmSave,
-  updateCollapsedFolders,
-  sliceIndex,
-  maxCharacterLength,
-];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -121,18 +134,6 @@ function showPage(pageName) {
 }
 
 // Saving the settings
-// All the settings which are a number value.
-const numberSettings = [
-  autosaveInterval,
-  updateCollapsedFolders,
-  sliceIndex,
-  maxCharacterLength,
-];
-// All the settings which are a string value.
-const stringSettings = [];
-// All the settings which are a boolean value.
-const boolSettings = [confirmSave];
-
 saveSettingsButton.addEventListener("click", async (e) => {
   // Looping through all the number settings and saving them to the master variable.
   for (let i = 0; i < numberSettings.length; i++) {
