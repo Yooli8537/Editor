@@ -11,7 +11,7 @@
 
 ### Changed
 
-- Manage Tab renamed to Server.
+- "Manage" Tab renamed to "Storage & Traffic" in settings.
 
 ### Fixed
 
