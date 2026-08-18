@@ -52,42 +52,6 @@
             <div id="manage" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/function/save.svg" class="groupIcon">
-                        <p>Save Config</p>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Autosave Interval (seconds)</div>
-                            <div class="settingDescription">
-                                Set the amount of time the server waits before attempting to create another autosave.
-                                Note that each autosave overwrites the previous one, so the cost of autosaving is mostly
-                                network traffic and not having enough storage for it. Automatically rounded to the
-                                nearest 0.1s.
-                            </div>
-                            <div class="settingDefault">Default: 10s</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="autosaveInterval">
-                        </div>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Confirm Save</div>
-                            <div class="settingDescription">
-                                Whether or not clicking the save button will make you confirm your action.
-                            </div>
-                            <div class="settingDefault">Default: True</div>
-                        </div>
-                        <div class="settingValue">
-                            <select id="confirmSave">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
                         <img src="../assets/settings/storage.svg" class="groupIcon">
                         <p>Storage</p>
                     </div>
@@ -97,6 +61,11 @@
                             <div class="settingDescription">
                                 Searches through all your documents and removes any unused images from the server
                                 storage. This may take a while if you have a lot of documents.
+                            </div>
+                            <div class="settingDefault">
+                                Do not use this option while you have unsaved documents open, as the images in the
+                                unsaved document are supposed to stay but aren't referenced anywhere, so the server
+                                thinks that they're bloat.
                             </div>
                         </div>
                         <div class="settingValue">
@@ -248,11 +217,50 @@
             <div id="general" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>General</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                        <img src="../assets/function/save.svg" class="groupIcon">
+                        <p>Save Config</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum name character count (characters)</div>
+                            <div class="settingDescription">
+                                Maximum amount of characters which a file / folder can have.
+                            </div>
+                            <div class="settingDefault">Default: 30</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxCharacterLength">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Autosave Interval (seconds)</div>
+                            <div class="settingDescription">
+                                Set the amount of time the server waits before attempting to create another autosave.
+                                Note that each autosave overwrites the previous one, so the cost of autosaving is mostly
+                                network traffic and not having enough storage for it. Automatically rounded to the
+                                nearest 0.1s.
+                            </div>
+                            <div class="settingDefault">Default: 10s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="autosaveInterval">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Confirm Save</div>
+                            <div class="settingDescription">
+                                Whether or not clicking the save button will make you confirm your action.
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="confirmSave">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

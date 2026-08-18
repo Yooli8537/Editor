@@ -113,6 +113,7 @@ async function addMissingMasterProperties() {
     collapsedFolders: [],
     updateCollapsedFolders: 15,
     sliceIndex: 20,
+    maxCharacterLength: 30,
   };
 
   // Adds all the missing properties

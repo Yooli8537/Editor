@@ -75,12 +75,14 @@ const updateCollapsedFolders = document.querySelector(
   "#updateCollapsedFolders",
 );
 const sliceIndex = document.querySelector("#sliceIndex");
+const maxCharacterLength = document.querySelector("#maxCharacterLength");
 
 const allSettings = [
   autosaveInterval,
   confirmSave,
   updateCollapsedFolders,
   sliceIndex,
+  maxCharacterLength,
 ];
 
 // Loops through all to give them event listeners.
@@ -120,7 +122,12 @@ function showPage(pageName) {
 
 // Saving the settings
 // All the settings which are a number value.
-const numberSettings = [autosaveInterval, updateCollapsedFolders, sliceIndex];
+const numberSettings = [
+  autosaveInterval,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+];
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
