@@ -57,6 +57,121 @@
         <hr class="vertical separator">
         <div id="settingsPage">
 
+            <div id="general" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/function/save.svg" class="groupIcon">
+                        <p>Save Config</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum name character count (characters)</div>
+                            <div class="settingDescription">
+                                Maximum amount of characters which a file / folder can have.
+                            </div>
+                            <div class="settingDefault">Default: 30</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxCharacterLength">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Autosave Interval (seconds)</div>
+                            <div class="settingDescription">
+                                Set the amount of time the server waits before attempting to create another autosave.
+                                Note that each autosave overwrites the previous one, so the cost of autosaving is mostly
+                                network traffic. Automatically rounded to the nearest 0.1s.
+                            </div>
+                            <div class="settingDefault">Default: 10s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="autosaveInterval">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Confirm Save</div>
+                            <div class="settingDescription">
+                                Whether or not clicking the save button will make you confirm your action.
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="confirmSave">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="display" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/sidebar.svg" class="groupIcon">
+                        <p>Sidebar</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Name cutoff (characters)</div>
+                            <div class="settingDescription">
+                                Set how many characters it takes until a folder's or file's name is cut off on the
+                                sidebar. Note that very long names will cause issues with display and the filesystem.
+                            </div>
+                            <div class="settingDefault">Default: 20 characters</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="sliceIndex">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/editor.svg" class="groupIcon">
+                        <p>Editor</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Help Text hover Time (seconds)</div>
+                            <div class="settingDescription">
+                                How long your mouse has to hover over a help text in order for it to appear.
+                                Automatically rounded to the nearest 0.1s.
+                            </div>
+                            <div class="settingDefault">Default: 1.5s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="helpTextHoverTime">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="formats" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p>
+                            <del>Formats</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="keybinds" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p>
+                            <del>Keybinds</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div id="storageTraffic" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
@@ -118,77 +233,12 @@
                 </div>
             </div>
 
-            <div id="keybinds" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Keybinds</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
-                    </div>
-                </div>
-            </div>
-
             <div id="developer" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/icons/construction.svg" class="groupIcon">
                         <p>
                             <del>Developer</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="display" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/settings/sidebar.svg" class="groupIcon">
-                        <p>Sidebar</p>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Name cutoff (characters)</div>
-                            <div class="settingDescription">
-                                Set how many characters it takes until a folder's or file's name is cut off on the
-                                sidebar. Note that very long names will cause issues with display and the filesystem.
-                            </div>
-                            <div class="settingDefault">Default: 20 characters</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="sliceIndex">
-                        </div>
-                    </div>
-                </div>
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/settings/editor.svg" class="groupIcon">
-                        <p>Editor</p>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Help Text hover Time (seconds)</div>
-                            <div class="settingDescription">
-                                How long your mouse has to hover over a help text in order for it to appear.
-                                Automatically rounded to the nearest 0.1s.
-                            </div>
-                            <div class="settingDefault">Default: 1.5s</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="helpTextHoverTime">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="formats" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Formats</del> This area is under construction! Please be patient while I figure this
                             feature out... 🤔
                         </p>
                     </div>
@@ -265,56 +315,6 @@
                             <button type="submit" class="button hoverClass">
                                 <a href="https://lucide.dev/" target="_blank">Visit Lucide!</a>
                             </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="general" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/function/save.svg" class="groupIcon">
-                        <p>Save Config</p>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Maximum name character count (characters)</div>
-                            <div class="settingDescription">
-                                Maximum amount of characters which a file / folder can have.
-                            </div>
-                            <div class="settingDefault">Default: 30</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="maxCharacterLength">
-                        </div>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Autosave Interval (seconds)</div>
-                            <div class="settingDescription">
-                                Set the amount of time the server waits before attempting to create another autosave.
-                                Note that each autosave overwrites the previous one, so the cost of autosaving is mostly
-                                network traffic. Automatically rounded to the nearest 0.1s.
-                            </div>
-                            <div class="settingDefault">Default: 10s</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="autosaveInterval">
-                        </div>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Confirm Save</div>
-                            <div class="settingDescription">
-                                Whether or not clicking the save button will make you confirm your action.
-                            </div>
-                            <div class="settingDefault">Default: True</div>
-                        </div>
-                        <div class="settingValue">
-                            <select id="confirmSave">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
-                            </select>
                         </div>
                     </div>
                 </div>
