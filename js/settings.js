@@ -30,6 +30,7 @@ const updateCollapsedFolders = document.querySelector(
 );
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
+const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
 
 // All the settings
 const allSettings = [
@@ -38,6 +39,7 @@ const allSettings = [
   updateCollapsedFolders,
   sliceIndex,
   maxCharacterLength,
+  helpTextHoverTime,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -45,6 +47,7 @@ const numberSettings = [
   updateCollapsedFolders,
   sliceIndex,
   maxCharacterLength,
+  helpTextHoverTime,
 ];
 // All the settings which are a string value.
 const stringSettings = [];

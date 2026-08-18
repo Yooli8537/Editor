@@ -108,7 +108,7 @@ async function addMissingMasterProperties() {
   const allProperties = {
     unsavedFiles: [],
     autosaveInterval: 10,
-    helpTextHoverTime: 15,
+    helpTextHoverTime: 1.5,
     confirmSave: true,
     collapsedFolders: [],
     updateCollapsedFolders: 15,
