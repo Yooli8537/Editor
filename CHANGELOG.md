@@ -6,6 +6,7 @@
 
 - Long file & folder names are now shortened after 20 characters. This can be adjusted in the settings.
 - The maximum length of names can now be adjusted in settings.
+- The time it takes for a helptext to appear is now adjustable in settings.
 
 ### Changed
 

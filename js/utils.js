@@ -267,7 +267,7 @@ export function setHelpText(hoverButton, helpText) {
     time = 0;
 
     hoverInterval = setInterval(() => {
-      if (time >= getState("helpTextHoverTime")) {
+      if (time >= getState("helpTextHoverTime") * 10) {
         clearInterval(hoverInterval);
         hoverInterval = null;
 
