@@ -267,7 +267,7 @@ async function renameHandler() {
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
   titleRenameInput.type = "text";
-  titleRenameInput.maxLength = getState(maxCharacterLength);
+  titleRenameInput.maxLength = getState("maxCharacterLength");
 
   titleRenameInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {

@@ -260,7 +260,7 @@ export function setHelpText(hoverButton, helpText) {
 
   function createHelpText() {
     // Stops an empty helptext from generating
-    if (helpText === undefined) {
+    if (helpText == undefined) {
       return;
     }
 
@@ -288,6 +288,12 @@ export function setHelpText(hoverButton, helpText) {
   }
 
   hoverButton.addEventListener("mouseenter", createHelpText);
+
+  hoverButton.addEventListener("click", (e) => {
+    clearInterval(hoverInterval);
+    hoverInterval = null;
+    removeHelpTexts();
+  });
 
   hoverButton.addEventListener("mouseleave", (e) => {
     clearInterval(hoverInterval);
