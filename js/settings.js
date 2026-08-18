@@ -10,6 +10,7 @@ const displayTab = document.querySelector("#displayTab");
 const formatsTab = document.querySelector("#formatsTab");
 const keybindsTab = document.querySelector("#keybindsTab");
 const storageTrafficTab = document.querySelector("#storageTrafficTab");
+const serverTab = document.querySelector("#serverTab");
 const developerTab = document.querySelector("#developerTab");
 const infoTab = document.querySelector("#infoTab");
 
@@ -20,6 +21,7 @@ const allTabs = [
   { name: "formats", element: formatsTab },
   { name: "keybinds", element: keybindsTab },
   { name: "storageTraffic", element: storageTrafficTab },
+  { name: "server", element: serverTab },
   { name: "developer", element: developerTab },
   { name: "info", element: infoTab },
 ];
