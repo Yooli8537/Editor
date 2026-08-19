@@ -9,27 +9,24 @@ import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
-// Supported Languages
-import javascript from "highlight.js/lib/languages/javascript";
-import java from "highlight.js/lib/languages/java";
-import python from "highlight.js/lib/languages/python";
-import lua from "highlight.js/lib/languages/lua";
-import dockerfile from "highlight.js/lib/languages/dockerfile";
-import cpp from "highlight.js/lib/languages/cpp";
-import css from "highlight.js/lib/languages/css";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
-const lowlightSpecificLanguages = [
-  java,
-  javascript,
-  python,
-  css,
-  cpp,
-  dockerfile,
-  lua,
-];
+// Specifically supported languages:
+/*
+cpp,
+css,
+dockerfile,
+java,
+javascript,
+lua,
+markdown
+plaintext
+python,
+*/
+// Example Import so that I can check if a certain language is supported easily.
+//import language from "highlight.js/lib/languages/language";
 
 // Importing custom functions
 import {
@@ -380,7 +377,7 @@ headingsButton.addEventListener("click", (e) => {
   createSubmenu(headingsButton, headingItems, 1);
 });
 
-// Items for the Lists Submenu
+// Items for the Lists submenu
 const listItems = [
   {
     icon: "format/list-unordered.svg",
@@ -406,7 +403,18 @@ listsButton.addEventListener("click", (e) => {
   createSubmenu(listsButton, listItems, 1);
 });
 
+// Items for the Codeblock subemnu.
 const codeItems = [
+  {
+    icon: "format/code-off.svg",
+    action: () => editor.chain().focus().setParagraph().run(),
+    helpText: "Unset Codeblock",
+  },
+  {
+    icon: "function/cpu.svg",
+    action: () => editor.chain().focus().setCodeBlock().run(),
+    helpText: "Auto detect (supports unlisted languages)",
+  },
   {
     icon: "code-languages/javascript.svg",
     action: () =>
@@ -420,14 +428,91 @@ const codeItems = [
         .run(),
     helpText: "JavaScript",
   },
+  {
+    icon: "code-languages/css.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "css",
+        })
+        .run(),
+    helpText: "CSS",
+  },
+  {
+    icon: "code-languages/java.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "java",
+        })
+        .run(),
+    helpText: "Java",
+  },
+  {
+    icon: "code-languages/python.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "python",
+        })
+        .run(),
+    helpText: "Python",
+  },
+  {
+    icon: "code-languages/cpp.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "cpp",
+        })
+        .run(),
+    helpText: "C++",
+  },
+  {
+    icon: "code-languages/lua.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "lua",
+        })
+        .run(),
+    helpText: "Lua",
+  },
+  {
+    icon: "code-languages/docker.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "dockerfile",
+        })
+        .run(),
+    helpText: "Dockerfile",
+  },
 ];
 
-setHelpText(codeBlockButton, "Code Block");
+setHelpText(codeBlockButton, "Codeblock");
 codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(codeBlockButton, codeItems, 2);
-  //editor.chain().focus().toggleCodeBlock().run();
 });
 
 setHelpText(boldButton, "Bold");
