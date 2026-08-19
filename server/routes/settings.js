@@ -5,6 +5,8 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const serverMaster = require("../serverMaster");
+const logger = require("../logger");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
@@ -16,12 +18,18 @@ const masterFilePath = path.join(dataFolderPath, "master.json");
 // Cleans unused images from the server.
 let unusedImages = [];
 router.delete("/api/cleanImages", async (req, res) => {
+  logger.info("Recieved image clear request.");
   // Puts all the images into the array.
   unusedImages = await fs.readdirSync(imageFolderPath);
-  // Removes all the used images.
+  // Finds all unused images, removing all used ones from the array.
   await findImages(notebooksFolderPath);
-  console.log(unusedImages);
+  if (unusedImages.length !== 0 && serverMaster.detailLogs) {
+    logger.info({ "Unused images": unusedImages }, "Found unused images.");
+  } else if (serverMaster.detailLogs) {
+    logger.info("Found no unused images.");
+  }
 
+  // Removes all the unused images.
   for (let i = 0; i < unusedImages.length; i++) {
     await fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
   }
