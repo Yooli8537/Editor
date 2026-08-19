@@ -206,7 +206,7 @@ export function createSubmenu(triggerButton, items, width) {
     button.classList.add("toolbarButton");
     const buttonIcon = document.createElement("img");
     buttonIcon.classList.add("toolbarIcon");
-    buttonIcon.src = `assets/format/${items[i].icon}`;
+    buttonIcon.src = `assets/${items[i].icon}`;
 
     // Setting Helptext for Submenu Items
     setHelpText(button, items[i].helpText);

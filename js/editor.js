@@ -21,7 +21,15 @@ import css from "highlight.js/lib/languages/css";
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
-const lowlightLanguages = [java, javascript, python, css, cpp, dockerfile, lua];
+const lowlightSpecificLanguages = [
+  java,
+  javascript,
+  python,
+  css,
+  cpp,
+  dockerfile,
+  lua,
+];
 
 // Importing custom functions
 import {
@@ -33,7 +41,6 @@ import {
   setHelpText,
   createInfoModal,
   getMaster,
-  createListSubmenu,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { addState, checkState, getState, rmState, setState } from "./state";
@@ -350,17 +357,17 @@ redoButton.addEventListener("click", (e) => {
 // Items for the Headings Submenu
 const headingItems = [
   {
-    icon: "heading-1.svg",
+    icon: "format/heading-1.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
     helpText: "Heading 1",
   },
   {
-    icon: "heading-2.svg",
+    icon: "format/heading-2.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
     helpText: "Heading 2",
   },
   {
-    icon: "heading-3.svg",
+    icon: "format/heading-3.svg",
     action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
     helpText: "Heading 3",
   },
@@ -376,17 +383,17 @@ headingsButton.addEventListener("click", (e) => {
 // Items for the Lists Submenu
 const listItems = [
   {
-    icon: "list-unordered.svg",
+    icon: "format/list-unordered.svg",
     action: () => editor.chain().focus().toggleBulletList().run(),
     helpText: "Bullet List",
   },
   {
-    icon: "list-ordered.svg",
+    icon: "format/list-ordered.svg",
     action: () => editor.chain().focus().toggleOrderedList().run(),
     helpText: "Ordered List",
   },
   {
-    icon: "list-task.svg",
+    icon: "format/list-task.svg",
     action: () => editor.chain().focus().toggleTaskList().run(),
     helpText: "Task List",
   },
@@ -399,13 +406,28 @@ listsButton.addEventListener("click", (e) => {
   createSubmenu(listsButton, listItems, 1);
 });
 
-const codeItems = [];
+const codeItems = [
+  {
+    icon: "code-languages/javascript.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "javaScript",
+        })
+        .run(),
+    helpText: "JavaScript",
+  },
+];
 
 setHelpText(codeBlockButton, "Code Block");
 codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
-  createListSubmenu(codeBlockButton, lowlightLanguages);
-  editor.chain().focus().toggleCodeBlock().run();
+  e.stopPropagation();
+  createSubmenu(codeBlockButton, codeItems, 2);
+  //editor.chain().focus().toggleCodeBlock().run();
 });
 
 setHelpText(boldButton, "Bold");
@@ -428,73 +450,73 @@ underlineButton.addEventListener("click", (e) => {
 
 const highlightItems = [
   {
-    icon: "yellow.svg",
+    icon: "color/yellow.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run(),
     helpText: "Yellow",
   },
   {
-    icon: "orange.svg",
+    icon: "color/orange.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#ff6600" }).run(),
     helpText: "Orange",
   },
   {
-    icon: "red.svg",
+    icon: "color/red.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#ff0000" }).run(),
     helpText: "Red",
   },
   {
-    icon: "pink.svg",
+    icon: "color/pink.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#ff70f3" }).run(),
     helpText: "Pink",
   },
   {
-    icon: "magenta.svg",
+    icon: "color/magenta.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#ff00ea" }).run(),
     helpText: "Magenta",
   },
   {
-    icon: "purple.svg",
+    icon: "color/purple.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#8000ff" }).run(),
     helpText: "Purple",
   },
   {
-    icon: "blue.svg",
+    icon: "color/blue.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#0000ff" }).run(),
     helpText: "Blue",
   },
   {
-    icon: "light-blue.svg",
+    icon: "color/light-blue.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#007bff" }).run(),
     helpText: "Light Blue",
   },
   {
-    icon: "aqua.svg",
+    icon: "color/aqua.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#00ffd5" }).run(),
     helpText: "Aqua",
   },
   {
-    icon: "lime.svg",
+    icon: "color/lime.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#00ff4c" }).run(),
     helpText: "Lime",
   },
   {
-    icon: "dark-green.svg",
+    icon: "color/dark-green.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#026b00" }).run(),
     helpText: "Dark Green",
   },
   {
-    icon: "brown.svg",
+    icon: "color/brown.svg",
     action: () =>
       editor.chain().focus().toggleHighlight({ color: "#803900" }).run(),
     helpText: "Brown",
@@ -515,7 +537,7 @@ inlineCodeButton.addEventListener("click", (e) => {
 
 const tableCreateItems = [
   {
-    icon: "table-create.svg",
+    icon: "format/table-create.svg",
     action: () =>
       editor
         .chain()
@@ -525,22 +547,22 @@ const tableCreateItems = [
     helpText: "Create Table",
   },
   {
-    icon: "column-before.svg",
+    icon: "format/column-before.svg",
     action: () => editor.chain().focus().addColumnBefore().run(),
     helpText: "Add column before current",
   },
   {
-    icon: "column-after.svg",
+    icon: "format/column-after.svg",
     action: () => editor.chain().focus().addColumnAfter().run(),
     helpText: "Add column after current",
   },
   {
-    icon: "row-before.svg",
+    icon: "format/row-before.svg",
     action: () => editor.chain().focus().addRowBefore().run(),
     helpText: "Add row before current",
   },
   {
-    icon: "row-after.svg",
+    icon: "format/row-after.svg",
     action: () => editor.chain().focus().addRowAfter().run(),
     helpText: "Add row after current",
   },
@@ -555,17 +577,17 @@ tableCreateButton.addEventListener("click", (e) => {
 
 const tableDeleteItems = [
   {
-    icon: "table-delete.svg",
+    icon: "format/table-delete.svg",
     action: () => editor.chain().focus().deleteTable().run(),
     helpText: "Delete full table",
   },
   {
-    icon: "columns.svg",
+    icon: "format/columns.svg",
     action: () => editor.chain().focus().deleteColumn().run(),
     helpText: "Delete current column",
   },
   {
-    icon: "rows.svg",
+    icon: "format/rows.svg",
     action: () => editor.chain().focus().deleteRow().run(),
     helpText: "Delete current row",
   },
@@ -580,7 +602,7 @@ tableDeleteButton.addEventListener("click", (e) => {
 
 const linkEditButtons = [
   {
-    icon: "link.svg",
+    icon: "format/link.svg",
     action: () =>
       editor
         .chain()
@@ -594,7 +616,7 @@ const linkEditButtons = [
     helpText: "Add new Link",
   },
   {
-    icon: "unlink.svg",
+    icon: "format/unlink.svg",
     action: () => editor.chain().focus().unsetLink().run(),
     helpText: "Delete Link",
   },
