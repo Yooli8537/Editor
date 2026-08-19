@@ -1,6 +1,20 @@
 # Changelog
 
-## Unreleased
+## v1.5.1 - Codeblock improvements
+
+### Added
+
+- Codeblock now has a list of specific languages which can be selected to skip the rather unreliable auto detection. Auto detection is still available for unsupported languages.
+  - C++
+  - CSS
+  - Dockerfile
+  - HTML
+  - Java
+  - JavaScript
+  - Lua
+  - Markdown
+  - Plaintext
+  - Python
 
 ### Removed
 
