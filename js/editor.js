@@ -416,17 +416,17 @@ const codeItems = [
     helpText: "Auto detect (supports unlisted languages)",
   },
   {
-    icon: "code-languages/javascript.svg",
+    icon: "code-languages/cpp.svg",
     action: () =>
       editor
         .chain()
         .focus()
         .setCodeBlock()
         .updateAttributes("codeBlock", {
-          language: "javaScript",
+          language: "cpp",
         })
         .run(),
-    helpText: "JavaScript",
+    helpText: "C++",
   },
   {
     icon: "code-languages/css.svg",
@@ -442,6 +442,19 @@ const codeItems = [
     helpText: "CSS",
   },
   {
+    icon: "code-languages/docker.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "dockerfile",
+        })
+        .run(),
+    helpText: "Dockerfile",
+  },
+  {
     icon: "code-languages/java.svg",
     action: () =>
       editor
@@ -455,30 +468,17 @@ const codeItems = [
     helpText: "Java",
   },
   {
-    icon: "code-languages/python.svg",
+    icon: "code-languages/javascript.svg",
     action: () =>
       editor
         .chain()
         .focus()
         .setCodeBlock()
         .updateAttributes("codeBlock", {
-          language: "python",
+          language: "javaScript",
         })
         .run(),
-    helpText: "Python",
-  },
-  {
-    icon: "code-languages/cpp.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "cpp",
-        })
-        .run(),
-    helpText: "C++",
+    helpText: "JavaScript",
   },
   {
     icon: "code-languages/lua.svg",
@@ -494,17 +494,43 @@ const codeItems = [
     helpText: "Lua",
   },
   {
-    icon: "code-languages/docker.svg",
+    icon: "code-languages/markdown.svg",
     action: () =>
       editor
         .chain()
         .focus()
         .setCodeBlock()
         .updateAttributes("codeBlock", {
-          language: "dockerfile",
+          language: "markdown",
         })
         .run(),
-    helpText: "Dockerfile",
+    helpText: "Markdown",
+  },
+  {
+    icon: "code-languages/plaintext.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "plaintext",
+        })
+        .run(),
+    helpText: "Plaintext",
+  },
+  {
+    icon: "code-languages/python.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "python",
+        })
+        .run(),
+    helpText: "Python",
   },
 ];
 
