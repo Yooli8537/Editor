@@ -39,12 +39,6 @@ async function addUnsavedToMaster(filename) {
   for (let i = 0; i < unsavedFiles.length; i++) {
     if (unsavedFiles[i] === filename) {
       addFile = false;
-      if (serverMaster.detailLogs) {
-        logger.info(
-          { Name: filename },
-          "Unsaved filename already included in master.json.",
-        );
-      }
     }
   }
 
@@ -53,13 +47,6 @@ async function addUnsavedToMaster(filename) {
     unsavedFiles.push(filename);
     masterFile[0].unsavedFiles = unsavedFiles;
     try {
-      if (serverMaster.detailLogs) {
-        logger.info(
-          { Name: filename },
-          "Adding unsaved filename to master.json...",
-        );
-      }
-
       // Updates master.json on the fs.
       await fs.writeFileSync(
         masterFilePath,
@@ -167,6 +154,7 @@ router.delete("/api/removeAutosave", async (req, res) => {
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
 
     if (serverMaster.detailLogs) {
+      logger.info({ Name: name }, "Removed saved filename from master.json.");
       logger.info({ Name: name }, "Deleting autosave...");
     }
 
