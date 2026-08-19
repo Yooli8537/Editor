@@ -153,4 +153,5 @@ hr.separator {
 }
 .settingIcon img {
   margin-right: 5px;
+  max-height: 24px;
 }
