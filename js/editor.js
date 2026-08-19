@@ -9,10 +9,19 @@ import Emoji from "@tiptap/extension-emoji";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
+// Supported Languages
+import javascript from "highlight.js/lib/languages/javascript";
+import java from "highlight.js/lib/languages/java";
+import python from "highlight.js/lib/languages/python";
+import lua from "highlight.js/lib/languages/lua";
+import dockerfile from "highlight.js/lib/languages/dockerfile";
+import cpp from "highlight.js/lib/languages/cpp";
+import css from "highlight.js/lib/languages/css";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
+const lowlightLanguages = [java, javascript, python, css, cpp, dockerfile, lua];
 
 // Importing custom functions
 import {
@@ -24,6 +33,7 @@ import {
   setHelpText,
   createInfoModal,
   getMaster,
+  createListSubmenu,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { addState, checkState, getState, rmState, setState } from "./state";
@@ -389,9 +399,12 @@ listsButton.addEventListener("click", (e) => {
   createSubmenu(listsButton, listItems, 1);
 });
 
+const codeItems = [];
+
 setHelpText(codeBlockButton, "Code Block");
 codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
+  createListSubmenu(codeBlockButton, lowlightLanguages);
   editor.chain().focus().toggleCodeBlock().run();
 });
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Removed
+
+- Removed unsaved changes warning for settings.
+
 ### Fixed
 
 - The buttons under Settings -> Info now work when pressing the edges as well, not just text.

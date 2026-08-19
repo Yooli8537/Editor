@@ -245,13 +245,6 @@ export function removeSubmenus() {
   removeHelpTexts();
 }
 
-// Removes all helptexts
-function removeHelpTexts() {
-  document
-    .querySelectorAll(".helpText")
-    .forEach((helpText) => helpText.remove());
-}
-
 // Function descriptions (when hovering)
 // Creates the Help Text after 2s
 export function setHelpText(hoverButton, helpText) {
@@ -300,6 +293,13 @@ export function setHelpText(hoverButton, helpText) {
     hoverInterval = null;
     removeHelpTexts();
   });
+}
+
+// Removes all helptexts
+function removeHelpTexts() {
+  document
+    .querySelectorAll(".helpText")
+    .forEach((helpText) => helpText.remove());
 }
 
 // Loads data from master.json and returns it as useable JSON.
