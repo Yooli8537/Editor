@@ -21,6 +21,7 @@ dockerfile,
 html,
 java,
 javascript,
+json,
 lua,
 markdown
 plaintext
@@ -493,6 +494,19 @@ const codeItems = [
         })
         .run(),
     helpText: "JavaScript",
+  },
+  {
+    icon: "code-languages/json.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "json",
+        })
+        .run(),
+    helpText: "JSON",
   },
   {
     icon: "code-languages/lua.svg",

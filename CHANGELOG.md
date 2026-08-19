@@ -5,6 +5,8 @@
 ### Added
 
 - New Settings to configure server logging.
+- Server-side logging improved.
+- JSON langauge support.
 
 ## v1.5.1 - Codeblock improvements
 
