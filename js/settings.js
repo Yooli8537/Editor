@@ -100,15 +100,6 @@ async function updateMasterfile(updateData) {
   }
 }
 
-
-// Warns before reloading / closing the settings.
-window.addEventListener("beforeunload", (e) => {
-  e.preventDefault();
-  e.returnValue = "";
-  console.log("WARN");
-});
-
-
 // Loops through all to give them event listeners.
 function addTabListeners() {
   for (let i = 0; i < allTabs.length; i++) {

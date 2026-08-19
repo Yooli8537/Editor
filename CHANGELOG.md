@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.5.1 - Codeblock improvements
+
+### Added
+
+- Codeblock now has a list of specific languages which can be selected to skip the rather unreliable auto detection. Auto detection is still available for unsupported languages.
+  - C++
+  - CSS
+  - Dockerfile
+  - HTML
+  - Java
+  - JavaScript
+  - Lua
+  - Markdown
+  - Plaintext
+  - Python
+
+### Removed
+
+- Removed unsaved changes warning for settings.
+
+### Fixed
+
+- The buttons under Settings -> Info now work when pressing the edges as well, not just text.
+
 ## v1.5.0 - Bug Fixes & New Settings
 
 ### Added

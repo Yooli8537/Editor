@@ -206,7 +206,7 @@ export function createSubmenu(triggerButton, items, width) {
     button.classList.add("toolbarButton");
     const buttonIcon = document.createElement("img");
     buttonIcon.classList.add("toolbarIcon");
-    buttonIcon.src = `assets/format/${items[i].icon}`;
+    buttonIcon.src = `assets/${items[i].icon}`;
 
     // Setting Helptext for Submenu Items
     setHelpText(button, items[i].helpText);
@@ -243,13 +243,6 @@ export function removeSubmenus() {
     .querySelectorAll(".activeButton")
     .forEach((el) => el.classList.remove("activeButton"));
   removeHelpTexts();
-}
-
-// Removes all helptexts
-function removeHelpTexts() {
-  document
-    .querySelectorAll(".helpText")
-    .forEach((helpText) => helpText.remove());
 }
 
 // Function descriptions (when hovering)
@@ -300,6 +293,13 @@ export function setHelpText(hoverButton, helpText) {
     hoverInterval = null;
     removeHelpTexts();
   });
+}
+
+// Removes all helptexts
+function removeHelpTexts() {
+  document
+    .querySelectorAll(".helpText")
+    .forEach((helpText) => helpText.remove());
 }
 
 // Loads data from master.json and returns it as useable JSON.
