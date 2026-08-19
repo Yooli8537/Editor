@@ -18,6 +18,7 @@ const lowlightLanguages = lowlight.listLanguages();
 cpp,
 css,
 dockerfile,
+html,
 java,
 javascript,
 lua,
@@ -455,6 +456,19 @@ const codeItems = [
     helpText: "Dockerfile",
   },
   {
+    icon: "code-languages/html.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "html",
+        })
+        .run(),
+    helpText: "HTML",
+  },
+  {
     icon: "code-languages/java.svg",
     action: () =>
       editor
@@ -538,7 +552,7 @@ setHelpText(codeBlockButton, "Codeblock");
 codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(codeBlockButton, codeItems, 2);
+  createSubmenu(codeBlockButton, codeItems, 3);
 });
 
 setHelpText(boldButton, "Bold");
