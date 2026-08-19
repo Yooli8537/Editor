@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"vite --port 8511\" \"node server/server.js\"",
+    "dev": "concurrently \"node server/server.js\" \"vite --port 8511\"",
     "build": "vite build"
   },
   "repository": {
