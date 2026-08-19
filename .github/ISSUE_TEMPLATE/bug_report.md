@@ -7,6 +7,7 @@ assignees: Yooli8537
 
 ---
 
+*Before opening a bug report, please make sure that the bug hasn't already been reported.*
 **Describe the bug**
 A clear and concise description of what the bug is.
 
