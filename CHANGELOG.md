@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- The buttons under Settings -> Info now work when pressing the edges as well, not just text.
+
 ## v1.5.0 - Bug Fixes & New Settings
 
 ### Added
