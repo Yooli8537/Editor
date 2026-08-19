@@ -3,6 +3,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const logger = require("./logger");
 
 const app = express();
 const port = 8510;
