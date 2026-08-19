@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- New Settings to configure server logging.
+
 ## v1.5.1 - Codeblock improvements
 
 ### Added

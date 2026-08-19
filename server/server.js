@@ -212,4 +212,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));
 });
 
-app.listen(port, () => {});
+app.listen(port, () => {
+  console.log(`Editor Backend running on Port ${port}.`);
+});
