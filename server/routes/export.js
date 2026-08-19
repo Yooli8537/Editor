@@ -4,6 +4,8 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const serverMaster = require("../serverMaster");
+const logger = require("../logger");
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Importing TipTap Extensions for Export
@@ -71,6 +73,9 @@ async function setExtensions() {
 // Processes HTML and converts it into PDF
 router.post("/api/export", async (req, res) => {
   const { exportDocument, name } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info({ "Document name": name }, "Recived document export request.");
+  }
 
   // Basic HTML structure.
   // The HTML from the request only includes the editor data, so stylesheets and stuff have to be set here.
@@ -88,6 +93,9 @@ router.post("/api/export", async (req, res) => {
   </html>
   `;
 
+  if (serverMaster.detailLogs) {
+    logger.info("Launching simulated browser.");
+  }
   // Simulated browser which Puppeteer uses to generate the PDF.
   const browser = await puppeteer.launch({
     args: ["--allow-file-access-from-files"],
@@ -100,12 +108,19 @@ router.post("/api/export", async (req, res) => {
     waitUntil: "networkidle0",
   });
 
+  if (serverMaster.detailLogs) {
+    logger.info("Converting HTML to PDF.");
+  }
   // Converts the page into a PDF with specifications.
   const pdf = await page.pdf({
     format: "A4",
     printBackground: true,
     margin: { top: "75px", bottom: "75px", left: "75px", right: "75px" },
   });
+
+  if (serverMaster.detailLogs) {
+    logger.info("Closing simulated browser.");
+  }
   // Closes the simulated browser.
   await browser.close();
 
@@ -116,6 +131,9 @@ router.post("/api/export", async (req, res) => {
     `attachment; filename=${req.body.name}.pdf`,
   );
   res.send(pdf);
+  if (serverMaster.successLogs) {
+    logger.info("Sent PDF-Export to Client.");
+  }
 });
 
 module.exports = router;
