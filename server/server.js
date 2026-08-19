@@ -168,6 +168,9 @@ addMissingMasterProperties();
 
 // Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
+  if (serverMaster.detailLogs) {
+    logger.info("Recived master.json get request.");
+  }
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
@@ -183,6 +186,9 @@ app.get("/api/getMaster", async (req, res) => {
 // Updates master.json from client.
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info("Recived master.json update request.");
+  }
 
   try {
     await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
@@ -203,6 +209,12 @@ app.put("/api/updateMaster", async (req, res) => {
 // Updates a certain master.json property.
 app.put("/api/updateMasterProperty", async (req, res) => {
   const { property, newValue } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Property: property, Value: newValue },
+      "Recived master.json property update request.",
+    );
+  }
 
   try {
     // Gets master data
