@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.5.0 - Bug Fixes & New Settings
+
+### Added
+
+- Long file & folder names are now shortened after 20 characters. This can be adjusted in the settings.
+- The maximum length of names can now be adjusted in settings.
+- The time it takes for a helptext to appear is now adjustable in settings.
+- "Server" section under settings.
+
+### Changed
+
+- "Manage" Tab renamed to "Storage & Traffic" in settings.
+
+### Fixed
+
+- If an integer setting's value is 0 or below, it will not save to the master.
+- Submenu helptexts will no longer appear in the top left corner if their parent was clicked before they appeared.
+- Boolean settings are now preloaded & saved correctly.
+- If you click on a document which is already open and unsaved, it won't produce any modals warning you to not leave and won't overwrite your changes.
+
 ## v1.4.1 - Table resizing & new Setting
 
 ### Added

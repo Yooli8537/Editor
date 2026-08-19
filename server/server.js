@@ -108,10 +108,15 @@ async function addMissingMasterProperties() {
   const allProperties = {
     unsavedFiles: [],
     autosaveInterval: 10,
-    helpTextHoverTime: 15,
+    helpTextHoverTime: 1.5,
     confirmSave: true,
     collapsedFolders: [],
     updateCollapsedFolders: 15,
+    sliceIndex: 20,
+    maxCharacterLength: 30,
+    warningLogs: true,
+    detailLogs: false,
+    successLogs: true,
   };
 
   // Adds all the missing properties
@@ -152,7 +157,7 @@ if (!fs.existsSync(masterFilePath)) {
 deleteDeprecatedMasterProperties();
 addMissingMasterProperties();
 
-// Gets master.json
+// Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -165,7 +170,7 @@ app.get("/api/getMaster", async (req, res) => {
   }
 });
 
-// Updates master.json
+// Updates master.json from client.
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
 

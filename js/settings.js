@@ -2,6 +2,66 @@
 // Imports
 import { createErrorModal, createInfoModal } from "./utils";
 
+// Save button
+const saveSettingsButton = document.querySelector("#saveSettingsButton");
+// Different tabs
+const generalTab = document.querySelector("#generalTab");
+const displayTab = document.querySelector("#displayTab");
+const formatsTab = document.querySelector("#formatsTab");
+const keybindsTab = document.querySelector("#keybindsTab");
+const storageTrafficTab = document.querySelector("#storageTrafficTab");
+const serverTab = document.querySelector("#serverTab");
+const infoTab = document.querySelector("#infoTab");
+
+// Array of every tab
+const allTabs = [
+  { name: "general", element: generalTab },
+  { name: "display", element: displayTab },
+  { name: "formats", element: formatsTab },
+  { name: "keybinds", element: keybindsTab },
+  { name: "storageTraffic", element: storageTrafficTab },
+  { name: "server", element: serverTab },
+  { name: "info", element: infoTab },
+];
+
+// All the settings
+const autosaveInterval = document.querySelector("#autosaveInterval");
+const confirmSave = document.querySelector("#confirmSave");
+const updateCollapsedFolders = document.querySelector(
+  "#updateCollapsedFolders",
+);
+const sliceIndex = document.querySelector("#sliceIndex");
+const maxCharacterLength = document.querySelector("#maxCharacterLength");
+const helpTextHoverTime = document.querySelector("#helpTextHoverTime");/*
+const warningLogs = document.querySelector("#warningLogs");
+const successLogs = document.querySelector("#successLogs");
+const detailLogs = document.querySelector("#detailLogs");*/
+
+// Array of every setting which can be set (so it excludes one-time actions like the image clear).
+const allSettings = [
+  autosaveInterval,
+  confirmSave,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+  helpTextHoverTime,/*
+  warningLogs,
+  successLogs,
+  detailLogs,*/
+];
+// All the settings which are a number value.
+const numberSettings = [
+  autosaveInterval,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+  helpTextHoverTime,
+];
+// All the settings which are a string value.
+const stringSettings = [];
+// All the settings which are a boolean value.
+const boolSettings = [confirmSave,/* warningLogs, successLogs, detailLogs*/];
+
 // Getting the master file
 let master;
 async function getMasterfile() {
@@ -40,39 +100,14 @@ async function updateMasterfile(updateData) {
   }
 }
 
-/*
+
 // Warns before reloading / closing the settings.
 window.addEventListener("beforeunload", (e) => {
   e.preventDefault();
   e.returnValue = "";
   console.log("WARN");
 });
-*/
-// Save button
-const saveSettingsButton = document.querySelector("#saveSettingsButton");
-// Different tabs
-const displayTab = document.querySelector("#displayTab");
-const formatsTab = document.querySelector("#formatsTab");
-const keybindsTab = document.querySelector("#keybindsTab");
-const manageTab = document.querySelector("#manageTab");
-const infoTab = document.querySelector("#infoTab");
 
-// Array of every tab
-const allTabs = [
-  { name: "display", element: displayTab },
-  { name: "formats", element: formatsTab },
-  { name: "keybinds", element: keybindsTab },
-  { name: "manage", element: manageTab },
-  { name: "info", element: infoTab },
-];
-
-// Array of every setting which can be set (so it excludes one-time actions like the image clear).
-const autosaveInterval = document.querySelector("#autosaveInterval");
-const confirmSave = document.querySelector("#confirmSave");
-const updateCollapsedFolders = document.querySelector(
-  "#updateCollapsedFolders",
-);
-const allSettings = [autosaveInterval, confirmSave, updateCollapsedFolders];
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
@@ -99,7 +134,20 @@ function hideAllPages() {
 function preLoadSettingsData() {
   // Applies values into the settings as preview values.
   for (let i = 0; i < allSettings.length; i++) {
-    allSettings[i].value = master[allSettings[i].id];
+    if (
+      numberSettings.includes(allSettings[i]) ||
+      stringSettings.includes(allSettings[i])
+    ) {
+      allSettings[i].value = master[allSettings[i].id];
+    } else {
+      // Value of a boolean setting within the master.
+      let settingMasterValue = master[allSettings[i].id];
+      if (settingMasterValue === true) {
+        allSettings[i].value = "True";
+      } else {
+        allSettings[i].value = "False";
+      }
+    }
   }
 }
 
@@ -110,18 +158,18 @@ function showPage(pageName) {
 }
 
 // Saving the settings
-// All the settings which are a number value.
-const numberSettings = [autosaveInterval, updateCollapsedFolders];
-// All the settings which are a string value.
-const stringSettings = [];
-// All the settings which are a boolean value.
-const boolSettings = [confirmSave];
-
 saveSettingsButton.addEventListener("click", async (e) => {
   // Looping through all the number settings and saving them to the master variable.
   for (let i = 0; i < numberSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
-    master[numberSettings[i].id] = Number(numberSettings[i].value);
+    if (Number(numberSettings[i].value) <= 0) {
+      createErrorModal(
+        `${numberSettings[i].id} has a value of 0 or below. Cancelling save.`,
+      );
+      return;
+    } else {
+      master[numberSettings[i].id] = Number(numberSettings[i].value);
+    }
   }
 
   // Looping through all the string settings and saving them to the master variable.

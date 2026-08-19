@@ -21,6 +21,10 @@
     <hr>
     <div id="settingsView">
         <div id="settingsSidebar">
+            <div id="generalTab" class="tab hoverClass">
+                <img src="../assets/settings/settings.svg" class="tabIcon">
+                <p>General</p>
+            </div>
             <div id="displayTab" class="tab hoverClass">
                 <img src="../assets/settings/display.svg" class="tabIcon">
                 <p>Display</p>
@@ -33,9 +37,13 @@
                 <img src="../assets/settings/keybinds.svg" class="tabIcon">
                 <p>Keybinds</p>
             </div>
-            <div id="manageTab" class="tab hoverClass">
-                <img src="../assets/settings/manage.svg" class="tabIcon">
-                <p>Manage</p>
+            <div id="storageTrafficTab" class="tab hoverClass">
+                <img src="../assets/settings/storage-traffic.svg" class="tabIcon">
+                <p>Storage & Traffic</p>
+            </div>
+            <div id="serverTab" class="tab hoverClass">
+                <img src="../assets/settings/server.svg" class="tabIcon">
+                <p>Server</p>
             </div>
             <div id="infoTab" class="tab hoverClass">
                 <img src="../assets/settings/info.svg" class="tabIcon">
@@ -45,7 +53,7 @@
         <hr class="vertical separator">
         <div id="settingsPage">
 
-            <div id="manage" class="hidden">
+            <div id="general" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/function/save.svg" class="groupIcon">
@@ -53,12 +61,23 @@
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
+                            <div class="settingTitle">Maximum name character count (characters)</div>
+                            <div class="settingDescription">
+                                Maximum amount of characters which a file / folder can have.
+                            </div>
+                            <div class="settingDefault">Default: 30</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxCharacterLength">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
                             <div class="settingTitle">Autosave Interval (seconds)</div>
                             <div class="settingDescription">
                                 Set the amount of time the server waits before attempting to create another autosave.
                                 Note that each autosave overwrites the previous one, so the cost of autosaving is mostly
-                                network traffic and not having enough storage for it. Automatically rounded to the
-                                nearest 0.1s.
+                                network traffic. Automatically rounded to the nearest 0.1s.
                             </div>
                             <div class="settingDefault">Default: 10s</div>
                         </div>
@@ -82,6 +101,74 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="display" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/sidebar.svg" class="groupIcon">
+                        <p>Sidebar</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Name cutoff (characters)</div>
+                            <div class="settingDescription">
+                                Set how many characters it takes until a folder's or file's name is cut off on the
+                                sidebar. Note that very long names will cause issues with display and the filesystem.
+                            </div>
+                            <div class="settingDefault">Default: 20 characters</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="sliceIndex">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/editor.svg" class="groupIcon">
+                        <p>Editor</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Help Text hover Time (seconds)</div>
+                            <div class="settingDescription">
+                                How long your mouse has to hover over a help text in order for it to appear.
+                                Automatically rounded to the nearest 0.1s.
+                            </div>
+                            <div class="settingDefault">Default: 1.5s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="helpTextHoverTime">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="formats" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p>
+                            <del>Formats</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="keybinds" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <p>
+                            <del>Keybinds</del> This area is under construction! Please be patient while I figure this
+                            feature out... 🤔
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="storageTraffic" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/settings/storage.svg" class="groupIcon">
@@ -93,6 +180,11 @@
                             <div class="settingDescription">
                                 Searches through all your documents and removes any unused images from the server
                                 storage. This may take a while if you have a lot of documents.
+                            </div>
+                            <div class="settingDefault">
+                                Do not use this option while you have unsaved documents open, as the images in the
+                                unsaved document are supposed to stay but aren't referenced anywhere, so the server
+                                thinks that they're unused.
                             </div>
                         </div>
                         <div class="settingValue">
@@ -120,40 +212,77 @@
                 </div>
             </div>
 
-            <div id="keybinds" class="hidden">
+            <div id="server" class="hidden">
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/server.svg" class="groupIcon">
+                        <p>
+                            Welcome to the Server settings! In order to apply any updates, you must restart your server.
+                        </p>
+                    </div>
+                </div>
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/icons/construction.svg" class="groupIcon">
                         <p>
-                            <del>Keybinds</del> This area is under construction! Please be patient while I figure this
+                            <del>Server</del> This area is under construction! Please be patient while I figure this
                             feature out... 🤔
                         </p>
                     </div>
                 </div>
-            </div>
-
-            <div id="display" class="hidden">
+                <!--
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Display</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                        <img src="../assets/settings/server-logs.svg" class="groupIcon">
+                        <p>Server Logs</p>
                     </div>
-                </div>
-            </div>
-
-            <div id="formats" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Formats</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Warning Logs</div>
+                            <div class="settingDescription">
+                                Logs which warn you if something could be going wrong.
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="warningLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Success Logs</div>
+                            <div class="settingDescription">
+                                Logs which come out whenever an operation is completed successfully (such as renaming,
+                                creating a new file, etc.).
+                            </div>
+                            <div class="settingDefault">Default: True</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="successLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Detailed Logs</div>
+                            <div class="settingDescription">
+                                Extra logs which give you additional information about what's going on under the hood.
+                            </div>
+                            <div class="settingDefault">Default: False</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="detailLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>-->
             </div>
 
             <div id="info" class="hidden">
@@ -165,7 +294,7 @@
                     <div class="setting">
                         <div class="settingInfo">
                             <div class="settingTitle">Version</div>
-                            <div>You are currently on Editor version <i>v1.4.1</i>.</div>
+                            <div>You are currently on Editor version <i>v1.5.0</i>.</div>
                         </div>
                         <div class="settingValue">
                             <button type="submit" class="button hoverClass">

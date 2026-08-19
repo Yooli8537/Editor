@@ -101,7 +101,7 @@ export function createPromptModal(prompt, inputContent, onSubmit) {
   const inputField = document.createElement("input");
   inputField.classList.add("inputField");
   inputField.type = "text";
-  inputField.maxLength = 30;
+  inputField.maxLength = getState("maxCharacterLength");
   inputField.value = inputContent; // Adds the previous value to the input field.
 
   // Confirm with enter key
@@ -260,14 +260,14 @@ export function setHelpText(hoverButton, helpText) {
 
   function createHelpText() {
     // Stops an empty helptext from generating
-    if (helpText === undefined) {
+    if (helpText == undefined) {
       return;
     }
 
     time = 0;
 
     hoverInterval = setInterval(() => {
-      if (time >= getState("helpTextHoverTime")) {
+      if (time >= getState("helpTextHoverTime") * 10) {
         clearInterval(hoverInterval);
         hoverInterval = null;
 
@@ -288,6 +288,12 @@ export function setHelpText(hoverButton, helpText) {
   }
 
   hoverButton.addEventListener("mouseenter", createHelpText);
+
+  hoverButton.addEventListener("click", (e) => {
+    clearInterval(hoverInterval);
+    hoverInterval = null;
+    removeHelpTexts();
+  });
 
   hoverButton.addEventListener("mouseleave", (e) => {
     clearInterval(hoverInterval);
