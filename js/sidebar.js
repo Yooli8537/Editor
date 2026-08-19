@@ -151,6 +151,7 @@ function createFile(entry, previousEntry) {
     const pathParam = urlParams.get("path");
     const documentParam = urlParams.get("document");
 
+    // Cancels document loading if the current document is already opened.
     if (pathParam === previousEntry && documentParam === entry.name) {
       return;
     }

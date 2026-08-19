@@ -32,10 +32,10 @@ const updateCollapsedFolders = document.querySelector(
 );
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
-const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
+const helpTextHoverTime = document.querySelector("#helpTextHoverTime");/*
 const warningLogs = document.querySelector("#warningLogs");
 const successLogs = document.querySelector("#successLogs");
-const detailLogs = document.querySelector("#detailLogs");
+const detailLogs = document.querySelector("#detailLogs");*/
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -44,10 +44,10 @@ const allSettings = [
   updateCollapsedFolders,
   sliceIndex,
   maxCharacterLength,
-  helpTextHoverTime,
+  helpTextHoverTime,/*
   warningLogs,
   successLogs,
-  detailLogs,
+  detailLogs,*/
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -60,7 +60,7 @@ const numberSettings = [
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
-const boolSettings = [confirmSave, warningLogs, successLogs, detailLogs];
+const boolSettings = [confirmSave,/* warningLogs, successLogs, detailLogs*/];
 
 // Getting the master file
 let master;
@@ -100,14 +100,14 @@ async function updateMasterfile(updateData) {
   }
 }
 
-/*
+
 // Warns before reloading / closing the settings.
 window.addEventListener("beforeunload", (e) => {
   e.preventDefault();
   e.returnValue = "";
   console.log("WARN");
 });
-*/
+
 
 // Loops through all to give them event listeners.
 function addTabListeners() {
