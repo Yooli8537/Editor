@@ -33,9 +33,7 @@ python,
 // Importing custom functions
 import {
   createConfirmModal,
-  destroyModal,
   createSubmenu,
-  removeSubmenus,
   createErrorModal,
   setHelpText,
   createInfoModal,
