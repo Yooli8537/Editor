@@ -124,7 +124,6 @@ window.addEventListener("beforeunload", (e) => {
   if (editorIsSaved == false) {
     e.preventDefault();
     e.returnValue = "";
-    console.log("WARN");
   }
 });
 
@@ -808,7 +807,6 @@ exportButton.addEventListener("click", async (e) => {
         downloadElement.download = currentEntry.replace(".json", ".pdf");
         downloadElement.click();
         URL.revokeObjectURL(downloadURL); // Deletes download Element
-        console.log("Succsessfully exported File.");
       } else {
         createErrorModal("Something went wrong.");
       }
@@ -835,7 +833,6 @@ discardButton.addEventListener("click", (e) => {
       () => {},
       () => {
         closeEditor();
-        console.log("Changes Discarded.");
         setState("currentDocument", null);
         buildSidebar();
       },
@@ -859,7 +856,6 @@ async function pushSaveData() {
 
   // Error handling
   if (response.ok) {
-    console.log("Successfully saved Document.");
     editorIsSaved = true;
     if (checkForAutosave(currentEntry)) {
       removeAutosave();
@@ -962,12 +958,6 @@ async function initAutosave(autosaveInterval) {
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
-
-      if (autosave.ok) {
-        console.log(
-          `Successfully created Autosave for document ${currentEntry}.`,
-        );
-      }
     }
   }, autosaveInterval);
 }
@@ -983,7 +973,6 @@ async function removeAutosave() {
   });
 
   if (response.ok) {
-    console.log(`Removed Autosave for ${currentEntry}.`);
     // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
     rmState("unsavedFiles", currentEntry);
   }
