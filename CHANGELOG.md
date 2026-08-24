@@ -12,6 +12,10 @@
 
 - Client-side logging.
 
+### Fixed
+
+- When clicking on a document with an unsaved document open, it no longer highlights the incorrect one if you click "back".
+
 ## v1.5.1 - Codeblock improvements
 
 ### Added
