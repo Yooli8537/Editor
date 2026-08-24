@@ -46,7 +46,6 @@ import { addState, checkState, getState, rmState, setState } from "./state";
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
-let editorIsSaved;
 
 // Defining and configuring extensions
 const extensions = [
@@ -101,7 +100,7 @@ const editor = new Editor({
   autofocus: true,
   injectCSS: true,
   onUpdate: () => {
-    editorIsSaved = false;
+    setState("editorIsSaved", false)
   },
 });
 
@@ -121,7 +120,7 @@ async function uploadImage(file) {
 
 // Warns before reloading / closing a Tab
 window.addEventListener("beforeunload", (e) => {
-  if (editorIsSaved == false) {
+  if (!getState("editorIsSaved")) {
     e.preventDefault();
     e.returnValue = "";
   }
@@ -162,7 +161,7 @@ export async function loadAutosave(fileData, document, path) {
           const autosaveData = await autosave.json();
           loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
-          editorIsSaved = false;
+          setState("editorIsSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
         } else {
           createErrorModal(`Something went wrong. ${autosave.status}`);
@@ -199,13 +198,13 @@ function loadEditor(documentData, entry, previousEntry) {
     renameHandler();
   });
 
-  editorIsSaved = true;
+  setState("editorIsSaved", true)
 }
 
 // Loads Document into the Editor
 function loadDocument(documentData, entry, previousEntry) {
   // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
-  if (editorIsSaved === false) {
+  if (!getState("editorIsSaved")) {
     createConfirmModal(
       "Leaving this Document will discard Changes!",
       "Back",
@@ -825,7 +824,7 @@ saveButton.addEventListener("click", async (e) => {
 discardButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  if (!editorIsSaved) {
+  if (!getState("editorIsSaved")) {
     createConfirmModal(
       "Discard Changes? This cannot be undone.",
       "Cancel",
@@ -856,7 +855,7 @@ async function pushSaveData() {
 
   // Error handling
   if (response.ok) {
-    editorIsSaved = true;
+    setState("editorIsSaved", true);
     if (checkForAutosave(currentEntry)) {
       removeAutosave();
     }
@@ -872,7 +871,7 @@ async function pushSaveData() {
 
 let saveData;
 function saveEditor(isRestoration) {
-  if (!editorIsSaved) {
+  if (!getState("editorIsSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
     if (isRestoration) {
@@ -908,7 +907,7 @@ let isSavedIcon = true;
 
 // Updates the Save & Discard Icons to be correct with the current state.
 function updateSaveIcons() {
-  if (editorIsSaved) {
+  if (getState("editorIsSaved")) {
     if (isDiscardIcon) {
       discardIcon.src = closeIconPath;
       setHelpText(discardButton, "Close Document");
@@ -944,7 +943,7 @@ async function initAutosave(autosaveInterval) {
   autosave = setInterval(async () => {
     const saveData = editor.getJSON();
 
-    if (editorIsSaved === false) {
+    if (!getState("editorIsSaved")) {
       // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
       if (!checkState("unsavedFiles", currentEntry)) {
         addState("unsavedFiles", currentEntry);
@@ -984,7 +983,7 @@ export function closeEditor() {
   setState("currentDocument", null);
   history.pushState(null, "", "/");
   document.title = "Editor";
-  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+  setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
 // Opens Document from URL if one is present.
