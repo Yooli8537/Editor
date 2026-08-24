@@ -62,8 +62,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 }
 .hljs-comment,
 .hljs-quote,
-.hljs-deletion,
-.hljs-meta {
+.hljs-deletion {
   color: #a1a1a1
 }
 
@@ -75,6 +74,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
   color: #fcda00;
 }
 
-.hljs-params {
+.hljs-params,
+.hljs-meta {
   color: rgb(255, 145, 1);
 }
