@@ -8,6 +8,10 @@
 - Server-side logging improved.
 - JSON langauge support.
 
+### Removed
+
+- Client-side logging.
+
 ## v1.5.1 - Codeblock improvements
 
 ### Added

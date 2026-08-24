@@ -981,7 +981,6 @@ async function removeAutosave() {
 // Closes the Editor
 export function closeEditor() {
   editorView.classList.add("hidden");
-  console.log("Editor Closed.");
   setState("currentDocument", null);
   history.pushState(null, "", "/");
   document.title = "Editor";
@@ -1001,7 +1000,6 @@ export async function onFirstStart() {
 
   // Stops auto-open if no document is provided.
   if (document === null) {
-    console.log("App ready!");
   } else {
     // Getting the Document from the URL.
     const response = await fetch(
@@ -1021,8 +1019,6 @@ export async function onFirstStart() {
       createErrorModal(`${response.status}; Something went wrong.`);
     }
   }
-  console.log("Editor ready!");
-
   buildSidebar();
   createCollapsedFoldersUpdateInterval();
 }

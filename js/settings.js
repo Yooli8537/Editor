@@ -90,12 +90,10 @@ async function updateMasterfile(updateData) {
   });
 
   if (masterUpdate.ok) {
-    console.log("Successfully updated settings.");
     createInfoModal(
       "Successfully updated settings. Reload the Editor to apply.",
     );
   } else {
-    console.error("Failed to update settings.");
     createErrorModal(`Failed to update settings. ${masterUpdate.status}`);
   }
 }
@@ -177,7 +175,6 @@ saveSettingsButton.addEventListener("click", async (e) => {
     }
   }
   // Sends the updated data to the server.
-  console.log(master);
   updateMasterfile([master]);
 });
 
@@ -195,7 +192,6 @@ clearImagesButton.addEventListener("click", async (e) => {
 
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
-  console.log(master);
   preLoadSettingsData();
   addTabListeners();
 }

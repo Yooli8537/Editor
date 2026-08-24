@@ -1,6 +1,5 @@
 // Settings-related server routes
 // Server imports
-const { error } = require("console");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
