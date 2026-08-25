@@ -952,6 +952,7 @@ setInterval(() => {
   updateSaveIcons();
 }, 1000);
 
+let autosave = null;
 // Initializes the autosave.
 async function initAutosave(autosaveInterval) {
   autosave = setInterval(async () => {

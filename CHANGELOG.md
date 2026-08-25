@@ -8,6 +8,7 @@
 - Server-side logging improved.
 - JSON langauge support.
 - C# language support.
+- Modals of all kinds can be confirmed with the enter key.
 
 ### Removed
 
