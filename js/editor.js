@@ -38,6 +38,7 @@ import {
   setHelpText,
   createInfoModal,
   getMaster,
+  removeSubmenus,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { addState, checkState, getState, rmState, setState } from "./state";
@@ -979,6 +980,7 @@ async function removeAutosave() {
 
 // Closes the Editor
 export function closeEditor() {
+  removeSubmenus();
   editorView.classList.add("hidden");
   setState("currentDocument", null);
   history.pushState(null, "", "/");
