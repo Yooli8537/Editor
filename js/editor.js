@@ -10,6 +10,19 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
 
+// Importing custom functions
+import {
+  createConfirmModal,
+  createSubmenu,
+  createErrorModal,
+  setHelpText,
+  createInfoModal,
+  getMaster,
+  removeSubmenus,
+} from "./utils";
+import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
+import { addState, checkState, getState, rmState, setState } from "./state";
+
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
@@ -29,19 +42,6 @@ python,
 */
 // Example Import so that I can check if a certain language is supported easily.
 //import language from "highlight.js/lib/languages/language";
-
-// Importing custom functions
-import {
-  createConfirmModal,
-  createSubmenu,
-  createErrorModal,
-  setHelpText,
-  createInfoModal,
-  getMaster,
-  removeSubmenus,
-} from "./utils";
-import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");

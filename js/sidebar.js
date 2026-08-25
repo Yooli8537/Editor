@@ -1,12 +1,11 @@
 // Importing Required functions
 import {
   createConfirmModal,
-  destroyModal,
   createPromptModal,
   createErrorModal,
   createInfoModal,
 } from "./utils";
-import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
+import { closeEditor, loadAutosave } from "./editor";
 import {
   addState,
   checkState,

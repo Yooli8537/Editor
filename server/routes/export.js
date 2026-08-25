@@ -2,8 +2,6 @@
 // Importing server functions
 const express = require("express");
 const router = express.Router();
-const fs = require("fs");
-const path = require("path");
 const serverMaster = require("../serverMaster");
 const logger = require("../logger");
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
@@ -12,7 +10,6 @@ const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 const StarterKit = require("@tiptap/starter-kit").default;
 const Image = require("@tiptap/extension-image").default;
 const { TableKit } = require("@tiptap/extension-table");
-const { renderToHTMLString } = require("@tiptap/static-renderer");
 const FileHandler = require("@tiptap/extension-file-handler").default;
 const Emoji = require("@tiptap/extension-emoji").default;
 

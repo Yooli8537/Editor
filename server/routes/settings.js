@@ -12,7 +12,6 @@ const rootPath = path.join(__dirname, "../../");
 const dataFolderPath = path.join(rootPath, "data");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
-const masterFilePath = path.join(dataFolderPath, "master.json");
 
 // Cleans unused images from the server.
 let unusedImages = [];
