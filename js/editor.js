@@ -175,6 +175,7 @@ export async function loadAutosave(fileData, document, path) {
 }
 
 // Unhides editor and inserts a document's data.
+// This function does not perform any kind of checks for unsaved documents.
 function loadEditor(documentData, entry, previousEntry) {
   currentDocument = documentData;
   currentEntry = entry;
@@ -254,7 +255,6 @@ async function renameFile(newName, div) {
     setState("currentDocument", folderPath + newName + ".json");
     buildSidebar();
     editTitleButton.style.display = "flex";
-    loadDocument(currentDocument, currentEntry, folderPath);
     history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
   } else if (response.status === 409) {
     createErrorModal(
