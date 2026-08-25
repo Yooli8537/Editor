@@ -1,11 +1,11 @@
 // Importing Required functions
 import {
   createConfirmModal,
-  destroyModal,
   createPromptModal,
   createErrorModal,
+  createInfoModal,
 } from "./utils";
-import { checkForAutosave, closeEditor, loadAutosave } from "./editor";
+import { closeEditor, loadAutosave } from "./editor";
 import {
   addState,
   checkState,
@@ -154,6 +154,12 @@ function createFile(entry, previousEntry) {
     // Cancels document loading if the current document is already opened.
     if (pathParam === previousEntry && documentParam === entry.name) {
       return;
+    } else if (!getState("editorIsSaved")) {
+      // Prevents the document from loading entirely if the document isn't saved.
+      createInfoModal(
+        "You must save your document before changing to a different one.",
+      );
+      return;
     }
 
     const response = await fetch(
@@ -278,7 +284,6 @@ function createFolderActions(path, previousEntry) {
         });
 
         if (response.ok) {
-          console.log("Successfully renamed Folder.");
           buildSidebar();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find Folder to be renamed.");
@@ -310,7 +315,6 @@ function createFolderActions(path, previousEntry) {
         });
 
         if (response.ok) {
-          console.log("Successfully deleted Folder.");
           buildSidebar();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find Folder to delete.");
@@ -353,7 +357,6 @@ function createFileActions(path, previousEntry) {
         });
 
         if (response.ok) {
-          console.log("Successfully deleted File.");
           if (getState("currentDocument") === previousEntry + path) {
             setState("currentDocument", null);
             closeEditor();
@@ -450,13 +453,11 @@ export async function buildSidebar() {
   folderStructure.appendChild(createSearch());
 
   renderEntries(data, 0, "");
-  console.log("Sidebar ready!");
 }
 
 // Checks if the current file is selected and highlights it if true.
 export function checkForSelectedFile(file, sidebarFile) {
   if (getState("currentDocument") === file) {
-    console.log();
     const selectedDocs = document.querySelectorAll(".selected");
     for (let i = 0; i < selectedDocs.length; i++) {
       selectedDocs[i].classList.remove("selected");
@@ -485,7 +486,6 @@ function createCreationDropdown(parent, path, previousEntry) {
         }),
       });
       if (response.ok) {
-        console.log("Successfully created File.");
         buildSidebar();
       } else if (response.status === 409) {
         createErrorModal(
@@ -513,7 +513,6 @@ function createCreationDropdown(parent, path, previousEntry) {
       });
       if (response.ok) {
         buildSidebar();
-        console.log("Folder added successfully.");
       } else if (response.status === 409) {
         createErrorModal(
           "A Folder with that name already exists in the current Directory!",

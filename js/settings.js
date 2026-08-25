@@ -32,10 +32,10 @@ const updateCollapsedFolders = document.querySelector(
 );
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
-const helpTextHoverTime = document.querySelector("#helpTextHoverTime");/*
+const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
 const warningLogs = document.querySelector("#warningLogs");
 const successLogs = document.querySelector("#successLogs");
-const detailLogs = document.querySelector("#detailLogs");*/
+const detailLogs = document.querySelector("#detailLogs");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -44,10 +44,10 @@ const allSettings = [
   updateCollapsedFolders,
   sliceIndex,
   maxCharacterLength,
-  helpTextHoverTime,/*
+  helpTextHoverTime,
   warningLogs,
   successLogs,
-  detailLogs,*/
+  detailLogs,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -60,7 +60,7 @@ const numberSettings = [
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
-const boolSettings = [confirmSave,/* warningLogs, successLogs, detailLogs*/];
+const boolSettings = [confirmSave, warningLogs, successLogs, detailLogs];
 
 // Getting the master file
 let master;
@@ -90,12 +90,10 @@ async function updateMasterfile(updateData) {
   });
 
   if (masterUpdate.ok) {
-    console.log("Successfully updated settings.");
     createInfoModal(
       "Successfully updated settings. Reload the Editor to apply.",
     );
   } else {
-    console.error("Failed to update settings.");
     createErrorModal(`Failed to update settings. ${masterUpdate.status}`);
   }
 }
@@ -177,7 +175,6 @@ saveSettingsButton.addEventListener("click", async (e) => {
     }
   }
   // Sends the updated data to the server.
-  console.log(master);
   updateMasterfile([master]);
 });
 
@@ -195,7 +192,6 @@ clearImagesButton.addEventListener("click", async (e) => {
 
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
-  console.log(master);
   preLoadSettingsData();
   addTabListeners();
 }

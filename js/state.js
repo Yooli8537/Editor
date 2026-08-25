@@ -1,8 +1,7 @@
 // Basically RAM for the app.
-import { createErrorModal } from "./utils";
-
 let state = {
   currentDocument: null,
+  editorIsSaved: true,
 };
 
 // Gets the given state's value.

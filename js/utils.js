@@ -60,12 +60,25 @@ export function createConfirmModal(
 
   const submitButton = document.createElement("div");
   submitButton.classList.add("modalTextButton");
+  submitButton.classList.add("highlight");
   submitButton.textContent = confirm;
 
   submitButton.addEventListener("click", () => {
     onSubmit();
     destroyModal();
   });
+
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onSubmit();
+        destroyModal();
+      }
+    },
+    { once: true },
+  );
 
   modalButtons.appendChild(cancelButton);
   modalButtons.appendChild(submitButton);
@@ -153,11 +166,23 @@ export function createErrorModal(errorMsg) {
   // Confirm button
   const okButton = document.createElement("div");
   okButton.classList.add("modalTextButton");
+  okButton.classList.add("highlight");
   okButton.textContent = "Ok";
 
   okButton.addEventListener("click", () => {
     destroyModal();
   });
+
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        destroyModal();
+      }
+    },
+    { once: true },
+  );
 
   modalButtons.appendChild(okButton);
   modal.appendChild(modalButtons);
@@ -177,11 +202,23 @@ export function createInfoModal(msg) {
   // Confirm button
   const okButton = document.createElement("div");
   okButton.classList.add("modalTextButton");
+  okButton.classList.add("highlight");
   okButton.textContent = "Ok";
 
   okButton.addEventListener("click", () => {
     destroyModal();
   });
+
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        destroyModal();
+      }
+    },
+    { once: true },
+  );
 
   modalButtons.appendChild(okButton);
   modal.appendChild(modalButtons);

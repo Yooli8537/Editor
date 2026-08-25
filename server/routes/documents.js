@@ -1,10 +1,11 @@
 // CRUD for files & folders
 // Imports
-const { error } = require("console");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const serverMaster = require("../serverMaster");
+const logger = require("../logger");
 
 // Data folder paths
 const rootPath = path.join(__dirname, "../../");
@@ -107,16 +108,28 @@ function findText(node, key, file, searchResults, fileTitle) {
 
 // Gets all documents & folders.
 router.get("/api/documents", async (req, res) => {
+  if (serverMaster.detailLogs) {
+    logger.info("Recieved notebooks get request.");
+  }
   const resposneArray = await readDirRecursive(notebooksFolderPath);
 
+  if (serverMaster.successLogs) {
+    logger.info("Sent notebooks to Client.");
+  }
   res.json(resposneArray);
 });
 
 // Processes search requests.
 router.get("/api/documents/search", async (req, res) => {
   const { key } = req.query;
+  if (serverMaster.detailLogs) {
+    logger.info("Recieved search request.");
+  }
   // This array saves all the files which include the search key.
   const searchResults = [];
+  if (serverMaster.detailLogs) {
+    logger.info("Searching notebooks...");
+  }
   await searchNotebooks(notebooksFolderPath, key, searchResults);
 
   // Results that can be used by the Sidebar loading function (requires paths for the event listeners to open the documents).
@@ -126,25 +139,34 @@ router.get("/api/documents/search", async (req, res) => {
     folderPath: path.relative(notebooksFolderPath, path.dirname(fullPath)),
   }));
 
+  if (serverMaster.successLogs) {
+    logger.info({ Key: key }, "Sent search results to Client.");
+  }
   res.json(adjustedResults);
 });
 
 // Creates a new notebook
 router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info("Recieved notebook create request.");
+  }
 
   try {
     // Makes the directory
     await fs.mkdirSync(path.join(notebooksFolderPath, name));
+    if (serverMaster.successLogs) {
+      logger.info({ Name: name }, "Created new notebook.");
+    }
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    logger.error({ Error: err }, "Failed to create new notebook.");
     if (err.code === "EEXIST") {
       res
         .status(409)
-        .json({ error: "A Notebook with that name already exists" });
+        .json({ error: "A Notebook with that name already exists." });
     } else {
-      res.status(500).json({ error: "Failed to create Notebook" });
+      res.status(500).json({ Error: "Failed to create new notebook." });
     }
   }
 });
@@ -152,6 +174,12 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 // Creates a new file
 router.post("/api/documents/newFile", async (req, res) => {
   const { name, folderPath } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Name: name, Path: folderPath },
+      "Recieved file create request.",
+    );
+  }
   // Builds up the expected content of a TipTap document.
   const defaultContent = JSON.stringify(
     [
@@ -178,25 +206,26 @@ router.post("/api/documents/newFile", async (req, res) => {
       if (await fs.promises.readFile(location)) {
         res
           .status(409)
-          .json({ error: "A File with that name already exists." });
+          .json({ Error: "A File with that name already exists." });
       }
       // Checking for the required values to create the file.
     } else if (name) {
-      console.error("No Folder Path found.");
+      logger.error("No path found to create file.");
     } else if (folderPath) {
-      console.error("No Name found.");
+      logger.error("No name found to create file.");
     } else {
-      console.error("Required values not found for operation.");
+      logger.error("No name or path found to create file.");
     }
   } catch (err) {
     // If the error is a "not found" error, the file is created.
     if (err.code === "ENOENT") {
       fs.writeFileSync(location, defaultContent, "utf8");
-      console.log("Successfully created File.");
+      if (serverMaster.successLogs) {
+        logger.info({ Name: name, Path: folderPath }, "Created file.");
+      }
       res.json({ success: true });
     } else {
-      console.error(err);
-      res.status(500).json({ error: "Failed to create File." });
+      logger.error({ Error: err }, "Failed to create file.");
     }
   }
 });
@@ -204,27 +233,45 @@ router.post("/api/documents/newFile", async (req, res) => {
 // Creates a new folder, pretty much the same procedure as above.
 router.post("/api/documents/newFolder", async (req, res) => {
   const { name, folderPath } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Name: name, Path: folderPath },
+      "Recieved folder create request.",
+    );
+  }
 
   try {
     if (name && folderPath) {
       await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
+      if (serverMaster.successLogs) {
+        logger.info({ Name: name, Path: folderPath }, "Created folder.");
+      }
       res.json({ success: true });
     } else if (name) {
-      console.error("No folder path found.");
+      logger.error(
+        { Name: name, Path: folderPath },
+        "No path found to create folder.",
+      );
     } else if (folderPath) {
-      console.error("No name found.");
+      logger.error(
+        { Name: name, Path: folderPath },
+        "No name found to create folder.",
+      );
     } else {
-      console.error("Required values not found for operation.");
+      logger.error(
+        { Name: name, Path: folderPath },
+        "No name or path found to create folder.",
+      );
     }
   } catch (err) {
     if (err.code === "EEXIST") {
-      console.error(err);
+      logger.error({ Error: err }, "Folder already exists.");
       res
         .status(409)
         .json({ error: "A folder with this name already exists." });
     }
-    console.error(err);
-    res.status(500).json({ error: "Failed to create folder" });
+    logger.error({ Error: err }, "Failed to create folder.");
+    res.status(500).json({ error: "Failed to create folder." });
   }
 });
 
@@ -232,47 +279,78 @@ router.post("/api/documents/newFolder", async (req, res) => {
 router.delete("/api/documents/deletePath", async (req, res) => {
   // Originally only meant for folders but works for files too... happy accidents :)
   const { folderPath } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Path: folderPath },
+      "Recieved path delete request (File / Folder).",
+    );
+  }
 
   try {
     if (folderPath) {
       const fullPath = path.join(notebooksFolderPath, folderPath);
       await fs.promises.rm(fullPath, { recursive: true, force: true });
-      res.send("Path successfully deleted.");
+      if (serverMaster.successLogs) {
+        logger.info({ Path: folderPath }, "Deleted path.");
+      }
+      res.send("Path successfully deleted.").json({ success: true });
     } else {
-      console.error("Couldn't find path to file / folder to be deleted.");
-      res
-        .status(404)
-        .json({ error: "Failed to fulfill deletion request: Path not found." });
+      logger.error({ Path: folderPath }, "Failed to find path to be deleted.");
+      res.status(404).json({ error: "Failed to find path to be deleted." });
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fulfill deletion Request." });
+    logger.error({ Error: err }, "Failed to delete path.");
+    res.status(500).json({ error: "Failed to delete path." });
   }
 });
 
 // Gets a file
 router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
+  if (serverMaster.detailLogs) {
+    logger.info({ Name: name, Path: folderPath }, "Recieved file get request.");
+  }
 
   try {
     const fullPath = path.join(notebooksFolderPath, folderPath, name);
     const file = await fs.readFileSync(fullPath, "utf-8"); // Reads out file data
+    if (serverMaster.successLogs) {
+      logger.info("Got file.");
+    }
+    if (serverMaster.detailLogs) {
+      logger.info("Sent file to Client.");
+    }
     res.send(JSON.parse(file));
   } catch (err) {
-    console.error(err);
     if (err.code === "ENOENT") {
-      res.status(404).json({ error: "Couldn't find file." });
+      logger.error(
+        { Name: name, Path: folderPath, Error: err },
+        "Failed to find file.",
+      );
+      res.status(404).json({ error: "Failed to find file." });
     } else {
-      res.status(500).json({ error: "Something went wrong." });
+      logger.error(
+        { Name: name, Path: folderPath, Error: err },
+        "Failed to get file.",
+      );
+      res.status(500).json({ error: "Failed to get file." });
     }
   }
 });
 
 // Renames a file, which is surprisingly annoying to do without tons of glitches.
 router.post("/api/documents/renameFile", async (req, res) => {
-  console.log(req.body);
   const { newName, folderPath, name } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { "Old name": name, "New name": newName, Path: folderPath },
+      "Recieved file rename request.",
+    );
+  }
 
+  if (serverMaster.detailLogs) {
+    logger.info("Building old and new file path.");
+  }
   const baseName = path.parse(name).name;
   const filePath = path.join(
     notebooksFolderPath,
@@ -289,115 +367,146 @@ router.post("/api/documents/renameFile", async (req, res) => {
     // Checks for a missing newName first.
     // If the operation goes through even though the name is empty, there will be issues.
     if (!newName || newName == "") {
-      console.error("No new Name found");
+      logger.error(
+        { "Old name": name, "New name": newName, Path: folderPath },
+        "No new file name found.",
+      );
     } else if (newName && folderPath && name) {
+      if (serverMaster.detailLogs) {
+        logger.info("Renaming file...");
+      }
       // Rename operation on the filesystem
       await fs.promises.rename(filePath, newFilePath);
 
       // Changing title inside document
+      if (serverMaster.detailLogs) {
+        logger.info("Changing document title inside JSON...");
+      }
       const fileContent = await fs.promises.readFile(newFilePath, "utf-8");
       const fileData = JSON.parse(fileContent);
       fileData[0].title = newName;
+
+      if (serverMaster.detailLogs) {
+        logger.info("Writing file info.");
+      }
       fs.writeFileSync(newFilePath, JSON.stringify(fileData, null, 2), "utf-8");
 
+      if (serverMaster.successLogs) {
+        logger.info(
+          { "Old name": name, "New name": newName, Path: folderPath },
+          "Renamed file.",
+        );
+      }
       res.json({ success: true });
     } else if (!folderPath) {
-      console.error("No Folder Path found.");
+      logger.error("No path found to rename file.");
     } else if (!name) {
-      console.error("No File found.");
+      logger.error("No file found to rename file.");
     } else {
-      console.error(
-        "Multiple values which are required for renaming a File were not found.",
-      );
+      logger.error("No path or file found to rename file.");
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to rename File." });
+    logger.error(
+      {
+        "Old name": name,
+        "New name": newName,
+        Path: folderPath,
+        Error: err,
+      },
+      "Failed to rename file.",
+    );
+    res.status(500).json({ error: "Failed to rename file." });
   }
 });
 
 // Renames a folder
 router.post("/api/documents/renameFolder", async (req, res) => {
-  console.log(req.body);
   const { newName, folderPath, name } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { "Old name": name, "New name": newName, Path: folderPath },
+      "Recieved file rename request.",
+    );
+  }
 
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
   const newPath = path.join(notebooksFolderPath, folderPath, newName);
 
-  // If a Folder is in the highest directory, no folderPath will be recieved.
-  // This exception requires a different path to be built.
-  const rootPath = path.join(notebooksFolderPath, name);
-  const newRootPath = path.join(notebooksFolderPath, newName);
+  logger.info({ currentPath: currentPath, newPath: newPath });
 
   try {
     if (!newName || newName == "") {
-      console.error("No new Name found");
+      logger.error(
+        { "Old name": name, "New name": newName, Path: folderPath },
+        "No new name found to rename folder.",
+      );
     } else if (newName && folderPath && name) {
-      await fs.promises.rename(currentPath, newPath);
+      if (serverMaster.detailLogs) {
+        logger.info("Renaming folder...");
+      }
+      await fs.renameSync(currentPath, newPath);
 
+      if (serverMaster.successLogs) {
+        logger.info("Renamed folder.");
+      }
       res.json({ success: true });
       return;
     } else if (newName && name) {
+      if (serverMaster.detailLogs) {
+        logger.info(
+          "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+        );
+        logger.info("Copying notebook contents to new directory...");
+      }
       // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
+      // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
+      // Fuck Microslop. I wish Linux supported everything I use. :/
       await fs.promises.cp(currentPath, newPath, { recursive: true });
       await fs.promises.rm(currentPath, { recursive: true, force: true });
 
+      if (serverMaster.successLogs) {
+        logger.info("Renamed notebook.");
+      }
       res.json({ success: true });
+      return;
     } else if (!folderPath) {
-      console.error("No folder path found.");
+      logger.error(
+        { "Old name": name, "New name": newName, Path: folderPath },
+        "No path found to rename folder.",
+      );
     } else if (!name) {
-      console.error("No folder found.");
+      logger.error(
+        { "Old name": name, "New name": newName, Path: folderPath },
+        "No name found to rename folder.",
+      );
     } else {
-      console.error(
-        "Multiple values which are required for renaming a folder were not found.",
+      logger.error(
+        { "Old name": name, "New name": newName, Path: folderPath },
+        "No path or name found to rename folder.",
       );
     }
   } catch (err) {
-    console.error(err);
+    logger.error(
+      { "Old name": name, "New name": newName, Path: folderPath, Error: err },
+      "Failed to rename folder.",
+    );
     res.status(500).json({ error: "Failed to rename folder." });
   }
 });
 
-// Experimental function for detecting images inside of TipTap documents. Not used right now.
-async function readFileData(file) {
-  const masterFileLoc = path.join(dataFolderPath, "master.json");
-  const rawMasterFile = await fs.readFileSync(masterFileLoc, "utf-8");
-  const masterFile = JSON.parse(rawMasterFile)[0];
-  const usedImages = masterFile.usedImages;
-
-  function loopThroughJSON(obj) {
-    for (let key in obj) {
-      if (typeof obj[key] === "object") {
-        if (Array.isArray(obj[key])) {
-          // loop through array
-          for (let i = 0; i < obj[key].length; i++) {
-            loopThroughJSON(obj[key][i]);
-          }
-        } else {
-          // call function recursively for object
-          loopThroughJSON(obj[key]);
-        }
-      } else {
-        const searchObj = obj[key];
-        if (
-          key === "src" &&
-          searchObj.search(/\/images\/Y\w{20}\.\w{3}/) !== -1
-        ) {
-          console.log(searchObj);
-          const image = key + ": " + searchObj;
-          // TODO: READ OUT NEW IMAGES & IMAGES WHICH HAVE BEEN DELETED AND ADD / REMOVE THEM
-          // OH GOD THAT SOUNDS COMPLICATED
-        }
-      }
-    }
-  }
-
-  loopThroughJSON(file);
-}
-
 // Updates a file with new content.
 router.put("/api/documents/updateFile", async (req, res) => {
   const { saveData, name, folderPath } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Name: name, Path: folderPath },
+      "Recieved file update request.",
+    );
+  }
+  if (serverMaster.detailLogs) {
+    logger.info({ Name: name, Path: folderPath }, "Reading file to save to...");
+  }
 
   const filePath = path.join(notebooksFolderPath, folderPath, name);
   const file = await fs.readFileSync(filePath, "utf-8");
@@ -406,7 +515,15 @@ router.put("/api/documents/updateFile", async (req, res) => {
   // fileData[0] since everything in JSON is stored in one array.
   fileData[0].content = saveData;
 
+  if (serverMaster.detailLogs) {
+    logger.info({ Name: name, Path: folderPath }, "Writing updated file...");
+  }
+
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf-8");
+
+  if (serverMaster.successLogs) {
+    logger.info({ Name: name, Path: folderPath }, "Updated file.");
+  }
   res.json({ success: true });
 });
 
@@ -416,6 +533,13 @@ router.post(
   express.raw({ type: "image/*", limit: "10mb" }),
   async (req, res) => {
     const imgType = req.headers["content-type"];
+    if (serverMaster.detailLogs) {
+      logger.info({ "Image type": imgType }, "Recieved image upload request.");
+    }
+
+    if (serverMaster.detailLogs) {
+      logger.info({ "Image type": imgType }, "Assigning file ending...");
+    }
 
     let fileEnding;
     if (imgType === "image/png") {
@@ -426,11 +550,34 @@ router.post(
       fileEnding = ".gif";
     }
 
+    if (serverMaster.detailLogs) {
+      logger.info({ "Image type": imgType }, "Setting image ID...");
+    }
     // Sets the image's name to a completely random ID.
     const fileName = imageName() + fileEnding;
     let location = path.join(imageFolderPath, fileName);
+
+    if (serverMaster.detailLogs) {
+      logger.info(
+        { "Image type": imgType, Name: fileName },
+        "Writing image to image folder...",
+      );
+    }
+
     fs.writeFileSync(location, req.body);
 
+    if (serverMaster.successLogs) {
+      logger.info(
+        { "Image type": imgType, Name: fileName },
+        "Saved image to Server.",
+      );
+    }
+    if (serverMaster.detailLogs) {
+      logger.info(
+        { "Image type": imgType, Name: fileName },
+        "Sending image URL to Client...",
+      );
+    }
     // Sends the URL back so that TipTap can set it as the src.
     res.json({
       url: `/data/images/${fileName}`,

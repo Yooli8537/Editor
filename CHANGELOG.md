@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.5.2 - Minor improvements & Bug fixes
+
+### Added
+
+- New Settings to configure server logging.
+- Server-side logging improved.
+- JSON langauge support.
+- C# language support.
+- Modals of all kinds can be confirmed with the enter key.
+
+### Removed
+
+- Client-side logging.
+
+### Fixed
+
+- When clicking on a document with an unsaved document open, it no longer highlights the incorrect one if you click "back".
+- Submenus are now closed when closing a document ([Issue 58](https://github.com/Yooli8537/Editor/issues/58)).
+- Renaming an unsaved document now no longer triggers an unsaved file modal ([Issue 57](https://github.com/Yooli8537/Editor/issues/57)).
+
 ## v1.5.1 - Codeblock improvements
 
 ### Added

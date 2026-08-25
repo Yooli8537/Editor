@@ -9,8 +9,7 @@ const dataFolderPath = path.join(rootPath, "data");
 const masterFilePath = path.join(dataFolderPath, "master.json");
 
 // Gets the masterfile and makes it available to the entire server.
-const serverMaster = JSON.parse(fs.readFileSync(masterFilePath, "utf-8"));
-
-console.log(serverMaster);
+const serverMasterObject = JSON.parse(fs.readFileSync(masterFilePath, "utf-8"));
+const serverMaster = serverMasterObject[0];
 
 module.exports = serverMaster;

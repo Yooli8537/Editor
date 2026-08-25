@@ -10,17 +10,32 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
 
+// Importing custom functions
+import {
+  createConfirmModal,
+  createSubmenu,
+  createErrorModal,
+  setHelpText,
+  createInfoModal,
+  getMaster,
+  removeSubmenus,
+} from "./utils";
+import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
+import { addState, checkState, getState, rmState, setState } from "./state";
+
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
 // Specifically supported languages:
 /*
+chash (csharp),
 cpp,
 css,
 dockerfile,
 html,
 java,
 javascript,
+json,
 lua,
 markdown
 plaintext
@@ -29,25 +44,10 @@ python,
 // Example Import so that I can check if a certain language is supported easily.
 //import language from "highlight.js/lib/languages/language";
 
-// Importing custom functions
-import {
-  createConfirmModal,
-  destroyModal,
-  createSubmenu,
-  removeSubmenus,
-  createErrorModal,
-  setHelpText,
-  createInfoModal,
-  getMaster,
-} from "./utils";
-import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
-
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
-let editorIsSaved;
 
 // Defining and configuring extensions
 const extensions = [
@@ -102,7 +102,7 @@ const editor = new Editor({
   autofocus: true,
   injectCSS: true,
   onUpdate: () => {
-    editorIsSaved = false;
+    setState("editorIsSaved", false)
   },
 });
 
@@ -122,10 +122,9 @@ async function uploadImage(file) {
 
 // Warns before reloading / closing a Tab
 window.addEventListener("beforeunload", (e) => {
-  if (editorIsSaved == false) {
+  if (!getState("editorIsSaved")) {
     e.preventDefault();
     e.returnValue = "";
-    console.log("WARN");
   }
 });
 
@@ -164,7 +163,7 @@ export async function loadAutosave(fileData, document, path) {
           const autosaveData = await autosave.json();
           loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
-          editorIsSaved = false;
+          setState("editorIsSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
         } else {
           createErrorModal(`Something went wrong. ${autosave.status}`);
@@ -177,6 +176,7 @@ export async function loadAutosave(fileData, document, path) {
 }
 
 // Unhides editor and inserts a document's data.
+// This function does not perform any kind of checks for unsaved documents.
 function loadEditor(documentData, entry, previousEntry) {
   currentDocument = documentData;
   currentEntry = entry;
@@ -201,13 +201,13 @@ function loadEditor(documentData, entry, previousEntry) {
     renameHandler();
   });
 
-  editorIsSaved = true;
+  setState("editorIsSaved", true)
 }
 
 // Loads Document into the Editor
 function loadDocument(documentData, entry, previousEntry) {
   // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
-  if (editorIsSaved === false) {
+  if (!getState("editorIsSaved")) {
     createConfirmModal(
       "Leaving this Document will discard Changes!",
       "Back",
@@ -256,7 +256,6 @@ async function renameFile(newName, div) {
     setState("currentDocument", folderPath + newName + ".json");
     buildSidebar();
     editTitleButton.style.display = "flex";
-    loadDocument(currentDocument, currentEntry, folderPath);
     history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
   } else if (response.status === 409) {
     createErrorModal(
@@ -417,6 +416,19 @@ const codeItems = [
     helpText: "Auto detect (supports unlisted languages)",
   },
   {
+    icon: "code-languages/chash.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "csharp",
+        })
+        .run(),
+    helpText: "C#",
+  },
+  {
     icon: "code-languages/cpp.svg",
     action: () =>
       editor
@@ -493,6 +505,19 @@ const codeItems = [
         })
         .run(),
     helpText: "JavaScript",
+  },
+  {
+    icon: "code-languages/json.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "json",
+        })
+        .run(),
+    helpText: "JSON",
   },
   {
     icon: "code-languages/lua.svg",
@@ -796,7 +821,6 @@ exportButton.addEventListener("click", async (e) => {
         downloadElement.download = currentEntry.replace(".json", ".pdf");
         downloadElement.click();
         URL.revokeObjectURL(downloadURL); // Deletes download Element
-        console.log("Succsessfully exported File.");
       } else {
         createErrorModal("Something went wrong.");
       }
@@ -815,7 +839,7 @@ saveButton.addEventListener("click", async (e) => {
 discardButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  if (!editorIsSaved) {
+  if (!getState("editorIsSaved")) {
     createConfirmModal(
       "Discard Changes? This cannot be undone.",
       "Cancel",
@@ -823,7 +847,6 @@ discardButton.addEventListener("click", (e) => {
       () => {},
       () => {
         closeEditor();
-        console.log("Changes Discarded.");
         setState("currentDocument", null);
         buildSidebar();
       },
@@ -847,8 +870,7 @@ async function pushSaveData() {
 
   // Error handling
   if (response.ok) {
-    console.log("Successfully saved Document.");
-    editorIsSaved = true;
+    setState("editorIsSaved", true);
     if (checkForAutosave(currentEntry)) {
       removeAutosave();
     }
@@ -864,7 +886,7 @@ async function pushSaveData() {
 
 let saveData;
 function saveEditor(isRestoration) {
-  if (!editorIsSaved) {
+  if (!getState("editorIsSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
     if (isRestoration) {
@@ -900,7 +922,7 @@ let isSavedIcon = true;
 
 // Updates the Save & Discard Icons to be correct with the current state.
 function updateSaveIcons() {
-  if (editorIsSaved) {
+  if (getState("editorIsSaved")) {
     if (isDiscardIcon) {
       discardIcon.src = closeIconPath;
       setHelpText(discardButton, "Close Document");
@@ -936,12 +958,12 @@ async function initAutosave(autosaveInterval) {
   autosave = setInterval(async () => {
     const saveData = editor.getJSON();
 
-    if (editorIsSaved === false) {
+    if (!getState("editorIsSaved")) {
       // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
       if (!checkState("unsavedFiles", currentEntry)) {
         addState("unsavedFiles", currentEntry);
       }
-      const autosave = await fetch("api/autosave", {
+      await fetch("api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -950,12 +972,6 @@ async function initAutosave(autosaveInterval) {
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
-
-      if (autosave.ok) {
-        console.log(
-          `Successfully created Autosave for document ${currentEntry}.`,
-        );
-      }
     }
   }, autosaveInterval);
 }
@@ -971,7 +987,6 @@ async function removeAutosave() {
   });
 
   if (response.ok) {
-    console.log(`Removed Autosave for ${currentEntry}.`);
     // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
     rmState("unsavedFiles", currentEntry);
   }
@@ -979,12 +994,12 @@ async function removeAutosave() {
 
 // Closes the Editor
 export function closeEditor() {
+  removeSubmenus();
   editorView.classList.add("hidden");
-  console.log("Editor Closed.");
   setState("currentDocument", null);
   history.pushState(null, "", "/");
   document.title = "Editor";
-  editorIsSaved = true; // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+  setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
 // Opens Document from URL if one is present.
@@ -1000,7 +1015,6 @@ export async function onFirstStart() {
 
   // Stops auto-open if no document is provided.
   if (document === null) {
-    console.log("App ready!");
   } else {
     // Getting the Document from the URL.
     const response = await fetch(
@@ -1020,8 +1034,6 @@ export async function onFirstStart() {
       createErrorModal(`${response.status}; Something went wrong.`);
     }
   }
-  console.log("Editor ready!");
-
   buildSidebar();
   createCollapsedFoldersUpdateInterval();
 }

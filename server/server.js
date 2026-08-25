@@ -3,6 +3,8 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const serverMaster = require("./serverMaster");
+const logger = require("./logger");
 
 const app = express();
 const port = 8510;
@@ -38,14 +40,22 @@ const userDataFolders = [
 ];
 
 // Creates any missing data folders.
+let foldersCreated = false;
 for (let i = 0; i < userDataFolders.length; i++) {
   if (!fs.existsSync(userDataFolders[i].path)) {
     fs.mkdirSync(userDataFolders[i].path);
-    console.warn(`Created missing ${userDataFolders[i].name} Folder.`);
-    console.log(
-      "This is standard if you've freshly cloned the Repository or updated to a newer version, as the data folder is ignored by git.",
+    logger.warn(
+      { "missing folder": userDataFolders[i].name },
+      "Created missing folder",
     );
+    foldersCreated = true;
   }
+}
+
+if (foldersCreated) {
+  logger.info(
+    "This is standard if you've freshly cloned the Repository or updated to a newer version, as the data folder is ignored by git.",
+  );
 }
 
 // Updates the masterfile and gives feedback on success.
@@ -53,18 +63,22 @@ for (let i = 0; i < userDataFolders.length; i++) {
 async function updateMasterfile(masterFile) {
   try {
     fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
-    console.log("Successfully updated master.json.");
+    if (serverMaster.successLogs) {
+      logger.warn("Updated masterfile properties.");
+    }
     return true;
   } catch (err) {
-    console.error("Something went wrong trying to update master.json.");
-    console.error(err);
+    logger.error(
+      { error: err },
+      "Something went wrong updating master.json properties.",
+    );
     return false;
   }
 }
 
 // Deletes deprecated master.json properties
 async function deleteDeprecatedMasterProperties() {
-  console.log("Checking for deprecated master.json properties...");
+  logger.info("Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
   const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -77,7 +91,10 @@ async function deleteDeprecatedMasterProperties() {
   for (let i = 0; i < deprecatedProperties.length; i++) {
     if (masterFile[0][deprecatedProperties[i]]) {
       delete masterFile[0][deprecatedProperties[i]];
-      console.log(`Deleted masterfile property "${deprecatedProperties[i]}".`);
+      logger.info(
+        { "Deprecated Property": deprecatedProperties[i] },
+        "Deleted master.json property.",
+      );
       changesMade = true;
     }
   }
@@ -85,20 +102,16 @@ async function deleteDeprecatedMasterProperties() {
   // Updates the masterfile if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
-      console.log("Successfully removed deprecated masterfile properties.");
-    } else {
-      console.error(
-        "Something went wrong trying to remove deprecated masterfile properties.",
-      );
+      logger.info("Removed deprecated master.json properties.");
     }
   } else {
-    console.log("No deprecated masterfile properties found.");
+    logger.info("No deprecated master.json properties found.");
   }
 }
 
 // Adds any missing properties to the master.json file.
 async function addMissingMasterProperties() {
-  console.log("Checking for missing master.json properties...");
+  logger.info("Checking for missing master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
   const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
@@ -123,7 +136,7 @@ async function addMissingMasterProperties() {
   for (const key in allProperties) {
     if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
-      console.log(`Added missing masterfile property "${key}".`);
+      logger.info({ property: key }, "Added missing master.json property.");
       changesMade = true;
     }
   }
@@ -131,14 +144,10 @@ async function addMissingMasterProperties() {
   // Updates the masterfile if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
-      console.log("Successfully added missing masterfile properties.");
-    } else {
-      console.log("Failed to add missing masterfile properties.");
+      logger.info("Added missing master.json properties.");
     }
   } else {
-    console.log(
-      "No missing masterfile properties found. Starting App without changes.",
-    );
+    logger.info("No missing masterfile properties found.");
   }
 }
 
@@ -147,8 +156,8 @@ if (!fs.existsSync(masterFilePath)) {
   const masterFileContent = `[{}]
 `;
   fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
-  console.warn("Created missing Master JSON File.");
-  console.log(
+  logger.warn("Created missing master.json file.");
+  logger.info(
     "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
   );
 }
@@ -159,27 +168,40 @@ addMissingMasterProperties();
 
 // Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
+  if (serverMaster.detailLogs) {
+    logger.info("Recived master.json get request.");
+  }
   try {
     const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
-    console.log("Successfully loaded Masterfile.");
+    if (serverMaster.successLogs) {
+      logger.info("Loaded Masterfile.");
+    }
   } catch (err) {
-    console.error("Couldn't load Masterfile.");
-    console.error(err);
+    logger.error({ error: err }, "Failed to load master.json.");
   }
 });
 
 // Updates master.json from client.
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info("Recived master.json update request.");
+  }
 
   try {
     await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
-    console.log("Successfully updated masterfile.");
+    if (serverMaster.successLogs) {
+      logger.info("Updated master.json.");
+      if (serverMaster.detailLogs) {
+        logger.info({ "Updated master.json": data });
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
-    console.error("Couldn't update masterfile.");
+    logger.error({ error: err }, "Failed to update master.json.");
     res.status(500).json({ error: err });
   }
 });
@@ -187,6 +209,12 @@ app.put("/api/updateMaster", async (req, res) => {
 // Updates a certain master.json property.
 app.put("/api/updateMasterProperty", async (req, res) => {
   const { property, newValue } = req.body;
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Property: property, Value: newValue },
+      "Recived master.json property update request.",
+    );
+  }
 
   try {
     // Gets master data
@@ -198,11 +226,12 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
     // Updates the master.
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
-    console.log(`Successfully updated masterfile property ${property}.`);
+    if (serverMaster.successLogs) {
+      logger.info({ property: property }, "Updated master.json property.");
+    }
     res.json({ success: true });
   } catch (err) {
-    console.error("Couldn't update masterfile.");
-    console.error(err);
+    logger.error({ error: err }, "Failed to update master.json.");
     res.status(500).json({ error: err });
   }
 });
@@ -212,4 +241,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));
 });
 
-app.listen(port, () => {});
+app.listen(port, () => {
+  logger.info({ port: port }, "Editor Backend running");
+});
