@@ -7,7 +7,7 @@
 - New Settings to configure server logging.
 - Server-side logging improved.
 - JSON langauge support.
-- CHash language support (I know it's called CSharp but CHash makes more sense).
+- C# language support.
 
 ### Removed
 
