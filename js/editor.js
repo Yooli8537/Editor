@@ -28,6 +28,7 @@ const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
 // Specifically supported languages:
 /*
+chash (csharp),
 cpp,
 css,
 dockerfile,
@@ -413,6 +414,19 @@ const codeItems = [
     icon: "function/cpu.svg",
     action: () => editor.chain().focus().setCodeBlock().run(),
     helpText: "Auto detect (supports unlisted languages)",
+  },
+  {
+    icon: "code-languages/chash.svg",
+    action: () =>
+      editor
+        .chain()
+        .focus()
+        .setCodeBlock()
+        .updateAttributes("codeBlock", {
+          language: "csharp",
+        })
+        .run(),
+    helpText: "C#",
   },
   {
     icon: "code-languages/cpp.svg",
@@ -938,7 +952,6 @@ setInterval(() => {
   updateSaveIcons();
 }, 1000);
 
-let autosave = null;
 // Initializes the autosave.
 async function initAutosave(autosaveInterval) {
   autosave = setInterval(async () => {
@@ -949,7 +962,7 @@ async function initAutosave(autosaveInterval) {
       if (!checkState("unsavedFiles", currentEntry)) {
         addState("unsavedFiles", currentEntry);
       }
-      const autosave = await fetch("api/autosave", {
+      await fetch("api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
