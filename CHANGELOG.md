@@ -4,7 +4,7 @@
 
 ### Added
 
-- There's now an option to save server logs to a `.log` file.
+- There's now an option to save server logs to a `.log` file ([Issue #65](https://github.com/Yooli8537/Editor/issues/65)).
 - Just like for images, there's an option to clear out all log files (except for the one that's currently in use).
 
 ### Removed
@@ -13,7 +13,7 @@
 
 ### Fixed
 
-- Server logs now show the correct time + show the current date.
+- Server logs now show the correct time + show the current date ([Issue #51](https://github.com/Yooli8537/Editor/issues/51)).
 
 ## v1.5.2 - Minor improvements & Bug fixes
 
