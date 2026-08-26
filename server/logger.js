@@ -2,6 +2,8 @@
 const pino = require("pino");
 const path = require("path");
 
+const serverMaster = require("./serverMaster");
+
 // Gets date and time of server start.
 const currentdate = new Date();
 let year = currentdate.getFullYear();
@@ -33,13 +35,30 @@ const logPath = path.join(
   `../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
 );
 
-const transport = pino.transport({
-  targets: [
-    {
-      target: "pino/file",
-      options: { destination: logPath },
-    },
-    {
+let logger;
+if (serverMaster.saveLogs) {
+  const transport = pino.transport({
+    targets: [
+      {
+        target: "pino/file",
+        options: { destination: logPath },
+      },
+      {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
+          ignore: "pid,hostname",
+          levelFirst: false,
+        },
+      },
+    ],
+  });
+  logger = pino(transport);
+} else {
+  logger = pino({
+    level: "info",
+    transport: {
       target: "pino-pretty",
       options: {
         colorize: true,
@@ -48,10 +67,7 @@ const transport = pino.transport({
         levelFirst: false,
       },
     },
-  ],
-});
-
-let logger;
-logger = pino(transport);
+  });
+}
 
 module.exports = logger;

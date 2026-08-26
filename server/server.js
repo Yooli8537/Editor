@@ -132,6 +132,7 @@ async function addMissingMasterProperties() {
     warningLogs: true,
     detailLogs: false,
     successLogs: true,
+    saveLogs: false,
   };
 
   // Adds all the missing properties
