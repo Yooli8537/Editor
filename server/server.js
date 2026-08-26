@@ -11,6 +11,7 @@ const port = 8510;
 
 // Paths to Folders which need to exist within the data folder.
 const rootPath = path.join(__dirname, "../");
+const logsFolderPath = path.join(rootPath, "logs");
 const dataFolderPath = path.join(rootPath, "data");
 const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
@@ -32,6 +33,7 @@ app.use(autosaveRoute);
 app.use(settingsRoute);
 
 const userDataFolders = [
+  { name: "Logs", path: logsFolderPath },
   { name: "Data", path: dataFolderPath },
   { name: "Autosaves", path: autosavesFolderPath },
   { name: "Notebooks", path: notebooksFolderPath },
