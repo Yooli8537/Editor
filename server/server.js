@@ -139,7 +139,7 @@ async function addMissingMasterProperties() {
   for (const key in allProperties) {
     if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
-      logger.info({ property: key }, "Added missing master.json property.");
+      logger.info({ Property: key }, "Added missing master.json property.");
       changesMade = true;
     }
   }
@@ -230,7 +230,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     // Updates the master.
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     if (serverMaster.successLogs) {
-      logger.info({ property: property }, "Updated master.json property.");
+      logger.info({ Property: property }, "Updated master.json property.");
     }
     res.json({ success: true });
   } catch (err) {
