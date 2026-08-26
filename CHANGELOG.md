@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Removed
+
+- Removed highlight from error modal because it's ugly.
+
 ## v1.5.2 - Minor improvements & Bug fixes
 
 ### Added
