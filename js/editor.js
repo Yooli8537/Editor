@@ -62,7 +62,13 @@ const extensions = [
       cellMinWidth: 25,
     },
   }),
-  ListKit,
+  ListKit.configure({
+    // Disabling ListKit features which StarterKit already has.
+    bulletList: false,
+    listItem: false,
+    listKeymap: false,
+    orderedList: false,
+  }),
   Image.configure({
     inline: true,
     resize: {
@@ -102,7 +108,7 @@ const editor = new Editor({
   autofocus: true,
   injectCSS: true,
   onUpdate: () => {
-    setState("editorIsSaved", false)
+    setState("editorIsSaved", false);
   },
 });
 
@@ -201,7 +207,7 @@ function loadEditor(documentData, entry, previousEntry) {
     renameHandler();
   });
 
-  setState("editorIsSaved", true)
+  setState("editorIsSaved", true);
 }
 
 // Loads Document into the Editor
