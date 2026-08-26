@@ -2,9 +2,18 @@
 
 ## Unreleased
 
+### Added
+
+- There's now an option to save server logs to a `.log` file.
+- Just like for images, there's an option to clear out all log files (except for the one that's currently in use).
+
 ### Removed
 
 - Removed highlight from error modal because it's ugly.
+
+### Fixed
+
+- Server logs now show the correct time + show the current date.
 
 ## v1.5.2 - Minor improvements & Bug fixes
 
