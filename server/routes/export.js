@@ -34,7 +34,13 @@ async function setExtensions() {
         cellMinWidth: 25,
       },
     }),
-    ListKit,
+    ListKit.configure({
+      // Disabling ListKit features which StarterKit already has.
+      bulletList: false,
+      listItem: false,
+      listKeymap: false,
+      orderedList: false,
+    }),
     Image.configure({
       inline: true,
       resize: {
