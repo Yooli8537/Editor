@@ -9,6 +9,7 @@ const logger = require("../logger");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
+const logsFolderPath = path.join(rootPath, "logs");
 const dataFolderPath = path.join(rootPath, "data");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imageFolderPath = path.join(dataFolderPath, "images");
@@ -18,7 +19,7 @@ let unusedImages = [];
 router.delete("/api/cleanImages", async (req, res) => {
   logger.info("Recieved image clear request.");
   // Puts all the images into the array.
-  unusedImages = await fs.readdirSync(imageFolderPath);
+  unusedImages = fs.readdirSync(imageFolderPath);
   // Finds all unused images, removing all used ones from the array.
   await findImages(notebooksFolderPath);
   if (unusedImages.length !== 0 && serverMaster.detailLogs) {
@@ -29,9 +30,32 @@ router.delete("/api/cleanImages", async (req, res) => {
 
   // Removes all the unused images.
   for (let i = 0; i < unusedImages.length; i++) {
-    await fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
+    fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
   }
 
+  if (serverMaster.successLogs && unusedImages.length !== 0) {
+    logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
+  }
+  res.json({ success: true });
+});
+
+// Cleans logs from the server.
+let logFiles = [];
+router.delete("/api/clearLogs", async (req, res) => {
+  logger.info("Recieved log clear request.");
+  // Puts all the logs into the array.
+  logFiles = fs.readdirSync(logsFolderPath);
+
+  console.log(logFiles);
+
+  // Removes logs, excluding the newest one if saving logs is enabled.
+  for (let i = 0; i < logFiles.length - 1; i++) {
+    fs.rmSync(path.join(logsFolderPath, logFiles[i]));
+  }
+
+  if (serverMaster.successLogs) {
+    logger.info("Cleared logs.");
+  }
   res.json({ success: true });
 });
 

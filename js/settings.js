@@ -198,6 +198,17 @@ clearImagesButton.addEventListener("click", async (e) => {
   }
 });
 
+const clearLogsButton = document.querySelector("#clearLogsButton");
+clearLogsButton.addEventListener("click", async (e) => {
+  const clear = await fetch("../api/clearLogs", {
+    method: "DELETE",
+  });
+
+  if (clear.ok) {
+    createInfoModal("Successfully cleared logs from server storage.");
+  }
+});
+
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
   preLoadSettingsData();
