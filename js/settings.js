@@ -115,6 +115,7 @@ function addTabListeners() {
     allTabs[i].element.addEventListener("click", (e) => {
       hideAllPages();
       showPage(allTabs[i].name);
+      history.pushState(null, "", `?tab=${allTabs[i].name}`);
     });
   }
 }
