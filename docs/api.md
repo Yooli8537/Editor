@@ -157,3 +157,28 @@ Response:
 ``` JSON
 { "success": true }
 ```
+
+### POST /api/documents/newFile
+
+Creates a new empty tiptap file.
+
+Headers:
+
+``` JSON
+
+```
+
+Body:
+
+``` JSON
+{
+    "name": "Example Name",
+    "folderPath": "Example/folder/path"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
