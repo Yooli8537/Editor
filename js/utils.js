@@ -1,5 +1,5 @@
 // Utilities
-import { getState, setState } from "./state";
+import { getState, setState, sendState } from "./state";
 
 // Modals
 // Deletes the modal and creates no further actions.
@@ -340,7 +340,7 @@ function removeHelpTexts() {
 
 // Loads data from master.json and returns it as useable JSON.
 export async function getMaster() {
-  const rawMasterFile = await fetch("api/getMaster", {
+  const rawMasterFile = await fetch("/api/getMaster", {
     method: "GET",
   });
 
@@ -354,5 +354,48 @@ export async function getMaster() {
   } else {
     createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
     return false;
+  }
+}
+
+// Checks for an update.
+export async function checkForUpdate(manualCheck) {
+  // Waits for the master.json to be loaded.
+  if (await getMaster()) {
+    if (!getState("deniedUpdate") || manualCheck) {
+      const latest = await fetch(
+        "https://api.github.com/repos/Yooli8537/Editor/releases/latest",
+        { method: "GET" },
+      );
+
+      const release = await latest.json();
+
+      if (release.tag_name !== getState("version")) {
+        createConfirmModal(
+          "An update is available. Would you like to install it?",
+          "Don't install",
+          "Install Update",
+          () => {
+            createInfoModal(
+              "You can update the app at any time in the settings menu.",
+            );
+            setState("deniedUpdate", true);
+            sendState("deniedUpdate");
+          },
+          async () => {
+            const response = await fetch("/api/applyAppUpdate", {
+              method: "GET",
+            });
+
+            if (response.ok) {
+              createInfoModal("Restart the app to apply update.");
+              setState("deniedUpdate", false);
+              sendState("deniedUpdate");
+            }
+          },
+        );
+      } else {
+        createInfoModal("You're on the newest release of Editor.");
+      }
+    }
   }
 }

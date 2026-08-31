@@ -19,9 +19,17 @@ import {
   createInfoModal,
   getMaster,
   removeSubmenus,
+  checkForUpdate,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
+import {
+  addState,
+  checkState,
+  getState,
+  rmState,
+  sendState,
+  setState,
+} from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -239,7 +247,7 @@ async function renameFile(newName, div) {
     return;
   }
 
-  const response = await fetch("api/documents/renameFile", {
+  const response = await fetch("/api/documents/renameFile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -787,7 +795,7 @@ linkButton.addEventListener("click", (e) => {
 
 // Handles the export of a file.
 async function handleExport(exportDocument) {
-  const response = await fetch("api/export", {
+  const response = await fetch("/api/export", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -874,7 +882,7 @@ discardButton.addEventListener("click", (e) => {
 });
 
 async function pushSaveData() {
-  const response = await fetch("api/documents/updateFile", {
+  const response = await fetch("/api/documents/updateFile", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -979,7 +987,7 @@ async function initAutosave(autosaveInterval) {
       if (!checkState("unsavedFiles", currentEntry)) {
         addState("unsavedFiles", currentEntry);
       }
-      await fetch("api/autosave", {
+      await fetch("/api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -994,7 +1002,7 @@ async function initAutosave(autosaveInterval) {
 
 // Removes any autosaves from the server.
 async function removeAutosave() {
-  const response = await fetch("api/removeAutosave", {
+  const response = await fetch("/api/removeAutosave", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -1052,6 +1060,7 @@ export async function onFirstStart() {
   }
   buildSidebar();
   createCollapsedFoldersUpdateInterval();
+  checkForUpdate(false);
 }
 
 onFirstStart();

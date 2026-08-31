@@ -15,7 +15,6 @@ import {
   setState,
 } from "./state";
 
-const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
 const rootButton = document.querySelector("#rootButton");
 
@@ -273,7 +272,7 @@ function createFolderActions(path, previousEntry) {
       "Please Input the new Folder Name.",
       path,
       async (newName) => {
-        const response = await fetch("api/documents/renameFolder", {
+        const response = await fetch("/api/documents/renameFolder", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -306,7 +305,7 @@ function createFolderActions(path, previousEntry) {
       "Confirm",
       () => {},
       async () => {
-        const response = await fetch("api/documents/deletePath", {
+        const response = await fetch("/api/documents/deletePath", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -348,7 +347,7 @@ function createFileActions(path, previousEntry) {
       "Confirm",
       () => {},
       async () => {
-        const response = await fetch("api/documents/deletePath", {
+        const response = await fetch("/api/documents/deletePath", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -443,7 +442,7 @@ export async function buildSidebar() {
   // Setting variables
   sliceIndex = getState("sliceIndex");
   // Getting data
-  const response = await fetch("api/documents", {
+  const response = await fetch("/api/documents", {
     method: "GET",
   });
   const data = await response.json();
@@ -477,7 +476,7 @@ function createCreationDropdown(parent, path, previousEntry) {
 
   fileButton.addEventListener("click", () => {
     createPromptModal("Please Name your File.", "", async (name) => {
-      const response = await fetch("api/documents/newFile", {
+      const response = await fetch("/api/documents/newFile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -503,7 +502,7 @@ function createCreationDropdown(parent, path, previousEntry) {
 
   folderButton.addEventListener("click", () => {
     createPromptModal("Please Name your Folder.", "", async (name) => {
-      const response = await fetch("api/documents/newFolder", {
+      const response = await fetch("/api/documents/newFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -535,11 +534,12 @@ function createCreationDropdown(parent, path, previousEntry) {
 }
 
 // Creating a new notebook
+console.log("WHY IS THIS BEING CALLED???")
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
   createPromptModal("Please name your Notebook.", "", async (notebookName) => {
-    const response = await fetch("api/documents/newNotebook", {
+    const response = await fetch("/api/documents/newNotebook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: notebookName }),
