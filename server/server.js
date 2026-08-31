@@ -246,7 +246,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
   }
 });
 
-// Checks for an update.
+// Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
   git.pull("origin", "main");
   res.json({ success: true });

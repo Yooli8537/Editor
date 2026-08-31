@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.5.4 - Theoretically functional updater
+
+I didn't have the chance to test this feature yet, so it may not work.
+
+### Added
+
+- If a new version is detected on GitHub, the user will be prompted to install it on app launch.
+
 ## v1.5.3 - Logging improvements & new Settings
 
 ### Added

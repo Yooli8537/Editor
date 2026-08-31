@@ -1,6 +1,6 @@
 // Settings Menu
 // Imports
-import { createErrorModal, createInfoModal } from "./utils";
+import { checkForUpdate, createErrorModal, createInfoModal } from "./utils";
 
 // Save button
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
@@ -211,6 +211,11 @@ clearLogsButton.addEventListener("click", async (e) => {
   if (clear.ok) {
     createInfoModal("Successfully cleared logs from server storage.");
   }
+});
+
+const versionCheckButton = document.querySelector("#versionCheckButton");
+versionCheckButton.addEventListener("click", () => {
+  checkForUpdate();
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.

@@ -19,6 +19,7 @@ import {
   createInfoModal,
   getMaster,
   removeSubmenus,
+  checkForUpdate,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import {
@@ -1025,33 +1026,6 @@ export function closeEditor() {
   setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
-export async function checkForUpdate() {
-  const latest = await fetch(
-    "https://api.github.com/repos/Yooli8537/Editor/releases/latest",
-    { method: "GET" },
-  );
-
-  const release = await latest.json();
-
-  if (release.tag_name !== getState("version") && getState("deniedUpdate")) {
-    createConfirmModal(
-      "An update is available. Would you like to install it?",
-      "Don't install",
-      "Install Update",
-      () => {
-        createInfoModal(
-          "You can update the app at any time in the settings menu.",
-        );
-        setState("deniedUpdate", true);
-        sendState("deniedUpdate");
-      },
-      async () => {
-        const response = await fetch("api/applyAppUpdate", { method: "GET" });
-      },
-    );
-  }
-}
-
 // Opens Document from URL if one is present.
 export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
@@ -1086,7 +1060,7 @@ export async function onFirstStart() {
   }
   buildSidebar();
   createCollapsedFoldersUpdateInterval();
+  checkForUpdate();
 }
 
 onFirstStart();
-checkForUpdate();

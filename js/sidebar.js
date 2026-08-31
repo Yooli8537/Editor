@@ -15,7 +15,6 @@ import {
   setState,
 } from "./state";
 
-const sidebar = document.querySelector("#sidebar");
 const folderStructure = document.querySelector("#folderStructure");
 const rootButton = document.querySelector("#rootButton");
 
@@ -535,6 +534,7 @@ function createCreationDropdown(parent, path, previousEntry) {
 }
 
 // Creating a new notebook
+console.log("WHY IS THIS BEING CALLED???")
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
