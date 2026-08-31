@@ -7,6 +7,7 @@
 - There's now an option to save server logs to a `.log` file ([Issue #65](https://github.com/Yooli8537/Editor/issues/65)).
 - Just like for images, there's an option to clear out all log files (except for the one that's currently in use).
 - Documented some API Endpoints, not all because it kinda takes forever.
+- Exports no longer have to be confirmed, can be changed in settings ([Issue #66](https://github.com/Yooli8537/Editor/issues/66)).
 
 ### Removed
 
