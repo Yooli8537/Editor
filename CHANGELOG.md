@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.5.3 - Logging improvements & new Settings
 
 ### Added
 
