@@ -296,11 +296,11 @@ router.delete("/api/documents/deletePath", async (req, res) => {
       res.send("Path successfully deleted.").json({ success: true });
     } else {
       logger.error({ Path: folderPath }, "Failed to find path to be deleted.");
-      res.status(404).json({ error: "Failed to find path to be deleted." });
+      res.json({ error: "Failed to find path to be deleted." }).status(404);
     }
   } catch (err) {
     logger.error({ Error: err }, "Failed to delete path.");
-    res.status(500).json({ error: "Failed to delete path." });
+    res.json({ error: "Failed to delete path." }).status(500);
   }
 });
 
