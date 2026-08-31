@@ -314,6 +314,7 @@ function createFolderActions(path, previousEntry) {
         });
 
         if (response.ok) {
+          rmState("collapsedFolders", previousEntry + path);
           buildSidebar();
         } else if (response.status === 404) {
           createErrorModal("Couldn't find Folder to delete.");
@@ -534,7 +535,6 @@ function createCreationDropdown(parent, path, previousEntry) {
 }
 
 // Creating a new notebook
-console.log("WHY IS THIS BEING CALLED???")
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 

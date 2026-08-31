@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Deleted folders are removed from the collapsedFolders array [Issue #59](https://github.com/Yooli8537/Editor/issues/59).
+
 ## v1.5.6 - Fixed automatic updater
 
 ### Fixed
