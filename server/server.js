@@ -241,6 +241,11 @@ app.put("/api/updateMasterProperty", async (req, res) => {
   }
 });
 
+// Checks for an update.
+app.get("/api/checkForUpdate", async (req, res) => {
+  
+})
+
 // Sends index.html to the client.
 app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));

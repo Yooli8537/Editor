@@ -1018,6 +1018,19 @@ export function closeEditor() {
   setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
+export async function checkForUpdate() {
+  const latest = await fetch(
+    "https://api.github.com/repos/Yooli8537/Editor/releases/latest",
+    { method: "GET" },
+  );
+
+  const latestJSON = await latest.json();
+
+  if (latestJSON.tag_name !== getState("version")) {
+    console.log("UPDATE AVAILABLE");
+  }
+}
+
 // Opens Document from URL if one is present.
 export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
@@ -1055,3 +1068,4 @@ export async function onFirstStart() {
 }
 
 onFirstStart();
+checkForUpdate();
