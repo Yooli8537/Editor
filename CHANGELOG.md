@@ -8,6 +8,7 @@
 - Just like for images, there's an option to clear out all log files (except for the one that's currently in use).
 - Documented some API Endpoints, not all because it kinda takes forever.
 - Exports no longer have to be confirmed, can be changed in settings ([Issue #66](https://github.com/Yooli8537/Editor/issues/66)).
+- The Settings page now has URLs ([Issue #61](https://github.com/Yooli8537/Editor/issues/61)).
 
 ### Removed
 

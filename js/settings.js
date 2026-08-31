@@ -70,7 +70,7 @@ const boolSettings = [
   successLogs,
   detailLogs,
   saveLogs,
-  confirmExport
+  confirmExport,
 ];
 
 // Getting the master file
@@ -218,3 +218,14 @@ if (await getMasterfile()) {
   preLoadSettingsData();
   addTabListeners();
 }
+
+// Checks for a tab query parameter and shows the corresponding tab if one is found.
+function checkForTabQueryParameter() {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get("tab");
+  if (tab) {
+    showPage(tab);
+  }
+}
+
+checkForTabQueryParameter();
