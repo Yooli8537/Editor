@@ -6,6 +6,10 @@
 
 - Server-side git pull works properly and will apply an update without issues (unless there's local changes -_-).
 
+### Notes
+
+If you're wondering why I had to create multiple releases for this, it's because the code pulls from the latest release on the Main branch. So, in order to test it, I needed at least two releases with the updater implemented.
+
 ## v1.5.5 - Let's hope for the best
 
 ### Added
