@@ -389,12 +389,16 @@ export async function checkForUpdate(manualCheck) {
             if (response.ok) {
               createInfoModal("Restart the app to apply update.");
               setState("deniedUpdate", false);
+              setState("version", release.tag_name);
               sendState("deniedUpdate");
+              sendState("version");
             }
           },
         );
       } else {
-        createInfoModal("You're on the newest release of Editor.");
+        if (manualCheck) {
+          createInfoModal("You're on the newest release of Editor.");
+        }
       }
     }
   }
