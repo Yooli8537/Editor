@@ -358,10 +358,10 @@ export async function getMaster() {
 }
 
 // Checks for an update.
-export async function checkForUpdate() {
+export async function checkForUpdate(manualCheck) {
   // Waits for the master.json to be loaded.
   if (await getMaster()) {
-    if (!getState("deniedUpdate")) {
+    if (!getState("deniedUpdate") || manualCheck) {
       const latest = await fetch(
         "https://api.github.com/repos/Yooli8537/Editor/releases/latest",
         { method: "GET" },
@@ -386,12 +386,6 @@ export async function checkForUpdate() {
               method: "GET",
             });
 
-            console.log(response.url);
-            console.log(response.status);
-            console.log(response.headers.get("content-type"));
-            const text = await response.text();
-            console.log(text);
-
             if (response.ok) {
               createInfoModal("Restart the app to apply update.");
               setState("deniedUpdate", false);
@@ -399,6 +393,8 @@ export async function checkForUpdate() {
             }
           },
         );
+      } else {
+        createInfoModal("You're on the newest release of Editor.");
       }
     }
   }

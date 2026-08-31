@@ -248,7 +248,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
-  git.pull("origin", "main");
+  await git.pull("origin", "main", { rebase: true });
   res.json({ success: true });
 });
 

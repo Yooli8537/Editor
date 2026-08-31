@@ -76,7 +76,7 @@ const boolSettings = [
 // Getting the master file
 let master;
 async function getMasterfile() {
-  const rawMasterFile = await fetch("../api/getMaster", {
+  const rawMasterFile = await fetch("/api/getMaster", {
     method: "GET",
   });
 
@@ -92,7 +92,7 @@ async function getMasterfile() {
 
 // Sends updated settings to the masterfile.
 async function updateMasterfile(updateData) {
-  const masterUpdate = await fetch("../api/updateMaster", {
+  const masterUpdate = await fetch("/api/updateMaster", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -193,7 +193,7 @@ saveSettingsButton.addEventListener("click", async (e) => {
 // Buttons
 const clearImagesButton = document.querySelector("#clearImagesButton");
 clearImagesButton.addEventListener("click", async (e) => {
-  const clear = await fetch("../api/cleanImages", {
+  const clear = await fetch("/api/cleanImages", {
     method: "DELETE",
   });
 
@@ -204,7 +204,7 @@ clearImagesButton.addEventListener("click", async (e) => {
 
 const clearLogsButton = document.querySelector("#clearLogsButton");
 clearLogsButton.addEventListener("click", async (e) => {
-  const clear = await fetch("../api/clearLogs", {
+  const clear = await fetch("/api/clearLogs", {
     method: "DELETE",
   });
 
@@ -215,7 +215,7 @@ clearLogsButton.addEventListener("click", async (e) => {
 
 const versionCheckButton = document.querySelector("#versionCheckButton");
 versionCheckButton.addEventListener("click", () => {
-  checkForUpdate();
+  checkForUpdate(true);
 });
 
 // Waits for the masterfile before adding the event listeners for the tabs.
