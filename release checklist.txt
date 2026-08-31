@@ -1,4 +1,3 @@
 Go through this before creating a new pull request & release on GitHub.
 - Name new version in changelog
 - Update version under Settings -> Info -> Version
-- Update version under docs -> version.txt
