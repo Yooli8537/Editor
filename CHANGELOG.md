@@ -5,6 +5,7 @@
 ### Fixed
 
 - Deleted folders are removed from the collapsedFolders array [Issue #59](https://github.com/Yooli8537/Editor/issues/59).
+- **UNCONFIRMED** Running `npm run dev` should no longer have a chance of annihalating the network with 10000 requests from the Frontend to the still starting Backend [Issue #67](https://github.com/Yooli8537/Editor/issues/67).
 
 ## v1.5.6 - Fixed automatic updater
 

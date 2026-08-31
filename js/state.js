@@ -32,7 +32,6 @@ export function addState(parameter, value) {
 
 // Removes from a state array
 export function rmState(parameter, value) {
-  console.log(value);
   const stateArray = getState(parameter); // Gets the Array Data
   const rmIndex = stateArray.indexOf(value);
   // Searches for the Data to remove

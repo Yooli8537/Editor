@@ -252,6 +252,14 @@ app.get("/api/applyAppUpdate", async (req, res) => {
   res.json({ success: true });
 });
 
+// Returns a success.
+app.get("/api/", async (req, res) => {
+  if (serverMaster.detailLogs) {
+    logger.info("Got ping request.");
+  }
+  res.json({ success: true });
+});
+
 // Sends index.html to the client.
 app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "index.html"));

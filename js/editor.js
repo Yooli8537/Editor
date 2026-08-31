@@ -1026,6 +1026,30 @@ export function closeEditor() {
   setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
+// Periodically pings the backend until an answer is recieved.
+let ping = null;
+let pingSuccess = false;
+async function pingBackend() {
+  const response = await fetch("/api/", {
+    method: "GET",
+  });
+
+  if (response.ok) {
+    pingSuccess = true;
+  }
+}
+
+// Initalizes the ping and starts the app properly if it's a success.
+function initPing() {
+  ping = setInterval(() => {
+    pingBackend();
+    if (pingSuccess) {
+      clearInterval(ping);
+      onFirstStart();
+    }
+  }, 1000);
+}
+
 // Opens Document from URL if one is present.
 export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
@@ -1063,4 +1087,4 @@ export async function onFirstStart() {
   checkForUpdate(false);
 }
 
-onFirstStart();
+initPing();
