@@ -37,6 +37,7 @@ const warningLogs = document.querySelector("#warningLogs");
 const successLogs = document.querySelector("#successLogs");
 const detailLogs = document.querySelector("#detailLogs");
 const saveLogs = document.querySelector("#saveLogs");
+const confirmExport = document.querySelector("#confirmExport");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -50,6 +51,7 @@ const allSettings = [
   successLogs,
   detailLogs,
   saveLogs,
+  confirmExport,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -68,6 +70,7 @@ const boolSettings = [
   successLogs,
   detailLogs,
   saveLogs,
+  confirmExport
 ];
 
 // Getting the master file

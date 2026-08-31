@@ -101,6 +101,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/function/export.svg" class="groupIcon">
+                        <p>Export Config</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Confirm Export</div>
+                            <div class="settingDescription">
+                                Whether or not exporting a document should require a confirmation.
+                            </div>
+                            <div class="settingDefault">Default: False</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="confirmExport">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="display" class="hidden">
@@ -207,7 +228,8 @@
                         <div class="settingInfo">
                             <div class="settingTitle">Clear Logs</div>
                             <div class="settingDescription">
-                                Clears out all of the server logs, excluding the log from the current runtime (if enabled).
+                                Clears out all of the server logs, excluding the log from the current runtime (if
+                                enabled).
                             </div>
                         </div>
                         <div class="settingValue">
