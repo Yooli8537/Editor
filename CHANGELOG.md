@@ -14,6 +14,7 @@
 ### Fixed
 
 - Server logs now show the correct time + show the current date ([Issue #51](https://github.com/Yooli8537/Editor/issues/51)).
+- Express no longer cries about headers being set after being sent to the Client which caused weird logging.
 
 ## v1.5.2 - Minor improvements & Bug fixes
 

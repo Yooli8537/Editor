@@ -205,7 +205,7 @@ app.put("/api/updateMaster", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     logger.error({ error: err }, "Failed to update master.json.");
-    res.status(500).json({ error: err });
+    res.json({ error: err }).status(500);
   }
 });
 
@@ -235,7 +235,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     logger.error({ error: err }, "Failed to update master.json.");
-    res.status(500).json({ error: err });
+    res.json({ error: err }).status(500);
   }
 });
 
