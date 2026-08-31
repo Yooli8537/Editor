@@ -154,7 +154,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 
   try {
     // Makes the directory
-    await fs.mkdirSync(path.join(notebooksFolderPath, name));
+    fs.mkdirSync(path.join(notebooksFolderPath, name));
     if (serverMaster.successLogs) {
       logger.info({ Name: name }, "Created new notebook.");
     }
@@ -242,7 +242,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
+      fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
       if (serverMaster.successLogs) {
         logger.info({ Name: name, Path: folderPath }, "Created folder.");
       }
@@ -313,7 +313,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 
   try {
     const fullPath = path.join(notebooksFolderPath, folderPath, name);
-    const file = await fs.readFileSync(fullPath, "utf-8"); // Reads out file data
+    const file = fs.readFileSync(fullPath, "utf-8"); // Reads out file data
     if (serverMaster.successLogs) {
       logger.info("Got file.");
     }
@@ -444,7 +444,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
       if (serverMaster.detailLogs) {
         logger.info("Renaming folder...");
       }
-      await fs.renameSync(currentPath, newPath);
+      fs.renameSync(currentPath, newPath);
 
       if (serverMaster.successLogs) {
         logger.info("Renamed folder.");
@@ -509,7 +509,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
   }
 
   const filePath = path.join(notebooksFolderPath, folderPath, name);
-  const file = await fs.readFileSync(filePath, "utf-8");
+  const file = fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
   // fileData[0] since everything in JSON is stored in one array.
