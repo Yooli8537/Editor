@@ -21,7 +21,14 @@ import {
   removeSubmenus,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
+import {
+  addState,
+  checkState,
+  getState,
+  rmState,
+  sendState,
+  setState,
+} from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -1024,10 +1031,24 @@ export async function checkForUpdate() {
     { method: "GET" },
   );
 
-  const latestJSON = await latest.json();
+  const release = await latest.json();
 
-  if (latestJSON.tag_name !== getState("version")) {
-    console.log("UPDATE AVAILABLE");
+  if (release.tag_name !== getState("version") && getState("deniedUpdate")) {
+    createConfirmModal(
+      "An update is available. Would you like to install it?",
+      "Don't install",
+      "Install Update",
+      () => {
+        createInfoModal(
+          "You can update the app at any time in the settings menu.",
+        );
+        setState("deniedUpdate", true);
+        sendState("deniedUpdate");
+      },
+      async () => {
+        const response = await fetch("api/applyAppUpdate", { method: "GET" });
+      },
+    );
   }
 }
 

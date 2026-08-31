@@ -6,6 +6,10 @@ const path = require("path");
 const serverMaster = require("./serverMaster");
 const logger = require("./logger");
 
+// Git for JS
+const gitJS = require("simple-git");
+const git = gitJS.default();
+
 const app = express();
 const port = 8510;
 
@@ -135,6 +139,7 @@ async function addMissingMasterProperties() {
     saveLogs: false,
     confirmExport: false,
     version: "v1.5.4",
+    deniedUpdate: false,
   };
 
   // Adds all the missing properties
@@ -242,9 +247,10 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 });
 
 // Checks for an update.
-app.get("/api/checkForUpdate", async (req, res) => {
-  
-})
+app.get("/api/applyAppUpdate", async (req, res) => {
+  git.pull("origin", "main");
+  res.json({ success: true });
+});
 
 // Sends index.html to the client.
 app.get("/", (req, res) => {
