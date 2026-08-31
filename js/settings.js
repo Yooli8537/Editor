@@ -36,6 +36,8 @@ const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
 const warningLogs = document.querySelector("#warningLogs");
 const successLogs = document.querySelector("#successLogs");
 const detailLogs = document.querySelector("#detailLogs");
+const saveLogs = document.querySelector("#saveLogs");
+const confirmExport = document.querySelector("#confirmExport");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -48,6 +50,8 @@ const allSettings = [
   warningLogs,
   successLogs,
   detailLogs,
+  saveLogs,
+  confirmExport,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -60,7 +64,14 @@ const numberSettings = [
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
-const boolSettings = [confirmSave, warningLogs, successLogs, detailLogs];
+const boolSettings = [
+  confirmSave,
+  warningLogs,
+  successLogs,
+  detailLogs,
+  saveLogs,
+  confirmExport,
+];
 
 // Getting the master file
 let master;
@@ -104,6 +115,7 @@ function addTabListeners() {
     allTabs[i].element.addEventListener("click", (e) => {
       hideAllPages();
       showPage(allTabs[i].name);
+      history.pushState(null, "", `?tab=${allTabs[i].name}`);
     });
   }
 }
@@ -190,8 +202,30 @@ clearImagesButton.addEventListener("click", async (e) => {
   }
 });
 
+const clearLogsButton = document.querySelector("#clearLogsButton");
+clearLogsButton.addEventListener("click", async (e) => {
+  const clear = await fetch("../api/clearLogs", {
+    method: "DELETE",
+  });
+
+  if (clear.ok) {
+    createInfoModal("Successfully cleared logs from server storage.");
+  }
+});
+
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
   preLoadSettingsData();
   addTabListeners();
 }
+
+// Checks for a tab query parameter and shows the corresponding tab if one is found.
+function checkForTabQueryParameter() {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get("tab");
+  if (tab) {
+    showPage(tab);
+  }
+}
+
+checkForTabQueryParameter();

@@ -101,6 +101,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/function/export.svg" class="groupIcon">
+                        <p>Export Config</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Confirm Export</div>
+                            <div class="settingDescription">
+                                Whether or not exporting a document should require a confirmation.
+                            </div>
+                            <div class="settingDefault">Default: False</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="confirmExport">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="display" class="hidden">
@@ -203,6 +224,18 @@
                             <button type="submit" class="button hoverClass" id="clearImagesButton">Clear Images</button>
                         </div>
                     </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Clear Logs</div>
+                            <div class="settingDescription">
+                                Clears out all of the server logs, excluding the log from the current runtime (if
+                                enabled).
+                            </div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" class="button hoverClass" id="clearLogsButton">Clear Logs</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
@@ -237,6 +270,21 @@
                     <div class="settingGroupTitle">
                         <img src="../assets/settings/server-logs.svg" class="groupIcon">
                         <p>Server Logs</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Save Logs to file</div>
+                            <div class="settingDescription">
+                                Controls if Server Logs are also saved to files under the "Editor/logs/" directory.
+                            </div>
+                            <div class="settingDefault">Default: False</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="saveLogs">
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
@@ -310,7 +358,7 @@
                     <div class="setting">
                         <div class="settingInfo">
                             <div class="settingTitle">Version</div>
-                            <div>You are currently on Editor version <i>v1.5.2</i>.</div>
+                            <div>You are currently on Editor version <i>v1.5.3</i>.</div>
                         </div>
                         <div class="settingValue">
                             <a href="https://github.com/Yooli8537/Editor/releases" target="_blank">

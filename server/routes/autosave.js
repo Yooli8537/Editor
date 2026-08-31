@@ -64,7 +64,7 @@ async function addUnsavedToMaster(filename) {
         { Name: filename, Error: err },
         "Failed to add unsaved filename to master.json.",
       );
-      res.status(500).json({ error: err });
+      res.json({ error: err }).status(500);
       return false;
     }
   } else {
@@ -116,7 +116,7 @@ router.post("/api/autosave", async (req, res) => {
         { Name: name, Path: folderPath, Error: err },
         "Failed to create autosave.",
       );
-      res.status(500).json({ error: err });
+      res.json({ error: err }).status(500);
     }
   }
 });
@@ -160,7 +160,7 @@ router.delete("/api/removeAutosave", async (req, res) => {
     await fs.rmSync(path.join(autosavesFolderPath, name));
   } catch (err) {
     logger.error({ Name: name, Error: err }, "Failed to delete autosave.");
-    res.status(500).json({ error: err });
+    res.json({ error: err }).status(500);
   }
 
   if (serverMaster.successLogs) {
@@ -199,10 +199,10 @@ router.get("/api/getAutosave", async (req, res) => {
   } catch (err) {
     if (err.code === "ENOENT") {
       logger.error({ Name: name, Error: err }, "Failed to find autosave.");
-      res.status(404).json({ error: "Couldn't find autosave." });
+      res.json({ error: "Couldn't find autosave." }).status(404);
     } else {
       logger.error({ Name: name, Error: err }, "Failed to get autosave.");
-      res.status(500).json({ error: err });
+      res.json({ error: err }).status(500);
     }
   }
 });

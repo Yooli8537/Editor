@@ -163,10 +163,10 @@ router.post("/api/documents/newNotebook", async (req, res) => {
     logger.error({ Error: err }, "Failed to create new notebook.");
     if (err.code === "EEXIST") {
       res
-        .status(409)
-        .json({ error: "A Notebook with that name already exists." });
+        .json({ error: "A Notebook with that name already exists." })
+        .status(409);
     } else {
-      res.status(500).json({ Error: "Failed to create new notebook." });
+      res.json({ Error: "Failed to create new notebook." }).status(500);
     }
   }
 });
@@ -205,8 +205,8 @@ router.post("/api/documents/newFile", async (req, res) => {
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
         res
-          .status(409)
-          .json({ Error: "A File with that name already exists." });
+          .json({ Error: "A File with that name already exists." })
+          .status(409);
       }
       // Checking for the required values to create the file.
     } else if (name) {
@@ -267,11 +267,11 @@ router.post("/api/documents/newFolder", async (req, res) => {
     if (err.code === "EEXIST") {
       logger.error({ Error: err }, "Folder already exists.");
       res
-        .status(409)
-        .json({ error: "A folder with this name already exists." });
+        .json({ error: "A folder with this name already exists." })
+        .status(409);
     }
     logger.error({ Error: err }, "Failed to create folder.");
-    res.status(500).json({ error: "Failed to create folder." });
+    res.json({ error: "Failed to create folder." }).status(500);
   }
 });
 
@@ -296,11 +296,11 @@ router.delete("/api/documents/deletePath", async (req, res) => {
       res.send("Path successfully deleted.").json({ success: true });
     } else {
       logger.error({ Path: folderPath }, "Failed to find path to be deleted.");
-      res.status(404).json({ error: "Failed to find path to be deleted." });
+      res.json({ error: "Failed to find path to be deleted." }).status(404);
     }
   } catch (err) {
     logger.error({ Error: err }, "Failed to delete path.");
-    res.status(500).json({ error: "Failed to delete path." });
+    res.json({ error: "Failed to delete path." }).status(500);
   }
 });
 
@@ -327,13 +327,13 @@ router.get("/api/documents/getFile", async (req, res) => {
         { Name: name, Path: folderPath, Error: err },
         "Failed to find file.",
       );
-      res.status(404).json({ error: "Failed to find file." });
+      res.json({ error: "Failed to find file." }).status(404);
     } else {
       logger.error(
         { Name: name, Path: folderPath, Error: err },
         "Failed to get file.",
       );
-      res.status(500).json({ error: "Failed to get file." });
+      res.json({ error: "Failed to get file." }).status(500);
     }
   }
 });
@@ -415,7 +415,7 @@ router.post("/api/documents/renameFile", async (req, res) => {
       },
       "Failed to rename file.",
     );
-    res.status(500).json({ error: "Failed to rename file." });
+    res.json({ error: "Failed to rename file." }).status(500);
   }
 });
 
@@ -490,7 +490,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
       { "Old name": name, "New name": newName, Path: folderPath, Error: err },
       "Failed to rename folder.",
     );
-    res.status(500).json({ error: "Failed to rename folder." });
+    res.json({ error: "Failed to rename folder." }).status(500);
   }
 });
 

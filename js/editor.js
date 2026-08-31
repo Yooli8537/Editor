@@ -62,7 +62,13 @@ const extensions = [
       cellMinWidth: 25,
     },
   }),
-  ListKit,
+  ListKit.configure({
+    // Disabling ListKit features which StarterKit already has.
+    bulletList: false,
+    listItem: false,
+    listKeymap: false,
+    orderedList: false,
+  }),
   Image.configure({
     inline: true,
     resize: {
@@ -102,7 +108,7 @@ const editor = new Editor({
   autofocus: true,
   injectCSS: true,
   onUpdate: () => {
-    setState("editorIsSaved", false)
+    setState("editorIsSaved", false);
   },
 });
 
@@ -201,7 +207,7 @@ function loadEditor(documentData, entry, previousEntry) {
     renameHandler();
   });
 
-  setState("editorIsSaved", true)
+  setState("editorIsSaved", true);
 }
 
 // Loads Document into the Editor
@@ -779,6 +785,32 @@ linkButton.addEventListener("click", (e) => {
   createSubmenu(linkButton, linkEditButtons, 1);
 });
 
+// Handles the export of a file.
+async function handleExport(exportDocument) {
+  const response = await fetch("api/export", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      exportDocument: exportDocument,
+      name: currentEntry.replace(".json", ""),
+    }),
+  });
+
+  if (response.ok) {
+    // Sends the response to the client, which then downloads it automatically.
+    const blobResponse = await response.blob();
+    let downloadURL = await URL.createObjectURL(blobResponse);
+
+    let downloadElement = document.createElement("a");
+    downloadElement.href = downloadURL;
+    downloadElement.download = currentEntry.replace(".json", ".pdf");
+    downloadElement.click();
+    URL.revokeObjectURL(downloadURL); // Deletes download Element
+  } else {
+    createErrorModal("Something went wrong.");
+  }
+}
+
 // Functional Buttons
 setHelpText(exportButton, "Export Document as PDF");
 exportButton.addEventListener("click", async (e) => {
@@ -796,36 +828,20 @@ exportButton.addEventListener("click", async (e) => {
 
   const exportDocument = rawDocHTML.outerHTML;
 
-  createConfirmModal(
-    "Are you sure you want to Export the current Document?",
-    "Back to Editor",
-    "Export as PDF",
-    () => {},
-    async () => {
-      const response = await fetch("api/export", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exportDocument: exportDocument,
-          name: currentEntry.replace(".json", ""),
-        }),
-      });
-
-      if (response.ok) {
-        // Sends the response to the client, which then downloads it automatically.
-        const blobResponse = await response.blob();
-        let downloadURL = await URL.createObjectURL(blobResponse);
-
-        let downloadElement = document.createElement("a");
-        downloadElement.href = downloadURL;
-        downloadElement.download = currentEntry.replace(".json", ".pdf");
-        downloadElement.click();
-        URL.revokeObjectURL(downloadURL); // Deletes download Element
-      } else {
-        createErrorModal("Something went wrong.");
-      }
-    },
-  );
+  // Checks if the export should be confirmed.
+  if (getState("confirmExport")) {
+    createConfirmModal(
+      "Are you sure you want to Export the current Document?",
+      "Back to Editor",
+      "Export as PDF",
+      () => {},
+      () => {
+        handleExport(exportDocument);
+      },
+    );
+  } else {
+    handleExport(exportDocument);
+  }
 });
 
 setHelpText(saveButton, "Save Document");

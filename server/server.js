@@ -11,6 +11,7 @@ const port = 8510;
 
 // Paths to Folders which need to exist within the data folder.
 const rootPath = path.join(__dirname, "../");
+const logsFolderPath = path.join(rootPath, "logs");
 const dataFolderPath = path.join(rootPath, "data");
 const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
@@ -32,6 +33,7 @@ app.use(autosaveRoute);
 app.use(settingsRoute);
 
 const userDataFolders = [
+  { name: "Logs", path: logsFolderPath },
   { name: "Data", path: dataFolderPath },
   { name: "Autosaves", path: autosavesFolderPath },
   { name: "Notebooks", path: notebooksFolderPath },
@@ -130,13 +132,15 @@ async function addMissingMasterProperties() {
     warningLogs: true,
     detailLogs: false,
     successLogs: true,
+    saveLogs: false,
+    confirmExport: false,
   };
 
   // Adds all the missing properties
   for (const key in allProperties) {
     if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
-      logger.info({ property: key }, "Added missing master.json property.");
+      logger.info({ Property: key }, "Added missing master.json property.");
       changesMade = true;
     }
   }
@@ -202,7 +206,7 @@ app.put("/api/updateMaster", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     logger.error({ error: err }, "Failed to update master.json.");
-    res.status(500).json({ error: err });
+    res.json({ error: err }).status(500);
   }
 });
 
@@ -227,12 +231,12 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     // Updates the master.
     await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     if (serverMaster.successLogs) {
-      logger.info({ property: property }, "Updated master.json property.");
+      logger.info({ Property: property }, "Updated master.json property.");
     }
     res.json({ success: true });
   } catch (err) {
     logger.error({ error: err }, "Failed to update master.json.");
-    res.status(500).json({ error: err });
+    res.json({ error: err }).status(500);
   }
 });
 

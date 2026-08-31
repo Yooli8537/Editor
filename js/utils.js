@@ -166,7 +166,6 @@ export function createErrorModal(errorMsg) {
   // Confirm button
   const okButton = document.createElement("div");
   okButton.classList.add("modalTextButton");
-  okButton.classList.add("highlight");
   okButton.textContent = "Ok";
 
   okButton.addEventListener("click", () => {
