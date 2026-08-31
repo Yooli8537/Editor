@@ -138,7 +138,7 @@ async function addMissingMasterProperties() {
     successLogs: true,
     saveLogs: false,
     confirmExport: false,
-    version: "v1.5.5",
+    version: "v1.5.6",
     deniedUpdate: false,
   };
 
@@ -248,7 +248,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
-  await git.pull("origin", "main", { rebase: true });
+  await git.pull("origin", "main", ["--rebase"]);
   res.json({ success: true });
 });
 

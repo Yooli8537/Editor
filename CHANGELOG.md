@@ -1,10 +1,20 @@
 # Changelog
 
+## v1.5.6 - Fixed automatic updater
+
+### Fixed
+
+- Server-side git pull works properly and will apply an update without issues (unless there's local changes -_-).
+
 ## v1.5.5 - Let's hope for the best
 
 ### Added
 
 - The version of the Editor in the master.json is now updated whenever an update is completed.
+
+### Fixed
+
+- The user isn't told that they're on the newest version every damn time they load up.
 
 ## v1.5.4 - Theoretically functional updater
 
