@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.5.5 - Let's hope for the best
+
+### Added
+
+- The version of the Editor in the master.json is now updated whenever an update is completed.
+
 ## v1.5.4 - Theoretically functional updater
 
 **I didn't have the chance to test this feature yet, so it may not work.**
