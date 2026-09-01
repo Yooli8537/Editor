@@ -34,6 +34,9 @@ function createModalButtonsDiv() {
   return modalButtons;
 }
 
+// Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+const controller = new AbortController();
+
 // Creating a Modal for the user to confirm an action.
 export function createConfirmModal(
   prompt,
@@ -75,9 +78,10 @@ export function createConfirmModal(
         e.preventDefault();
         onSubmit();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(cancelButton);
@@ -178,9 +182,10 @@ export function createErrorModal(errorMsg) {
       if (e.key === "Enter") {
         e.preventDefault();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(okButton);
@@ -214,9 +219,10 @@ export function createInfoModal(msg) {
       if (e.key === "Enter") {
         e.preventDefault();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(okButton);
