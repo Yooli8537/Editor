@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Universal server error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+
 ### Fixed
 
 - Deleted folders are removed from the collapsedFolders array ([Issue #59](https://github.com/Yooli8537/Editor/issues/59)).
