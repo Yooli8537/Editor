@@ -626,7 +626,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
       );
     }
   } else {
-    res.json(
+    res.status(409).json(
       error(
         409,
         "Rename folder",

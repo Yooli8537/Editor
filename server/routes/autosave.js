@@ -57,15 +57,16 @@ async function addUnsavedToMaster(filename) {
       }
       return true;
     } catch (err) {
-      res.json(
-        error(
-          500,
-          "Add unsaved filename to master.json",
-          "Failed to add unsaved filename to master.json.",
-          { "Full path": filename },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(
+          error(
+            "Add unsaved filename to master.json",
+            "Failed to add unsaved filename to master.json.",
+            { "Full path": filename },
+            err,
+          ),
+        );
       return false;
     }
   } else {
@@ -109,15 +110,16 @@ router.post("/api/autosave", async (req, res) => {
 
       res.json({ success: true });
     } catch (err) {
-      res.json(
-        error(
-          500,
-          "Autosave create",
-          "Failed to create autosave.",
-          { Name: name, Path: folderPath },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(
+          error(
+            "Autosave create",
+            "Failed to create autosave.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     }
   }
 });
@@ -160,15 +162,16 @@ router.delete("/api/removeAutosave", async (req, res) => {
 
     fs.rmSync(path.join(autosavesFolderPath, name));
   } catch (err) {
-    res.json(
-      error(
-        500,
-        "Autosave remove",
-        "Failed to remove autosave.",
-        { Name: name },
-        err,
-      ),
-    );
+    res
+      .status(500)
+      .json(
+        error(
+          "Autosave remove",
+          "Failed to remove autosave.",
+          { Name: name },
+          err,
+        ),
+      );
   }
 
   if (serverMaster.successLogs) {

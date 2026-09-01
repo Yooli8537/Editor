@@ -139,9 +139,9 @@ router.post("/api/export", async (req, res) => {
       logger.info("Sent PDF-Export to Client.");
     }
   } catch (err) {
-    res.json(
-      error(500, "PDF export", "Failed to export PDF.", { Name: name }, err),
-    );
+    res
+      .status(500)
+      .json(error("PDF export", "Failed to export PDF.", { Name: name }, err));
   }
 });
 

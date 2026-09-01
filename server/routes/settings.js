@@ -40,7 +40,9 @@ router.delete("/api/cleanImages", async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.json(error(500, "Image clear", "Failed to clear images", {}, null));
+    res
+      .status(500)
+      .json(error("Image clear", "Failed to clear images", {}, null));
   }
 });
 
@@ -64,7 +66,9 @@ router.delete("/api/clearLogs", async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.json(error(500, "Logs clear", "Failed to clear logs.", {}, null));
+    res
+      .status(500)
+      .json(error("Logs clear", "Failed to clear logs.", {}, null));
   }
 });
 

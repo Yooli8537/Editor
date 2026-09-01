@@ -59,7 +59,6 @@ for (let i = 0; i < userDataFolders.length; i++) {
       foldersCreated = true;
     } catch (err) {
       error(
-        500,
         "User data folders create",
         "Failed to create user data folders.",
         { Folder: userDataFolders[i] },
@@ -86,7 +85,6 @@ async function updateMasterfile(masterFile) {
     return true;
   } catch (err) {
     error(
-      500,
       "master.json properties update",
       "Failed to update master.json properties.",
       {},
@@ -186,7 +184,7 @@ if (!fs.existsSync(masterFilePath)) {
       "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
     );
   } catch (err) {
-    error(500, "master.json create", "Failed to create master.json.", {}, err);
+    error("master.json create", "Failed to create master.json.", {}, err);
   }
 }
 
@@ -207,9 +205,9 @@ app.get("/api/getMaster", async (req, res) => {
       logger.info("Loaded Masterfile.");
     }
   } catch (err) {
-    res.json(
-      error(500, "master.json get", "Failed to get master.json.", {}, err),
-    );
+    res
+      .status(500)
+      .json(error("master.json get", "Failed to get master.json.", {}, err));
   }
 });
 
@@ -231,15 +229,16 @@ app.put("/api/updateMaster", async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    res.json(
-      error(
-        500,
-        "master.json update",
-        "Failed to update master.json.",
-        { Data: data },
-        err,
-      ),
-    );
+    res
+      .status(500)
+      .json(
+        error(
+          "master.json update",
+          "Failed to update master.json.",
+          { Data: data },
+          err,
+        ),
+      );
   }
 });
 
@@ -268,15 +267,16 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.json(
-      error(
-        500,
-        "Update master.json property",
-        "Failed to update master.json property.",
-        {},
-        err,
-      ),
-    );
+    res
+      .status(500)
+      .json(
+        error(
+          "Update master.json property",
+          "Failed to update master.json property.",
+          {},
+          err,
+        ),
+      );
   }
 });
 
@@ -286,7 +286,7 @@ app.get("/api/applyAppUpdate", async (req, res) => {
     await git.pull("origin", "main", ["--rebase"]);
     res.json({ success: true });
   } catch (err) {
-    res.json(error(500, "App update", "Failed to update app.", {}, err));
+    res.status(500).json(error("App update", "Failed to update app.", {}, err));
   }
 });
 

@@ -3,18 +3,10 @@
 const logger = require("./logger");
 const serverMaster = require("./serverMaster");
 
-// createError(404, "Not found", { name: "Example.json" });
-function createErrorJSON(
-  status,
-  operation,
-  errorMsg,
-  reqestValues,
-  detailError,
-) {
+function createErrorJSON(operation, errorMsg, reqestValues, detailError) {
   if (!detailError || !serverMaster.logErrorDetails) {
     logger.error(
       {
-        Status: status,
         "Request values": reqestValues,
       },
       `${operation}: ${errorMsg}`,
@@ -22,7 +14,6 @@ function createErrorJSON(
   } else {
     logger.error(
       {
-        Status: status,
         "Request values": reqestValues,
         "Detailed Error": detailError,
       },
@@ -30,10 +21,10 @@ function createErrorJSON(
     );
   }
 
+  // Doesn't give back detailed error because it isn't necessary.
   return {
     Operation: operation,
     "Error Message": errorMsg,
-    Status: status,
     "Request values": reqestValues,
   };
 }
