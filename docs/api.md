@@ -231,10 +231,7 @@ Headers:
 Body:
 
 ``` JSON
-{
-    "name": "Example Name",
-    "folderPath": "Example/folder/path"
-}
+{ "folderPath": "Example/folder/path/optional.json" }
 ```
 
 Response:
@@ -263,3 +260,51 @@ Response:
 ### POST /api/documents/renameFile
 
 Renames a file.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{
+    "newName": "The new name of the file",
+    "name": "The original name of the file",
+    "folderPath": "Example/folder/path/"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
+
+### POST /api/documents/renameFolder
+
+Renames folders and notebooks.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{
+    "newName": "The new name of the folder",
+    "name": "The original name of the folder",
+    "folderPath": "This/is/empty/if/you're/renaming/a/notebook"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
