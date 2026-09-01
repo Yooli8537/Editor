@@ -433,11 +433,6 @@ function childDocumentIsOpen(
         directoryContents[i].name,
       );
 
-      logger.info({
-        pathToFile: pathToFile,
-        currentlyOpenDocument: currentlyOpenDocument,
-      });
-
       // Compares the file path to the currently open document.
       // Returning true will cancel the renaming operation.
       if (pathToFile === currentlyOpenDocument) {
@@ -474,79 +469,92 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
   const newPath = path.join(notebooksFolderPath, folderPath, newName);
 
+  if (serverMaster.detailLogs) {
+    logger.info({ currentPath: currentPath, newPath: newPath });
+  }
+
   const folderContents = await readDirRecursive(currentPath);
-  console.log(
-    childDocumentIsOpen(
+
+  if (
+    !childDocumentIsOpen(
       folderContents,
       // If currentPath is used, it'll use the full path starting from C:, which is not how currentlyOpenDocument is saved.
       path.join(folderPath, name),
       // currentlyOpenDocument uses the forwards slash / instead of the backslash \, using path.join() conveniently fixes this lmao.
       path.join(currentlyOpenDocument),
-    ),
-  );
-
-  if (serverMaster.detailLogs) {
-    logger.info({ currentPath: currentPath, newPath: newPath });
-  }
-  /*
-  try {
-    if (!newName || newName == "") {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No new name found to rename folder.",
-      );
-    } else if (newName && folderPath && name) {
-      if (serverMaster.detailLogs) {
-        logger.info("Renaming folder...");
-      }
-      fs.renameSync(currentPath, newPath);
-
-      if (serverMaster.successLogs) {
-        logger.info("Renamed folder.");
-      }
-      res.json({ success: true });
-      return;
-    } else if (newName && name) {
-      if (serverMaster.detailLogs) {
-        logger.info(
-          "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+    )
+  ) {
+    try {
+      if (!newName || newName == "") {
+        logger.error(
+          { "Old name": name, "New name": newName, Path: folderPath },
+          "No new name found to rename folder.",
         );
-        logger.info("Copying notebook contents to new directory...");
-      }
-      // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
-      // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
-      // Fuck Microslop. I wish Linux supported everything I use. :/
-      await fs.promises.cp(currentPath, newPath, { recursive: true });
-      await fs.promises.rm(currentPath, { recursive: true, force: true });
+      } else if (newName && folderPath && name) {
+        if (serverMaster.detailLogs) {
+          logger.info("Renaming folder...");
+        }
+        fs.renameSync(currentPath, newPath);
 
-      if (serverMaster.successLogs) {
-        logger.info("Renamed notebook.");
+        if (serverMaster.successLogs) {
+          logger.info("Renamed folder.");
+        }
+        res.json({ success: true });
+        return;
+      } else if (newName && name) {
+        if (serverMaster.detailLogs) {
+          logger.info(
+            "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+          );
+          logger.info("Copying notebook contents to new directory...");
+        }
+        // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
+        // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
+        // Fuck Microslop. I wish Linux supported everything I use. :/
+        await fs.promises.cp(currentPath, newPath, { recursive: true });
+        await fs.promises.rm(currentPath, { recursive: true, force: true });
+
+        if (serverMaster.successLogs) {
+          logger.info("Renamed notebook.");
+        }
+        res.json({ success: true });
+        return;
+      } else if (!folderPath) {
+        logger.error(
+          { "Old name": name, "New name": newName, Path: folderPath },
+          "No path found to rename folder.",
+        );
+      } else if (!name) {
+        logger.error(
+          { "Old name": name, "New name": newName, Path: folderPath },
+          "No name found to rename folder.",
+        );
+      } else {
+        logger.error(
+          { "Old name": name, "New name": newName, Path: folderPath },
+          "No path or name found to rename folder.",
+        );
       }
-      res.json({ success: true });
-      return;
-    } else if (!folderPath) {
+    } catch (err) {
       logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No path found to rename folder.",
+        { "Old name": name, "New name": newName, Path: folderPath, Error: err },
+        "Failed to rename folder.",
       );
-    } else if (!name) {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No name found to rename folder.",
-      );
-    } else {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No path or name found to rename folder.",
-      );
+      res.json({ error: "Failed to rename folder." }).status(500);
     }
-  } catch (err) {
-    logger.error(
-      { "Old name": name, "New name": newName, Path: folderPath, Error: err },
-      "Failed to rename folder.",
-    );
-    res.json({ error: "Failed to rename folder." }).status(500);
-  }*/
+  } else {
+    logger.error({
+      "Old name": name,
+      "New name": newName,
+      Path: folderPath,
+      Error: "A child document is open.",
+    });
+    res.json({
+      status: 409,
+      success: false,
+      error: "A child document is open.",
+    });
+  }
 });
 
 // Updates a file with new content.
