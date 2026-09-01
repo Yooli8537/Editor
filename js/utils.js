@@ -34,9 +34,6 @@ function createModalButtonsDiv() {
   return modalButtons;
 }
 
-// Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
-const controller = new AbortController();
-
 // Creating a Modal for the user to confirm an action.
 export function createConfirmModal(
   prompt,
@@ -48,6 +45,8 @@ export function createConfirmModal(
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   const text = document.createElement("p");
   text.textContent = prompt;
@@ -162,6 +161,8 @@ export function createErrorModal(errorMsg) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   // Adds error message directly to modal.
   modal.classList.add("errorMsg");
@@ -199,6 +200,8 @@ export function createInfoModal(msg) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   // Adds message directly to modal.
   modal.textContent = msg;
