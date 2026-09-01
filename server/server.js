@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const serverMaster = require("./serverMaster");
 const logger = require("./logger");
+const error = require("./error");
 
 // Git for JS
 const gitJS = require("simple-git");
@@ -49,12 +50,22 @@ const userDataFolders = [
 let foldersCreated = false;
 for (let i = 0; i < userDataFolders.length; i++) {
   if (!fs.existsSync(userDataFolders[i].path)) {
-    fs.mkdirSync(userDataFolders[i].path);
-    logger.warn(
-      { "missing folder": userDataFolders[i].name },
-      "Created missing folder",
-    );
-    foldersCreated = true;
+    try {
+      fs.mkdirSync(userDataFolders[i].path);
+      logger.warn(
+        { "missing folder": userDataFolders[i].name },
+        "Created missing folder",
+      );
+      foldersCreated = true;
+    } catch (err) {
+      error(
+        500,
+        "User data folders create",
+        "Failed to create user data folders.",
+        { Folder: userDataFolders[i] },
+        null,
+      );
+    }
   }
 }
 
@@ -74,9 +85,12 @@ async function updateMasterfile(masterFile) {
     }
     return true;
   } catch (err) {
-    logger.error(
-      { error: err },
-      "Something went wrong updating master.json properties.",
+    error(
+      500,
+      "master.json properties update",
+      "Failed to update master.json properties.",
+      {},
+      err,
     );
     return false;
   }
@@ -87,7 +101,7 @@ async function deleteDeprecatedMasterProperties() {
   logger.info("Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
@@ -120,7 +134,7 @@ async function addMissingMasterProperties() {
   logger.info("Checking for missing master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Every property which should be in the masterfile.
@@ -164,13 +178,16 @@ async function addMissingMasterProperties() {
 
 // Masterfile to store config across sessions
 if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[{}]
-`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
-  logger.warn("Created missing master.json file.");
-  logger.info(
-    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
-  );
+  const masterFileContent = `[{}]`;
+  try {
+    fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+    logger.warn("Created missing master.json file.");
+    logger.info(
+      "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
+    );
+  } catch (err) {
+    error(500, "master.json create", "Failed to create master.json.", {}, err);
+  }
 }
 
 // Checks for deprecated and missing masterfile properties.
@@ -183,14 +200,16 @@ app.get("/api/getMaster", async (req, res) => {
     logger.info("Recived master.json get request.");
   }
   try {
-    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
     if (serverMaster.successLogs) {
       logger.info("Loaded Masterfile.");
     }
   } catch (err) {
-    logger.error({ error: err }, "Failed to load master.json.");
+    res.json(
+      error(500, "master.json get", "Failed to get master.json.", {}, err),
+    );
   }
 });
 
@@ -202,7 +221,7 @@ app.put("/api/updateMaster", async (req, res) => {
   }
 
   try {
-    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
     if (serverMaster.successLogs) {
       logger.info("Updated master.json.");
       if (serverMaster.detailLogs) {
@@ -212,8 +231,15 @@ app.put("/api/updateMaster", async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    logger.error({ error: err }, "Failed to update master.json.");
-    res.json({ error: err }).status(500);
+    res.json(
+      error(
+        500,
+        "master.json update",
+        "Failed to update master.json.",
+        { Data: data },
+        err,
+      ),
+    );
   }
 });
 
@@ -229,28 +255,39 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
   try {
     // Gets master data
-    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
 
     // Updates given property
     masterFile[0][property] = newValue;
 
     // Updates the master.
-    await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     if (serverMaster.successLogs) {
       logger.info({ Property: property }, "Updated master.json property.");
     }
     res.json({ success: true });
   } catch (err) {
-    logger.error({ error: err }, "Failed to update master.json.");
-    res.json({ error: err }).status(500);
+    res.json(
+      error(
+        500,
+        "Update master.json property",
+        "Failed to update master.json property.",
+        {},
+        err,
+      ),
+    );
   }
 });
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
-  await git.pull("origin", "main", ["--rebase"]);
-  res.json({ success: true });
+  try {
+    await git.pull("origin", "main", ["--rebase"]);
+    res.json({ success: true });
+  } catch (err) {
+    res.json(error(500, "App update", "Failed to update app.", {}, err));
+  }
 });
 
 // Returns a success.
@@ -267,5 +304,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info({ port: port }, "Editor Backend running");
+  logger.info({ Port: port }, "Editor Backend running");
 });

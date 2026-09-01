@@ -4,7 +4,7 @@
 
 ### Added
 
-- Universal server error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Universal server-side error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
 
 ### Fixed
 
