@@ -140,6 +140,7 @@ async function addMissingMasterProperties() {
     confirmExport: false,
     version: "v1.5.6",
     deniedUpdate: false,
+    logErrorDetails: false,
   };
 
   // Adds all the missing properties
