@@ -279,6 +279,7 @@ function createFolderActions(path, previousEntry) {
             newName: newName,
             folderPath: previousEntry,
             name: path,
+            currentlyOpenDocument: getState("currentDocument"),
           }),
         });
 

@@ -419,9 +419,51 @@ router.post("/api/documents/renameFile", async (req, res) => {
   }
 });
 
+// Builds the full path for each of a folder's children.
+// Expects the output to look like the output from readDirRecursive().
+function childDocumentIsOpen(
+  directoryContents,
+  directoryFolderPath,
+  currentlyOpenDocument,
+) {
+  for (let i = 0; i < directoryContents.length; i++) {
+    if (!directoryContents[i].isFolder) {
+      const pathToFile = path.join(
+        directoryFolderPath,
+        directoryContents[i].name,
+      );
+
+      logger.info({
+        pathToFile: pathToFile,
+        currentlyOpenDocument: currentlyOpenDocument,
+      });
+
+      // Compares the file path to the currently open document.
+      // Returning true will cancel the renaming operation.
+      if (pathToFile === currentlyOpenDocument) {
+        return true;
+      }
+    } else {
+      // Checks any child folders of the folder being renamed.
+      const childPath = path.join(
+        directoryFolderPath,
+        directoryContents[i].name,
+      );
+
+      childDocumentIsOpen(
+        directoryContents[i],
+        childPath,
+        currentlyOpenDocument,
+      );
+    }
+  }
+  return false;
+}
+
 // Renames a folder
 router.post("/api/documents/renameFolder", async (req, res) => {
-  const { newName, folderPath, name } = req.body;
+  const { newName, folderPath, name, currentlyOpenDocument } = req.body;
+
   if (serverMaster.detailLogs) {
     logger.info(
       { "Old name": name, "New name": newName, Path: folderPath },
@@ -432,8 +474,21 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
   const newPath = path.join(notebooksFolderPath, folderPath, newName);
 
-  logger.info({ currentPath: currentPath, newPath: newPath });
+  const folderContents = await readDirRecursive(currentPath);
+  console.log(
+    childDocumentIsOpen(
+      folderContents,
+      // If currentPath is used, it'll use the full path starting from C:, which is not how currentlyOpenDocument is saved.
+      path.join(folderPath, name),
+      // currentlyOpenDocument uses the forwards slash / instead of the backslash \, using path.join() conveniently fixes this lmao.
+      path.join(currentlyOpenDocument),
+    ),
+  );
 
+  if (serverMaster.detailLogs) {
+    logger.info({ currentPath: currentPath, newPath: newPath });
+  }
+  /*
   try {
     if (!newName || newName == "") {
       logger.error(
@@ -491,7 +546,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
       "Failed to rename folder.",
     );
     res.json({ error: "Failed to rename folder." }).status(500);
-  }
+  }*/
 });
 
 // Updates a file with new content.
