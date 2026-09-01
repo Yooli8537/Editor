@@ -412,3 +412,8 @@ export async function checkForUpdate(manualCheck) {
     }
   }
 }
+
+// Handles errors from server responses.
+export function handleServerErrors(responseJSON) {
+  console.log(responseJSON);
+}
