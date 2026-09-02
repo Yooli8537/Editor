@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.5.7 - Fixed fresh installs
+
+### Fixed
+
+- The `master.json` file is now created before the server does anything else, thus making a fresh install of Editor functional again.
+
 ## v1.5.6 - Fixed automatic updater
 
 ### Fixed

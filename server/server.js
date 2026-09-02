@@ -3,8 +3,6 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const serverMaster = require("./serverMaster");
-const logger = require("./logger");
 
 // Git for JS
 const gitJS = require("simple-git");
@@ -23,6 +21,50 @@ const imageFolderPath = path.join(dataFolderPath, "images");
 const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
 const masterFilePath = path.join(dataFolderPath, "master.json");
 
+const userDataFolders = [
+  { name: "Logs", path: logsFolderPath },
+  { name: "Data", path: dataFolderPath },
+  { name: "Autosaves", path: autosavesFolderPath },
+  { name: "Notebooks", path: notebooksFolderPath },
+  { name: "Image", path: imageFolderPath },
+  { name: "Attachments", path: attachmentsFolderPath },
+];
+
+// Every property which should be in the masterfile.
+const allProperties = {
+  unsavedFiles: [],
+  autosaveInterval: 10,
+  helpTextHoverTime: 1.5,
+  confirmSave: true,
+  collapsedFolders: [],
+  updateCollapsedFolders: 15,
+  sliceIndex: 20,
+  maxCharacterLength: 30,
+  warningLogs: true,
+  detailLogs: false,
+  successLogs: true,
+  saveLogs: false,
+  confirmExport: false,
+  version: "v1.5.6",
+  deniedUpdate: false,
+};
+
+// Creates any missing data folders.
+for (let i = 0; i < userDataFolders.length; i++) {
+  if (!fs.existsSync(userDataFolders[i].path)) {
+    fs.mkdirSync(userDataFolders[i].path);
+  }
+}
+
+// Masterfile to store config across sessions
+if (!fs.existsSync(masterFilePath)) {
+  const masterFileContent = `[${JSON.stringify(allProperties)}]`;
+  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+}
+
+const serverMaster = require("./serverMaster");
+const logger = require("./logger");
+
 // Server routes
 const documentsRoute = require("./routes/documents");
 const exportRoute = require("./routes/export");
@@ -35,34 +77,6 @@ app.use(documentsRoute);
 app.use(exportRoute);
 app.use(autosaveRoute);
 app.use(settingsRoute);
-
-const userDataFolders = [
-  { name: "Logs", path: logsFolderPath },
-  { name: "Data", path: dataFolderPath },
-  { name: "Autosaves", path: autosavesFolderPath },
-  { name: "Notebooks", path: notebooksFolderPath },
-  { name: "Image", path: imageFolderPath },
-  { name: "Attachments", path: attachmentsFolderPath },
-];
-
-// Creates any missing data folders.
-let foldersCreated = false;
-for (let i = 0; i < userDataFolders.length; i++) {
-  if (!fs.existsSync(userDataFolders[i].path)) {
-    fs.mkdirSync(userDataFolders[i].path);
-    logger.warn(
-      { "missing folder": userDataFolders[i].name },
-      "Created missing folder",
-    );
-    foldersCreated = true;
-  }
-}
-
-if (foldersCreated) {
-  logger.info(
-    "This is standard if you've freshly cloned the Repository or updated to a newer version, as the data folder is ignored by git.",
-  );
-}
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
@@ -87,7 +101,7 @@ async function deleteDeprecatedMasterProperties() {
   logger.info("Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
@@ -120,27 +134,9 @@ async function addMissingMasterProperties() {
   logger.info("Checking for missing master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
-  // Every property which should be in the masterfile.
-  const allProperties = {
-    unsavedFiles: [],
-    autosaveInterval: 10,
-    helpTextHoverTime: 1.5,
-    confirmSave: true,
-    collapsedFolders: [],
-    updateCollapsedFolders: 15,
-    sliceIndex: 20,
-    maxCharacterLength: 30,
-    warningLogs: true,
-    detailLogs: false,
-    successLogs: true,
-    saveLogs: false,
-    confirmExport: false,
-    version: "v1.5.6",
-    deniedUpdate: false,
-  };
 
   // Adds all the missing properties
   for (const key in allProperties) {
@@ -161,17 +157,6 @@ async function addMissingMasterProperties() {
   }
 }
 
-// Masterfile to store config across sessions
-if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[{}]
-`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
-  logger.warn("Created missing master.json file.");
-  logger.info(
-    "This is standard if you've freshly cloned the Repository, as the data folder is ignored by git.",
-  );
-}
-
 // Checks for deprecated and missing masterfile properties.
 deleteDeprecatedMasterProperties();
 addMissingMasterProperties();
@@ -182,7 +167,7 @@ app.get("/api/getMaster", async (req, res) => {
     logger.info("Recived master.json get request.");
   }
   try {
-    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
     if (serverMaster.successLogs) {
@@ -201,7 +186,7 @@ app.put("/api/updateMaster", async (req, res) => {
   }
 
   try {
-    await fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
     if (serverMaster.successLogs) {
       logger.info("Updated master.json.");
       if (serverMaster.detailLogs) {
@@ -228,14 +213,14 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
   try {
     // Gets master data
-    const rawMasterFile = await fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
 
     // Updates given property
     masterFile[0][property] = newValue;
 
     // Updates the master.
-    await fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
     if (serverMaster.successLogs) {
       logger.info({ Property: property }, "Updated master.json property.");
     }
