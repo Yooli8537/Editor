@@ -5,11 +5,12 @@
 ### Added
 
 - Universal server-side error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Unfinished "Developer" section in settings.
 
 ### Fixed
 
 - Deleted folders are removed from the collapsedFolders array ([Issue #59](https://github.com/Yooli8537/Editor/issues/59)).
-- **UNCONFIRMED** Running `npm run dev` should no longer have a chance of annihalating the network with 10000 requests from the Frontend to the still starting Backend ([Issue #67](https://github.com/Yooli8537/Editor/issues/67)).
+- Running `npm run dev` should no longer have a chance of annihalating the network with 10000 requests from the Frontend to the still starting Backend ([Issue #67](https://github.com/Yooli8537/Editor/issues/67)).
 - A modal will now always be destroyed when clicking enter, no matter how often you press another key ([Issue #73](https://github.com/Yooli8537/Editor/issues/73)).
 - Renaming only executes if all child documents aren't open ([Issue #12](https://github.com/Yooli8537/Editor/issues/12)).
 - Improved the app load speed.
