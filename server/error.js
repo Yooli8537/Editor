@@ -23,9 +23,9 @@ function createErrorJSON(operation, errorMsg, reqestValues, detailError) {
 
   // Doesn't give back detailed error because it isn't necessary.
   return {
-    Operation: operation,
-    "Error Message": errorMsg,
-    "Request values": reqestValues,
+    operation: operation,
+    errorMsg: errorMsg,
+    requestValues: reqestValues,
   };
 }
 
