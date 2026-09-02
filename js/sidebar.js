@@ -317,10 +317,9 @@ function createFolderActions(path, previousEntry) {
         if (response.ok) {
           rmState("collapsedFolders", previousEntry + path);
           buildSidebar();
-        } else if (response.status === 404) {
-          createErrorModal("Couldn't find Folder to delete.");
         } else {
-          createErrorModal("Something went wrong.");
+          const responseJSON = await response.json();
+          handleServerErrors(responseJSON);
         }
       },
     );
