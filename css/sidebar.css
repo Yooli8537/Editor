@@ -3,7 +3,8 @@
   width: 19vw;
   height: 95vh;
   margin-right: 1vw;
-  border: 5px solid #41474F;
+  border: 3px solid #000000;
+  border-radius: 8px;
   overflow-y: auto;
   padding-bottom: 5px;
 }
@@ -30,7 +31,7 @@
 .searchField {
   display: flex;
   outline: none;
-  border: 1px solid #000;
+  border: 2px solid #000000;
   border-radius: 5px;
   width: 90%;
 }
@@ -48,7 +49,6 @@
   height: 100%;
   justify-content: space-between;
   cursor: pointer;
-  color: #000;
   text-decoration: none;
 }
 
@@ -84,7 +84,7 @@
 .creationDropdown {
   background-color: #eeeeee;
   padding: 2px;
-  border: 1px solid #000;
+  border: 2px solid #000000;
   border-radius: 5px;
 }
 
@@ -97,5 +97,5 @@
 
 /* File which is currently slected is highlighted on the sidebar. */
 .selected {
-  background-color: #62f7a5;
+  background-color: #84ecb3;
 }

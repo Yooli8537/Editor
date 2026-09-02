@@ -1,8 +1,0 @@
-Hover: #3cb372cc
-Selected but no hover: #84ecb3
-
-Hard Outline: #000000
-Soft Outline: #bababa
-
-blank background: #ffffff
-background: #eeeeee

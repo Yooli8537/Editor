@@ -7,6 +7,10 @@
 - Universal server-side error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
 - Unfinished "Developer" section in settings.
 
+### Changed
+
+- Standardized colors & outlines across the app (honestly barely noticeable).
+
 ### Fixed
 
 - Deleted folders are removed from the collapsedFolders array ([Issue #59](https://github.com/Yooli8537/Editor/issues/59)).

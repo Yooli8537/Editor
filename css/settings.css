@@ -41,9 +41,9 @@ hr.separator {
   max-width: 350px;
   height: inherit;
   border: 3px solid #000000;
+  border-radius: 8px;
   overflow-y: auto;
   padding-bottom: 5px;
-  border-radius: 10px;
 }
 
 /* Page where all the Settings are shown */
@@ -51,9 +51,9 @@ hr.separator {
   width: 80vw;
   height: inherit;
   border: 3px solid #000000;
+  border-radius: 8px;
   overflow-y: auto;
   padding-bottom: 5px;
-  border-radius: 10px;
   overflow-y: auto;
 }
 
@@ -67,7 +67,7 @@ hr.separator {
   margin-top: 2%;
   background-color: #eeeeee;
   border: 3px solid #000000;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .tabIcon {
@@ -147,6 +147,7 @@ hr.separator {
   color: #000000;
   text-decoration: none;
 }
+
 /* Settings which have an icon in their title. */
 .settingIcon {
   display: flex;

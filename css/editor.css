@@ -6,13 +6,13 @@
 
 /* Wraps around the toolbar */
 #wrapper {
-  border: 3px solid #000;
+  border: 3px solid #000000;
   border-radius: 8px;
 }
 
 /* Editor toolbar */
 #toolbar {
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid #000000;
   padding: 3px;
   display: flex;
   justify-content: space-between;
@@ -38,10 +38,10 @@
 .renameInput {
   border: none;
   outline: none;
-  background-color: #fff;
+  background-color: #ffffff;
   font-size: x-large;
   font-weight: bold;
-  color: #000;
+  color: #000000;
 }
 
 /* Buttons without a border. */
@@ -85,7 +85,7 @@
 /* Submenu & helptext styling. */
 .submenu,
 .helpText {
-  border: 2px solid #000;
+  border: 2px solid #000000;
   border-radius: 5px;
   background-color: #eeeeee;
   padding: 2px;
@@ -118,7 +118,7 @@
   z-index: 10;
   width: 5px;
   height: 5px;
-  border: 2px solid rgb(88, 88, 88);
+  border: 2px solid #bababa;
   border-radius: 50%;
 }
 
