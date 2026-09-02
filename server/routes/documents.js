@@ -162,25 +162,27 @@ router.post("/api/documents/newNotebook", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     if (err.code === "EEXIST") {
-      res.json(
-        error(
-          409,
-          "Notebook create",
-          "A notebook with that name already exists.",
-          { Name: name },
-          err,
-        ),
-      );
+      res
+        .status(409)
+        .json(
+          error(
+            "Notebook create",
+            "A notebook with that name already exists.",
+            { Name: name },
+            err,
+          ),
+        );
     } else {
-      res.json(
-        error(
-          500,
-          "Notebook create",
-          "Failed to create new notebook.",
-          { Name: name },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(
+          error(
+            "Notebook create",
+            "Failed to create new notebook.",
+            { Name: name },
+            err,
+          ),
+        );
     }
   }
 });
@@ -218,27 +220,29 @@ router.post("/api/documents/newFile", async (req, res) => {
       // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
-        res.json(
+        res
+          .status(409)
+          .json(
+            error(
+              "File create",
+              "A file with that name already exists within the specified directory.",
+              { Name: name, Path: folderPath },
+              null,
+            ),
+          );
+      }
+      // Checking for the required values to create the file.
+    } else {
+      res
+        .status(404)
+        .json(
           error(
-            409,
             "File create",
-            "A file with that name already exists within the specified directory.",
+            "No path or name found to create file.",
             { Name: name, Path: folderPath },
             null,
           ),
         );
-      }
-      // Checking for the required values to create the file.
-    } else {
-      res.json(
-        error(
-          404,
-          "File create",
-          "No path or name found to create file.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
     }
   } catch (err) {
     // If the error is a "not found" error, the file is created.
@@ -249,15 +253,16 @@ router.post("/api/documents/newFile", async (req, res) => {
       }
       res.json({ success: true });
     } else {
-      res.json(
-        error(
-          500,
-          "File create",
-          "Failed to create file.",
-          { Name: name, Path: folderPath },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(
+          error(
+            "File create",
+            "Failed to create file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     }
   }
 });
@@ -280,31 +285,32 @@ router.post("/api/documents/newFolder", async (req, res) => {
       }
       res.json({ success: true });
     } else {
-      res.json(
-        error(
-          404,
-          "Folder create",
-          "No path or name found.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "Folder create",
+            "No path or name found.",
+            { Name: name, Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
     if (err.code === "EEXIST") {
-      res.json(
-        error(
-          409,
-          "Folder create",
-          "A folder with that name already exists within the specified directory",
-          { Name: name, Path: folderPath },
-          err,
-        ),
-      );
+      res
+        .status(409)
+        .json(
+          error(
+            "Folder create",
+            "A folder with that name already exists within the specified directory",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     } else {
-      res.json(
+      res.status(500).json(
         error(
-          500,
           "Folder create",
           "Failed to create folder.",
           {
@@ -338,26 +344,28 @@ router.delete("/api/documents/deletePath", async (req, res) => {
       }
       res.send("Path successfully deleted.").json({ success: true });
     } else {
-      res.json(
-        error(
-          404,
-          "Path delete (folder / file)",
-          "Failed to find path to be deleted.",
-          { Path: folderPath },
-          null,
-        ),
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "Path delete (folder / file)",
+            "Failed to find path to be deleted.",
+            { Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
-    res.json(
-      error(
-        500,
-        "Path delete (folder / file)",
-        "Failed to delete path.",
-        { Path: folderPath },
-        err,
-      ),
-    );
+    res
+      .status(500)
+      .json(
+        error(
+          "Path delete (folder / file)",
+          "Failed to delete path.",
+          { Path: folderPath },
+          err,
+        ),
+      );
   }
 });
 
@@ -380,25 +388,27 @@ router.get("/api/documents/getFile", async (req, res) => {
     res.send(JSON.parse(file));
   } catch (err) {
     if (err.code === "ENOENT") {
-      res.json(
-        error(
-          404,
-          "File get",
-          "Failed to find file.",
-          { Name: name, Path: folderPath },
-          err,
-        ),
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "File get",
+            "Failed to find file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     } else {
-      res.json(
-        error(
-          500,
-          "File get",
-          "Failed to get file.",
-          { Name: name, Path: folderPath },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(
+          error(
+            "File get",
+            "Failed to get file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     }
   }
 });
@@ -432,15 +442,16 @@ router.post("/api/documents/renameFile", async (req, res) => {
     // Checks for a missing newName first.
     // If the operation goes through even though the name is empty, there will be issues.
     if (!newName || newName == "") {
-      res.json(
-        error(
-          404,
-          "File rename",
-          "Failed to find new file name.",
-          { "Old name": name, "New name": newName, Path: folderPath },
-          null,
-        ),
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "File rename",
+            "Failed to find new file name.",
+            { "Old name": name, "New name": newName, Path: folderPath },
+            null,
+          ),
+        );
     } else if (newName && folderPath && name) {
       if (serverMaster.detailLogs) {
         logger.info("Renaming file...");
@@ -469,26 +480,28 @@ router.post("/api/documents/renameFile", async (req, res) => {
       }
       res.json({ success: true });
     } else {
-      res.json(
-        error(
-          404,
-          "File rename",
-          "Failed to find path or old file name.",
-          { "Old name": name, "New name": newName, Path: folderPath },
-          null,
-        ),
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "File rename",
+            "Failed to find path or old file name.",
+            { "Old name": name, "New name": newName, Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
-    res.json(
-      error(
-        500,
-        "File rename",
-        "Failed to rename file.",
-        { "Old name": name, "New name": newName, Path: folderPath },
-        err,
-      ),
-    );
+    res
+      .status(500)
+      .json(
+        error(
+          "File rename",
+          "Failed to rename file.",
+          { "Old name": name, "New name": newName, Path: folderPath },
+          err,
+        ),
+      );
   }
 });
 
@@ -559,13 +572,16 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   ) {
     try {
       if (!newName || newName == "") {
-        res.json(
-          404,
-          "Folder rename",
-          "No new name found to rename folder.",
-          { "Old name": name, "New name": newName, Path: folderPath },
-          null,
-        );
+        res
+          .status(404)
+          .json(
+            error(
+              "Folder rename",
+              "No new name found to rename folder.",
+              { "Old name": name, "New name": newName, Path: folderPath },
+              null,
+            ),
+          );
       } else if (newName && folderPath && name) {
         if (serverMaster.detailLogs) {
           logger.info("Renaming folder...");
@@ -596,9 +612,8 @@ router.post("/api/documents/renameFolder", async (req, res) => {
         res.json({ success: true });
         return;
       } else if (!folderPath || !name) {
-        res.json(
+        res.status(404).json(
           error(
-            404,
             "Rename folder",
             "No path or name found to rename folder.",
             {
@@ -611,9 +626,8 @@ router.post("/api/documents/renameFolder", async (req, res) => {
         );
       }
     } catch (err) {
-      res.json(
+      res.status(500).json(
         error(
-          500,
           "Rename folder",
           "Something went wrong.",
           {
@@ -628,7 +642,6 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   } else {
     res.status(409).json(
       error(
-        409,
         "Rename folder",
         "A file within the folder is open.",
         {
