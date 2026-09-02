@@ -12,6 +12,7 @@
 - **UNCONFIRMED** Running `npm run dev` should no longer have a chance of annihalating the network with 10000 requests from the Frontend to the still starting Backend ([Issue #67](https://github.com/Yooli8537/Editor/issues/67)).
 - A modal will now always be destroyed when clicking enter, no matter how often you press another key ([Issue #73](https://github.com/Yooli8537/Editor/issues/73)).
 - Renaming only executes if all child documents aren't open ([Issue #12](https://github.com/Yooli8537/Editor/issues/12)).
+- Improved the app load speed.
 
 ## v1.5.6 - Fixed automatic updater
 
