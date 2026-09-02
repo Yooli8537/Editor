@@ -522,20 +522,28 @@ function childDocumentIsOpen(
       // Compares the file path to the currently open document.
       // Returning true will cancel the renaming operation.
       if (pathToFile === currentlyOpenDocument) {
+        logger.info(true);
         return true;
       }
     } else {
+      logger.info("FOLDER");
       // Checks any child folders of the folder being renamed.
       const childPath = path.join(
         directoryFolderPath,
         directoryContents[i].name,
       );
 
-      childDocumentIsOpen(
-        directoryContents[i],
-        childPath,
-        currentlyOpenDocument,
-      );
+      logger.info({ childPath: childPath });
+
+      if (
+        childDocumentIsOpen(
+          directoryContents[i].children,
+          childPath,
+          currentlyOpenDocument,
+        )
+      ) {
+        return true;
+      }
     }
   }
   return false;
@@ -543,7 +551,12 @@ function childDocumentIsOpen(
 
 // Renames a folder
 router.post("/api/documents/renameFolder", async (req, res) => {
-  const { newName, folderPath, name, currentlyOpenDocument } = req.body;
+  const { newName, folderPath, name } = req.body;
+  let { currentlyOpenDocument } = req.body;
+
+  if (!currentlyOpenDocument) {
+    currentlyOpenDocument = "";
+  }
 
   if (serverMaster.detailLogs) {
     logger.info(

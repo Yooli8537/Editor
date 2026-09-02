@@ -4,6 +4,7 @@ import {
   createPromptModal,
   createErrorModal,
   createInfoModal,
+  handleServerErrors,
 } from "./utils";
 import { closeEditor, loadAutosave } from "./editor";
 import {
@@ -285,10 +286,9 @@ function createFolderActions(path, previousEntry) {
 
         if (response.ok) {
           buildSidebar();
-        } else if (response.status === 404) {
-          createErrorModal("Couldn't find Folder to be renamed.");
         } else {
-          createErrorModal("Something went wrong.");
+          const responseJSON = await response.json();
+          handleServerErrors(responseJSON);
         }
       },
     );
