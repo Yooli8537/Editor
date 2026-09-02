@@ -19,6 +19,12 @@
 - Renaming only executes if all child documents aren't open ([Issue #12](https://github.com/Yooli8537/Editor/issues/12)).
 - Improved the app load speed.
 
+## v1.5.7 - Fixed fresh installs
+
+### Fixed
+
+- The `master.json` file is now created before the server does anything else, thus making a fresh install of Editor functional again.
+
 ## v1.5.6 - Fixed automatic updater
 
 ### Fixed
