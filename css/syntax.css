@@ -58,7 +58,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 .hljs-literal,
 .hljs-keyword,
 .hljs-number {
-  color: rgb(141, 145, 255)
+  color: #8D91FF
 }
 .hljs-comment,
 .hljs-quote,
@@ -76,5 +76,5 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 
 .hljs-params,
 .hljs-meta {
-  color: rgb(255, 145, 1);
+  color: #FF9101;
 }
