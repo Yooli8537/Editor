@@ -424,6 +424,9 @@ export function handleServerErrors(responseJSON) {
   // Adds error message directly to modal.
   modal.classList.add("errorMsg");
 
+  let errorHeading = document.createElement("h3");
+  errorHeading.textContent = "Error";
+
   let titleParagraph = document.createElement("p");
   titleParagraph.textContent = `${responseJSON.operation}: ${responseJSON.errorMsg}`;
 
@@ -463,6 +466,7 @@ export function handleServerErrors(responseJSON) {
     { signal: controller.signal },
   );
 
+  modal.appendChild(errorHeading);
   modal.appendChild(titleParagraph);
   if (hasValues) {
     modal.appendChild(valuesDiv);
