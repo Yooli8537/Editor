@@ -353,15 +353,16 @@ export async function getMaster() {
     method: "GET",
   });
 
+  const masterData = await rawMasterFile.json();
+
   if (rawMasterFile.ok) {
-    const masterData = await rawMasterFile.json();
     // Adds all the masterfile data into state.js
     for (const key in masterData) {
       setState(key, masterData[key]);
     }
     return true;
   } else {
-    createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+    handleServerErrors(masterData, masterData.status);
     return false;
   }
 }
@@ -401,6 +402,9 @@ export async function checkForUpdate(manualCheck) {
               setState("version", release.tag_name);
               sendState("deniedVersion");
               sendState("version");
+            } else {
+              const responseJSON = await response.json();
+              handleServerErrors(responseJSON, response.status);
             }
           },
         );

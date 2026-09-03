@@ -1,4 +1,6 @@
 // Basically RAM for the app.
+import { handleServerErrors } from "./utils";
+
 let state = {
   currentDocument: null,
   editorIsSaved: true,
@@ -57,6 +59,8 @@ export async function sendState(parameter) {
   if (masterUpdate.ok) {
     return true;
   } else {
+    const masterUpdateJSON = await masterUpdate.json();
+    handleServerErrors(masterUpdateJSON, masterUpdate.status);
     return false;
   }
 }

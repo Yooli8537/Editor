@@ -1,6 +1,11 @@
 // Settings Menu
 // Imports
-import { checkForUpdate, createErrorModal, createInfoModal } from "./utils";
+import {
+  checkForUpdate,
+  createErrorModal,
+  createInfoModal,
+  handleServerErrors,
+} from "./utils";
 
 // Save button
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
@@ -90,7 +95,8 @@ async function getMasterfile() {
     master = masterData;
     return true;
   } else {
-    createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+    const rawMasterFileJSON = await rawMasterFile.json();
+    handleServerErrors(rawMasterFileJSON, rawMasterFile.status);
     return false;
   }
 }
@@ -110,7 +116,8 @@ async function updateMasterfile(updateData) {
       "Successfully updated settings. Reload the Editor to apply.",
     );
   } else {
-    createErrorModal(`Failed to update settings. ${masterUpdate.status}`);
+    const masterUpdateJSON = await masterUpdate.json();
+    handleServerErrors(masterUpdateJSON, masterUpdate.status);
   }
 }
 
@@ -204,6 +211,9 @@ clearImagesButton.addEventListener("click", async (e) => {
 
   if (clear.ok) {
     createInfoModal("Successfully cleared unused images from server storage.");
+  } else {
+    const clearJSON = await clear.json();
+    handleServerErrors(clearJSON, clear.status);
   }
 });
 
@@ -215,6 +225,9 @@ clearLogsButton.addEventListener("click", async (e) => {
 
   if (clear.ok) {
     createInfoModal("Successfully cleared logs from server storage.");
+  } else {
+    const clearJSON = await clear.json();
+    handleServerErrors(clearJSON, clear.status);
   }
 });
 

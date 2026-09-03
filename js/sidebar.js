@@ -57,6 +57,9 @@ async function doSearch(input) {
       wrapper.appendChild(file);
       folderStructure.appendChild(wrapper);
     });
+  } else {
+    const searchJSON = await search.json();
+    handleServerErrors(searchJSON, search.status);
   }
 }
 
@@ -177,10 +180,9 @@ function createFile(entry, previousEntry) {
       const fileData = await response.json(); // Data from GET request
       loadAutosave(fileData, entry.name, previousEntry); // Checks for an autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
-    } else if (response.status === 404) {
-      createErrorModal("Couldn't find the File you were looking for.");
     } else {
-      createErrorModal("Something went wrong.");
+      const responseJSON = await response.json();
+      handleServerErrors(responseJSON, response.status);
     }
     checkForSelectedFile(previousEntry + entry.name, file);
   });
@@ -362,10 +364,9 @@ function createFileActions(path, previousEntry) {
             closeEditor();
           }
           buildSidebar();
-        } else if (response.status === 404) {
-          createErrorModal("Couldn't find File to be deleted.");
         } else {
-          createErrorModal("Something went wrong.");
+          const responseJSON = await response.json();
+          handleServerErrors(responseJSON, response.status);
         }
       },
     );
@@ -446,7 +447,11 @@ export async function buildSidebar() {
   const response = await fetch("/api/documents", {
     method: "GET",
   });
+
   const data = await response.json();
+  if (!response.ok) {
+    handleServerErrors(data, response.status);
+  }
 
   // Clearing Sidebar
   folderStructure.innerHTML = "";
@@ -487,12 +492,9 @@ function createCreationDropdown(parent, path, previousEntry) {
       });
       if (response.ok) {
         buildSidebar();
-      } else if (response.status === 409) {
-        createErrorModal(
-          "A file with that name already exists in the current directory!",
-        );
       } else {
-        createErrorModal("Something went wrong.");
+        const responseJSON = await response.json();
+        handleServerErrors(responseJSON, response.status);
       }
     });
   });
@@ -513,12 +515,9 @@ function createCreationDropdown(parent, path, previousEntry) {
       });
       if (response.ok) {
         buildSidebar();
-      } else if (response.status === 409) {
-        createErrorModal(
-          "A Folder with that name already exists in the current Directory!",
-        );
       } else {
-        createErrorModal("Something went wrong.");
+        const responseJSON = await response.json();
+        handleServerErrors(responseJSON, response.status);
       }
     });
   });
@@ -547,10 +546,9 @@ rootButton.addEventListener("click", async (e) => {
 
     if (response.ok) {
       buildSidebar();
-    } else if (response.status === 409) {
-      createErrorModal("A Notebook with that name already exists!");
     } else {
-      createErrorModal("Something went wrong.");
+      const responseJSON = await response.json();
+      handleServerErrors(responseJSON, response.status);
     }
   });
 });
