@@ -46,7 +46,7 @@ const allProperties = {
   saveLogs: false,
   confirmExport: false,
   version: "v1.5.7",
-  deniedUpdate: false,
+  deniedVersion: null,
 };
 
 // Creates any missing data folders.
@@ -107,7 +107,7 @@ async function deleteDeprecatedMasterProperties() {
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
-  const deprecatedProperties = ["usedImages"];
+  const deprecatedProperties = ["usedImages", "applyAppUpdate"];
 
   // Deletes deprecated properties
   for (let i = 0; i < deprecatedProperties.length; i++) {

@@ -387,8 +387,8 @@ export async function checkForUpdate(manualCheck) {
             createInfoModal(
               "You can update the app at any time in the settings menu.",
             );
-            setState("deniedUpdate", true);
-            sendState("deniedUpdate");
+            setState("deniedVersion", release.tag_name);
+            sendState("deniedVersion");
           },
           async () => {
             const response = await fetch("/api/applyAppUpdate", {
@@ -397,9 +397,9 @@ export async function checkForUpdate(manualCheck) {
 
             if (response.ok) {
               createInfoModal("Restart the app to apply update.");
-              setState("deniedUpdate", false);
+              setState("deniedVersion", null);
               setState("version", release.tag_name);
-              sendState("deniedUpdate");
+              sendState("deniedVersion");
               sendState("version");
             }
           },
