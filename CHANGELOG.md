@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## v1.6.0 - Largely improved error handling & bug fixes
 
 ### Added
 
-- Universal server-side error handling + setting to toggle ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Universal Server-side error handlingdetails ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Setting to toggle detailed errors.
 - Unfinished "Developer" section in settings.
+- Universal Client-side error handling ([Issue #77](https://github.com/Yooli8537/Editor/issues/77)).
 
 ### Changed
 

@@ -45,7 +45,7 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.5.7",
+  version: "v1.6.0",
   deniedVersion: null,
 };
 
