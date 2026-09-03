@@ -20,6 +20,7 @@ import {
   getMaster,
   removeSubmenus,
   checkForUpdate,
+  handleServerErrors,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import {
@@ -27,7 +28,6 @@ import {
   checkState,
   getState,
   rmState,
-  sendState,
   setState,
 } from "./state";
 
@@ -130,8 +130,13 @@ async function uploadImage(file) {
     body: file,
   });
 
-  const { url } = await response.json();
-  return url;
+  if (response.ok) {
+    const { url } = await response.json();
+    return url;
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
+  }
 }
 
 // Warns before reloading / closing a Tab
@@ -180,7 +185,8 @@ export async function loadAutosave(fileData, document, path) {
           setState("editorIsSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
         } else {
-          createErrorModal(`Something went wrong. ${autosave.status}`);
+          const autosaveJSON = await autosave.json();
+          handleServerErrors(autosaveJSON, autosave.status);
         }
       },
     );
@@ -271,14 +277,9 @@ async function renameFile(newName, div) {
     buildSidebar();
     editTitleButton.style.display = "flex";
     history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
-  } else if (response.status === 409) {
-    createErrorModal(
-      "A File with that name already exists within the same Directory!",
-    );
-  } else if (response.status === 404) {
-    createErrorModal("File wasn't found.");
   } else {
-    createErrorModal("Something went wrong.");
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
   }
 }
 
@@ -815,7 +816,8 @@ async function handleExport(exportDocument) {
     downloadElement.click();
     URL.revokeObjectURL(downloadURL); // Deletes download Element
   } else {
-    createErrorModal("Something went wrong.");
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
   }
 }
 
@@ -899,12 +901,9 @@ async function pushSaveData() {
       removeAutosave();
     }
     updateSaveIcons();
-  } else if (response.status === 404) {
-    createErrorModal("Couldn't find File to save.");
-  } else if (response.status === 413) {
-    createErrorModal("Save File too large.");
   } else {
-    createErrorModal("Something went wrong.");
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
   }
 }
 
@@ -987,7 +986,7 @@ async function initAutosave(autosaveInterval) {
       if (!checkState("unsavedFiles", currentEntry)) {
         addState("unsavedFiles", currentEntry);
       }
-      await fetch("/api/autosave", {
+      const createAutosave = await fetch("/api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -996,6 +995,11 @@ async function initAutosave(autosaveInterval) {
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
+
+      if (!createAutosave.ok) {
+        const createAutosaveJSON = await createAutosave.json();
+        handleServerErrors(createAutosaveJSON, createAutosave.status);
+      }
     }
   }, autosaveInterval);
 }
@@ -1013,6 +1017,9 @@ async function removeAutosave() {
   if (response.ok) {
     // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
     rmState("unsavedFiles", currentEntry);
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
   }
 }
 
@@ -1024,6 +1031,29 @@ export function closeEditor() {
   history.pushState(null, "", "/");
   document.title = "Editor";
   setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+}
+
+// Periodically pings the backend and starts the app properly if an answer is recieved.
+let ping = null;
+async function pingBackend() {
+  const response = await fetch("/api/", {
+    method: "GET",
+  });
+
+  if (response.ok) {
+    clearInterval(ping);
+    onFirstStart();
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
+  }
+}
+
+// Initalizes the ping.
+function initPing() {
+  ping = setInterval(() => {
+    pingBackend();
+  }, 250);
 }
 
 // Opens Document from URL if one is present.
@@ -1052,10 +1082,9 @@ export async function onFirstStart() {
       const fileData = await response.json();
       setState("currentDocument", path + document);
       loadAutosave(fileData, document, path);
-    } else if (response.status === 404) {
-      createErrorModal("Couldn't find the File you were looking for.");
     } else {
-      createErrorModal(`${response.status}; Something went wrong.`);
+      const responseJSON = await response.json();
+      handleServerErrors(responseJSON, response.status);
     }
   }
   buildSidebar();
@@ -1063,4 +1092,4 @@ export async function onFirstStart() {
   checkForUpdate(false);
 }
 
-onFirstStart();
+initPing();

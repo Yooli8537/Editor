@@ -45,6 +45,8 @@ export function createConfirmModal(
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   const text = document.createElement("p");
   text.textContent = prompt;
@@ -75,9 +77,10 @@ export function createConfirmModal(
         e.preventDefault();
         onSubmit();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(cancelButton);
@@ -158,6 +161,8 @@ export function createErrorModal(errorMsg) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   // Adds error message directly to modal.
   modal.classList.add("errorMsg");
@@ -178,9 +183,10 @@ export function createErrorModal(errorMsg) {
       if (e.key === "Enter") {
         e.preventDefault();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(okButton);
@@ -194,6 +200,8 @@ export function createInfoModal(msg) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
 
   // Adds message directly to modal.
   modal.textContent = msg;
@@ -214,9 +222,10 @@ export function createInfoModal(msg) {
       if (e.key === "Enter") {
         e.preventDefault();
         destroyModal();
+        controller.abort();
       }
     },
-    { once: true },
+    { signal: controller.signal },
   );
 
   modalButtons.appendChild(okButton);
@@ -344,15 +353,16 @@ export async function getMaster() {
     method: "GET",
   });
 
+  const masterData = await rawMasterFile.json();
+
   if (rawMasterFile.ok) {
-    const masterData = await rawMasterFile.json();
     // Adds all the masterfile data into state.js
     for (const key in masterData) {
       setState(key, masterData[key]);
     }
     return true;
   } else {
-    createErrorModal(`Couldn't get Master File. Error ${rawMasterFile.status}`);
+    handleServerErrors(masterData, masterData.status);
     return false;
   }
 }
@@ -378,8 +388,8 @@ export async function checkForUpdate(manualCheck) {
             createInfoModal(
               "You can update the app at any time in the settings menu.",
             );
-            setState("deniedUpdate", true);
-            sendState("deniedUpdate");
+            setState("deniedVersion", release.tag_name);
+            sendState("deniedVersion");
           },
           async () => {
             const response = await fetch("/api/applyAppUpdate", {
@@ -388,10 +398,13 @@ export async function checkForUpdate(manualCheck) {
 
             if (response.ok) {
               createInfoModal("Restart the app to apply update.");
-              setState("deniedUpdate", false);
+              setState("deniedVersion", null);
               setState("version", release.tag_name);
-              sendState("deniedUpdate");
+              sendState("deniedVersion");
               sendState("version");
+            } else {
+              const responseJSON = await response.json();
+              handleServerErrors(responseJSON, response.status);
             }
           },
         );
@@ -402,4 +415,77 @@ export async function checkForUpdate(manualCheck) {
       }
     }
   }
+}
+
+// Handles errors from server responses.
+export function handleServerErrors(responseJSON, errorStatus) {
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
+
+  // Adds error message directly to modal.
+  modal.classList.add("errorMsg");
+
+  let errorHeading = document.createElement("h3");
+  errorHeading.textContent = `Error ${errorStatus}`;
+
+  let titleParagraph = document.createElement("p");
+  titleParagraph.textContent = `${responseJSON.operation}: ${responseJSON.errorMsg}`;
+
+  const requestValues = responseJSON.requestValues;
+  let hasValues = false;
+  let valuesDiv;
+  if (!isObjectEmpty(requestValues)) {
+    hasValues = true;
+    valuesDiv = document.createElement("div");
+    console.log(requestValues);
+
+    for (const key in requestValues) {
+      const valueParagraph = document.createElement("p");
+      valueParagraph.textContent = `${key}: ${requestValues[key]}`;
+      valuesDiv.appendChild(valueParagraph);
+    }
+  }
+
+  // Confirm button
+  const okButton = document.createElement("div");
+  okButton.classList.add("modalTextButton");
+  okButton.textContent = "Ok";
+
+  okButton.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        destroyModal();
+        controller.abort();
+      }
+    },
+    { signal: controller.signal },
+  );
+
+  modal.appendChild(errorHeading);
+  modal.appendChild(titleParagraph);
+  if (hasValues) {
+    modal.appendChild(valuesDiv);
+  }
+  modalButtons.appendChild(okButton);
+  modal.appendChild(modalButtons);
+  document.body.appendChild(clickable);
+  document.body.appendChild(modal);
+}
+
+export function isObjectEmpty(object) {
+  for (const prop in object) {
+    if (Object.hasOwn(object, prop)) {
+      return false;
+    }
+  }
+  return true;
 }

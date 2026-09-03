@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.6.0 - Largely improved error handling & bug fixes
+
+### Added
+
+- Universal Server-side error handlingdetails ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Setting to toggle detailed errors.
+- Unfinished "Developer" section in settings.
+- Universal Client-side error handling ([Issue #77](https://github.com/Yooli8537/Editor/issues/77)).
+
+### Changed
+
+- Standardized colors & outlines across the app (honestly barely noticeable).
+
+### Fixed
+
+- Deleted folders are removed from the collapsedFolders array ([Issue #59](https://github.com/Yooli8537/Editor/issues/59)).
+- Running `npm run dev` should no longer have a chance of annihalating the network with 10000 requests from the Frontend to the still starting Backend ([Issue #67](https://github.com/Yooli8537/Editor/issues/67)).
+- A modal will now always be destroyed when clicking enter, no matter how often you press another key ([Issue #73](https://github.com/Yooli8537/Editor/issues/73)).
+- Renaming only executes if all child documents aren't open ([Issue #12](https://github.com/Yooli8537/Editor/issues/12)).
+- Improved the app load speed.
+
 ## v1.5.7 - Fixed fresh installs
 
 ### Fixed
@@ -11,6 +32,10 @@
 ### Fixed
 
 - Server-side git pull works properly and will apply an update without issues (unless there's local changes -_-).
+
+### Notes
+
+If you're wondering why I had to create multiple releases for this, it's because the code pulls from the latest release on the Main branch. So, in order to test it, I needed at least two releases with the updater implemented.
 
 ## v1.5.5 - Let's hope for the best
 

@@ -75,6 +75,16 @@ Response:
 { "success": true }
 ```
 
+### GET /api/applyAppUpdate
+
+Should probably be renamed, but either way it updates the app with the newest [GitHub release](https://github.com/Yooli8537/Editor/releases/latest).
+
+Response:
+
+``` JSON
+{ "success": true }
+```
+
 ## documents.js
 
 ### GET /api/documents
@@ -143,7 +153,7 @@ Creates a new notebook. The path of this request is automatically set to `~/Edit
 Headers:
 
 ``` JSON
-{ "Content-Type": "application/json" }`
+{ "Content-Type": "application/json" }
 ```
 
 Body:
@@ -165,7 +175,7 @@ Creates a new empty tiptap file.
 Headers:
 
 ``` JSON
-
+{ "Content-Type": "application/json" }
 ```
 
 Body:
@@ -174,6 +184,122 @@ Body:
 {
     "name": "Example Name",
     "folderPath": "Example/folder/path"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
+
+### POST /api/documents/newFolder
+
+Creates a new folder within a specified directory.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{
+    "name": "Example Name",
+    "folderPath": "Example/folder/path"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
+
+### DELETE /api/documents/deletePath
+
+Deletes a path, including both files and folders. The response is different from others because of reasons.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{ "folderPath": "Example/folder/path/optional.json" }
+```
+
+Response:
+
+``` Plaintext
+Path successfully deleted.
+```
+
+### GET /api/documents/getFile
+
+Gets the contents of a singular file.
+
+Query Parameters:
+
+``` Query Parameter
+folderPath="path/to/file/to/get/"
+name="hehehaha.json"
+```
+
+Response:
+
+``` JSON
+[{ "TipTap Document": "aka a full JSON file" }]
+```
+
+### POST /api/documents/renameFile
+
+Renames a file.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{
+    "newName": "The new name of the file",
+    "name": "The original name of the file",
+    "folderPath": "Example/folder/path/"
+}
+```
+
+Response:
+
+``` JSON
+{ "success": true }
+```
+
+### POST /api/documents/renameFolder
+
+Renames folders and notebooks.
+
+Headers:
+
+``` JSON
+{ "Content-Type": "application/json" }
+```
+
+Body:
+
+``` JSON
+{
+    "newName": "The new name of the folder",
+    "name": "The original name of the folder",
+    "folderPath": "This/is/empty/if/you're/renaming/a/notebook"
 }
 ```
 

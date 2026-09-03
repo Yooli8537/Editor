@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const serverMaster = require("../serverMaster");
 const logger = require("../logger");
+const error = require("../error");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
@@ -29,14 +30,20 @@ router.delete("/api/cleanImages", async (req, res) => {
   }
 
   // Removes all the unused images.
-  for (let i = 0; i < unusedImages.length; i++) {
-    fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
-  }
+  try {
+    for (let i = 0; i < unusedImages.length; i++) {
+      fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
+    }
 
-  if (serverMaster.successLogs && unusedImages.length !== 0) {
-    logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
+    if (serverMaster.successLogs && unusedImages.length !== 0) {
+      logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(error("Image clear", "Failed to clear images", {}, null));
   }
-  res.json({ success: true });
 });
 
 // Cleans logs from the server.
@@ -49,21 +56,32 @@ router.delete("/api/clearLogs", async (req, res) => {
   console.log(logFiles);
 
   // Removes logs, excluding the newest one if saving logs is enabled.
-  for (let i = 0; i < logFiles.length - 1; i++) {
-    fs.rmSync(path.join(logsFolderPath, logFiles[i]));
-  }
+  try {
+    for (let i = 0; i < logFiles.length - 1; i++) {
+      fs.rmSync(path.join(logsFolderPath, logFiles[i]));
+    }
 
-  if (serverMaster.successLogs) {
-    logger.info("Cleared logs.");
+    if (serverMaster.successLogs) {
+      logger.info("Cleared logs.");
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(error("Logs clear", "Failed to clear logs.", {}, null));
   }
-  res.json({ success: true });
 });
 
 // Searches for images in documents.
 async function findImages(dir) {
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  let entries;
+  try {
+    entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
+  } catch (err) {
+    error("Find images", "Failed to read directory.", { Directory: dir }, err);
+  }
 
   return Promise.all(
     entries.map(async (entry) => {
@@ -72,9 +90,18 @@ async function findImages(dir) {
       if (entry.isDirectory()) {
         return findImages(fullPath);
       } else {
-        const file = await fs.promises.readFile(fullPath, "utf-8");
-        const praseFile = JSON.parse(file);
-        return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+        try {
+          const file = await fs.promises.readFile(fullPath, "utf-8");
+          const praseFile = JSON.parse(file);
+          return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+        } catch (err) {
+          error(
+            "Find images",
+            "Failed to read file source.",
+            { Path: fullPath, "File Title": parseFile[0].title },
+            err,
+          );
+        }
       }
     }),
   );

@@ -14,7 +14,7 @@ hr.vertical {
   margin-left: 2px;
   margin-right: 2px;
   border: none;
-  background-color: #000;
+  background-color: #000000;
 }
 
 .hidden {
@@ -26,7 +26,7 @@ hr.vertical {
   cursor: pointer;
 }
 .hoverClass:hover {
-  background-color: #3cb372 !important;
+  background-color: #3cb372cc !important;
 }
 
 /* Makes the entire app's parent display a flex. */
@@ -57,9 +57,9 @@ hr.vertical {
   width: fit-content;
   height: fit-content;
   background-color: #eeeeee;
-  border: 2px solid #6d6d6d;
-  border-radius: 10px;
-  z-index: 11;
+  border: 3px solid #575757;
+  border-radius: 8px;
+  z-index: 17;
   padding: 10px;
 }
 
@@ -88,7 +88,7 @@ hr.vertical {
 .modalTextButton {
   cursor: pointer;
   vertical-align: middle;
-  border: 1px solid #000;
+  border: 1px solid #000000;
   border-radius: 3px;
   margin: 3px;
   padding: 2px;
@@ -107,10 +107,17 @@ hr.vertical {
 
 /* Highlighting buttons within modals. */
 .highlight {
-  background-color: #55c788cc;
+  background-color: #3cb372cc;
 }
 
 /* Error message within modals. */
 .errorMsg {
   color: #ff0000;
+}
+.errorMsg p {
+  margin: 0;
+}
+.errorMsg h3 {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }

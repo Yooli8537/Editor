@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const serverMaster = require("../serverMaster");
 const logger = require("../logger");
+const error = require("../error");
 
 // Data folder paths
 const rootPath = path.join(__dirname, "../../");
@@ -16,31 +17,40 @@ const imageFolderPath = path.join(dataFolderPath, "images");
 // Recursively reads the full data folder.
 async function readDirRecursive(dir) {
   // Reads the specified directory
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  try {
+    const entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
 
-  // Returns data
-  return Promise.all(
-    entries.map(async (entry) => {
-      const fullPath = path.join(dir, entry.name);
+    // Returns data
+    return Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(dir, entry.name);
 
-      // If a folder is detected, it's read through again.
-      if (entry.isDirectory()) {
-        return {
-          name: entry.name,
-          isFolder: true,
-          children: await readDirRecursive(fullPath),
-        };
-      } else {
-        // Otherwise, it just gives back the file name.
-        return {
-          name: entry.name,
-          isFolder: false,
-        };
-      }
-    }),
-  );
+        // If a folder is detected, it's read through again.
+        if (entry.isDirectory()) {
+          return {
+            name: entry.name,
+            isFolder: true,
+            children: await readDirRecursive(fullPath),
+          };
+        } else {
+          // Otherwise, it just gives back the file name.
+          return {
+            name: entry.name,
+            isFolder: false,
+          };
+        }
+      }),
+    );
+  } catch (err) {
+    error(
+      "Get directory recursively",
+      "Failed to read specified directory.",
+      { Directory: dir },
+      err,
+    );
+  }
 }
 
 // Searches through notebooks & folders (same difference lol)
@@ -48,31 +58,40 @@ async function searchNotebooks(dir, key, searchResults) {
   // Sets key to be lowercase to make search case-insensitive.
   lowerKey = key.toLowerCase();
   // Reads specified directory.
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  try {
+    const entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
 
-  // Returns results, just like with the full data folder reading.
-  return Promise.all(
-    entries.map(async (entry) => {
-      const fullPath = path.join(dir, entry.name);
+    // Returns results, just like with the full data folder reading.
+    return Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(dir, entry.name);
 
-      if (entry.isDirectory()) {
-        // Folders aren't included in search results, instead their contents are searched.
-        return searchNotebooks(fullPath, lowerKey, searchResults);
-      } else {
-        const file = await fs.promises.readFile(fullPath, "utf-8");
-        const praseFile = JSON.parse(file);
-        return findText(
-          praseFile[0].content,
-          lowerKey,
-          fullPath,
-          searchResults,
-          praseFile[0].title,
-        );
-      }
-    }),
-  );
+        if (entry.isDirectory()) {
+          // Folders aren't included in search results, instead their contents are searched.
+          return searchNotebooks(fullPath, lowerKey, searchResults);
+        } else {
+          const file = await fs.promises.readFile(fullPath, "utf-8");
+          const praseFile = JSON.parse(file);
+          return findText(
+            praseFile[0].content,
+            lowerKey,
+            fullPath,
+            searchResults,
+            praseFile[0].title,
+          );
+        }
+      }),
+    );
+  } catch (err) {
+    error(
+      "Search notebooks",
+      "Failed to read specified directory.",
+      { Directory: dir, Key: key },
+      err,
+    );
+  }
 }
 
 // Finds the search key within the text of files.
@@ -154,19 +173,34 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 
   try {
     // Makes the directory
-    await fs.mkdirSync(path.join(notebooksFolderPath, name));
+    fs.mkdirSync(path.join(notebooksFolderPath, name));
     if (serverMaster.successLogs) {
       logger.info({ Name: name }, "Created new notebook.");
     }
     res.json({ success: true });
   } catch (err) {
-    logger.error({ Error: err }, "Failed to create new notebook.");
     if (err.code === "EEXIST") {
       res
-        .json({ error: "A Notebook with that name already exists." })
-        .status(409);
+        .status(409)
+        .json(
+          error(
+            "Notebook create",
+            "A notebook with that name already exists.",
+            { Name: name },
+            err,
+          ),
+        );
     } else {
-      res.json({ Error: "Failed to create new notebook." }).status(500);
+      res
+        .status(500)
+        .json(
+          error(
+            "Notebook create",
+            "Failed to create new notebook.",
+            { Name: name },
+            err,
+          ),
+        );
     }
   }
 });
@@ -205,16 +239,28 @@ router.post("/api/documents/newFile", async (req, res) => {
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
         res
-          .json({ Error: "A File with that name already exists." })
-          .status(409);
+          .status(409)
+          .json(
+            error(
+              "File create",
+              "A file with that name already exists within the specified directory.",
+              { Name: name, Path: folderPath },
+              null,
+            ),
+          );
       }
       // Checking for the required values to create the file.
-    } else if (name) {
-      logger.error("No path found to create file.");
-    } else if (folderPath) {
-      logger.error("No name found to create file.");
     } else {
-      logger.error("No name or path found to create file.");
+      res
+        .status(404)
+        .json(
+          error(
+            "File create",
+            "No path or name found to create file.",
+            { Name: name, Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
     // If the error is a "not found" error, the file is created.
@@ -225,7 +271,16 @@ router.post("/api/documents/newFile", async (req, res) => {
       }
       res.json({ success: true });
     } else {
-      logger.error({ Error: err }, "Failed to create file.");
+      res
+        .status(500)
+        .json(
+          error(
+            "File create",
+            "Failed to create file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     }
   }
 });
@@ -242,36 +297,48 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      await fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
+      fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
       if (serverMaster.successLogs) {
         logger.info({ Name: name, Path: folderPath }, "Created folder.");
       }
       res.json({ success: true });
-    } else if (name) {
-      logger.error(
-        { Name: name, Path: folderPath },
-        "No path found to create folder.",
-      );
-    } else if (folderPath) {
-      logger.error(
-        { Name: name, Path: folderPath },
-        "No name found to create folder.",
-      );
     } else {
-      logger.error(
-        { Name: name, Path: folderPath },
-        "No name or path found to create folder.",
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "Folder create",
+            "No path or name found.",
+            { Name: name, Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
     if (err.code === "EEXIST") {
-      logger.error({ Error: err }, "Folder already exists.");
       res
-        .json({ error: "A folder with this name already exists." })
-        .status(409);
+        .status(409)
+        .json(
+          error(
+            "Folder create",
+            "A folder with that name already exists within the specified directory",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
+    } else {
+      res.status(500).json(
+        error(
+          "Folder create",
+          "Failed to create folder.",
+          {
+            Name: name,
+            Path: folderPath,
+          },
+          err,
+        ),
+      );
     }
-    logger.error({ Error: err }, "Failed to create folder.");
-    res.json({ error: "Failed to create folder." }).status(500);
   }
 });
 
@@ -295,12 +362,28 @@ router.delete("/api/documents/deletePath", async (req, res) => {
       }
       res.send("Path successfully deleted.").json({ success: true });
     } else {
-      logger.error({ Path: folderPath }, "Failed to find path to be deleted.");
-      res.json({ error: "Failed to find path to be deleted." }).status(404);
+      res
+        .status(404)
+        .json(
+          error(
+            "Path delete (folder / file)",
+            "Failed to find path to be deleted.",
+            { Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
-    logger.error({ Error: err }, "Failed to delete path.");
-    res.json({ error: "Failed to delete path." }).status(500);
+    res
+      .status(500)
+      .json(
+        error(
+          "Path delete (folder / file)",
+          "Failed to delete path.",
+          { Path: folderPath },
+          err,
+        ),
+      );
   }
 });
 
@@ -313,7 +396,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 
   try {
     const fullPath = path.join(notebooksFolderPath, folderPath, name);
-    const file = await fs.readFileSync(fullPath, "utf-8"); // Reads out file data
+    const file = fs.readFileSync(fullPath, "utf-8"); // Reads out file data
     if (serverMaster.successLogs) {
       logger.info("Got file.");
     }
@@ -323,17 +406,27 @@ router.get("/api/documents/getFile", async (req, res) => {
     res.send(JSON.parse(file));
   } catch (err) {
     if (err.code === "ENOENT") {
-      logger.error(
-        { Name: name, Path: folderPath, Error: err },
-        "Failed to find file.",
-      );
-      res.json({ error: "Failed to find file." }).status(404);
+      res
+        .status(404)
+        .json(
+          error(
+            "File get",
+            "Failed to find file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     } else {
-      logger.error(
-        { Name: name, Path: folderPath, Error: err },
-        "Failed to get file.",
-      );
-      res.json({ error: "Failed to get file." }).status(500);
+      res
+        .status(500)
+        .json(
+          error(
+            "File get",
+            "Failed to get file.",
+            { Name: name, Path: folderPath },
+            err,
+          ),
+        );
     }
   }
 });
@@ -367,10 +460,16 @@ router.post("/api/documents/renameFile", async (req, res) => {
     // Checks for a missing newName first.
     // If the operation goes through even though the name is empty, there will be issues.
     if (!newName || newName == "") {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No new file name found.",
-      );
+      res
+        .status(404)
+        .json(
+          error(
+            "File rename",
+            "Failed to find new file name.",
+            { "Old name": name, "New name": newName, Path: folderPath },
+            null,
+          ),
+        );
     } else if (newName && folderPath && name) {
       if (serverMaster.detailLogs) {
         logger.info("Renaming file...");
@@ -398,30 +497,85 @@ router.post("/api/documents/renameFile", async (req, res) => {
         );
       }
       res.json({ success: true });
-    } else if (!folderPath) {
-      logger.error("No path found to rename file.");
-    } else if (!name) {
-      logger.error("No file found to rename file.");
     } else {
-      logger.error("No path or file found to rename file.");
+      res
+        .status(404)
+        .json(
+          error(
+            "File rename",
+            "Failed to find path or old file name.",
+            { "Old name": name, "New name": newName, Path: folderPath },
+            null,
+          ),
+        );
     }
   } catch (err) {
-    logger.error(
-      {
-        "Old name": name,
-        "New name": newName,
-        Path: folderPath,
-        Error: err,
-      },
-      "Failed to rename file.",
-    );
-    res.json({ error: "Failed to rename file." }).status(500);
+    res
+      .status(500)
+      .json(
+        error(
+          "File rename",
+          "Failed to rename file.",
+          { "Old name": name, "New name": newName, Path: folderPath },
+          err,
+        ),
+      );
   }
 });
+
+// Builds the full path for each of a folder's children.
+// Expects the output to look like the output from readDirRecursive().
+function childDocumentIsOpen(
+  directoryContents,
+  directoryFolderPath,
+  currentlyOpenDocument,
+) {
+  for (let i = 0; i < directoryContents.length; i++) {
+    if (!directoryContents[i].isFolder) {
+      const pathToFile = path.join(
+        directoryFolderPath,
+        directoryContents[i].name,
+      );
+
+      // Compares the file path to the currently open document.
+      // Returning true will cancel the renaming operation.
+      if (pathToFile === currentlyOpenDocument) {
+        logger.info(true);
+        return true;
+      }
+    } else {
+      logger.info("FOLDER");
+      // Checks any child folders of the folder being renamed.
+      const childPath = path.join(
+        directoryFolderPath,
+        directoryContents[i].name,
+      );
+
+      logger.info({ childPath: childPath });
+
+      if (
+        childDocumentIsOpen(
+          directoryContents[i].children,
+          childPath,
+          currentlyOpenDocument,
+        )
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 // Renames a folder
 router.post("/api/documents/renameFolder", async (req, res) => {
   const { newName, folderPath, name } = req.body;
+  let { currentlyOpenDocument } = req.body;
+
+  if (!currentlyOpenDocument) {
+    currentlyOpenDocument = "";
+  }
+
   if (serverMaster.detailLogs) {
     logger.info(
       { "Old name": name, "New name": newName, Path: folderPath },
@@ -432,65 +586,103 @@ router.post("/api/documents/renameFolder", async (req, res) => {
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
   const newPath = path.join(notebooksFolderPath, folderPath, newName);
 
-  logger.info({ currentPath: currentPath, newPath: newPath });
+  if (serverMaster.detailLogs) {
+    logger.info({ currentPath: currentPath, newPath: newPath });
+  }
 
-  try {
-    if (!newName || newName == "") {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No new name found to rename folder.",
-      );
-    } else if (newName && folderPath && name) {
-      if (serverMaster.detailLogs) {
-        logger.info("Renaming folder...");
-      }
-      await fs.renameSync(currentPath, newPath);
+  const folderContents = await readDirRecursive(currentPath);
 
-      if (serverMaster.successLogs) {
-        logger.info("Renamed folder.");
-      }
-      res.json({ success: true });
-      return;
-    } else if (newName && name) {
-      if (serverMaster.detailLogs) {
-        logger.info(
-          "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+  if (
+    !childDocumentIsOpen(
+      folderContents,
+      // If currentPath is used, it'll use the full path starting from C:, which is not how currentlyOpenDocument is saved.
+      path.join(folderPath, name),
+      // currentlyOpenDocument uses the forwards slash / instead of the backslash \, using path.join() conveniently fixes this lmao.
+      path.join(currentlyOpenDocument),
+    )
+  ) {
+    try {
+      if (!newName || newName == "") {
+        res
+          .status(404)
+          .json(
+            error(
+              "Folder rename",
+              "No new name found to rename folder.",
+              { "Old name": name, "New name": newName, Path: folderPath },
+              null,
+            ),
+          );
+      } else if (newName && folderPath && name) {
+        if (serverMaster.detailLogs) {
+          logger.info("Renaming folder...");
+        }
+        fs.renameSync(currentPath, newPath);
+
+        if (serverMaster.successLogs) {
+          logger.info("Renamed folder.");
+        }
+        res.json({ success: true });
+        return;
+      } else if (newName && name) {
+        if (serverMaster.detailLogs) {
+          logger.info(
+            "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+          );
+          logger.info("Copying notebook contents to new directory...");
+        }
+        // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
+        // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
+        // Fuck Microslop. I wish Linux supported everything I use. :/
+        await fs.promises.cp(currentPath, newPath, { recursive: true });
+        await fs.promises.rm(currentPath, { recursive: true, force: true });
+
+        if (serverMaster.successLogs) {
+          logger.info("Renamed notebook.");
+        }
+        res.json({ success: true });
+        return;
+      } else if (!folderPath || !name) {
+        res.status(404).json(
+          error(
+            "Rename folder",
+            "No path or name found to rename folder.",
+            {
+              "Old name": name,
+              "New name": newName,
+              Path: folderPath,
+            },
+            null,
+          ),
         );
-        logger.info("Copying notebook contents to new directory...");
       }
-      // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
-      // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
-      // Fuck Microslop. I wish Linux supported everything I use. :/
-      await fs.promises.cp(currentPath, newPath, { recursive: true });
-      await fs.promises.rm(currentPath, { recursive: true, force: true });
-
-      if (serverMaster.successLogs) {
-        logger.info("Renamed notebook.");
-      }
-      res.json({ success: true });
-      return;
-    } else if (!folderPath) {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No path found to rename folder.",
-      );
-    } else if (!name) {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No name found to rename folder.",
-      );
-    } else {
-      logger.error(
-        { "Old name": name, "New name": newName, Path: folderPath },
-        "No path or name found to rename folder.",
+    } catch (err) {
+      res.status(500).json(
+        error(
+          "Rename folder",
+          "Something went wrong.",
+          {
+            "Old name": name,
+            "New name": newName,
+            Path: folderPath,
+          },
+          err,
+        ),
       );
     }
-  } catch (err) {
-    logger.error(
-      { "Old name": name, "New name": newName, Path: folderPath, Error: err },
-      "Failed to rename folder.",
+  } else {
+    res.status(409).json(
+      error(
+        "Rename folder",
+        "A file within the folder is open.",
+        {
+          "Old name": name,
+          "New name": newName,
+          Path: folderPath,
+        },
+        null,
+      ),
     );
-    res.json({ error: "Failed to rename folder." }).status(500);
   }
 });
 
@@ -509,7 +701,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
   }
 
   const filePath = path.join(notebooksFolderPath, folderPath, name);
-  const file = await fs.readFileSync(filePath, "utf-8");
+  const file = fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
   // fileData[0] since everything in JSON is stored in one array.

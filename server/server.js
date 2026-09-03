@@ -45,8 +45,8 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.5.6",
-  deniedUpdate: false,
+  version: "v1.6.0",
+  deniedVersion: null,
 };
 
 // Creates any missing data folders.
@@ -58,12 +58,17 @@ for (let i = 0; i < userDataFolders.length; i++) {
 
 // Masterfile to store config across sessions
 if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[${JSON.stringify(allProperties)}]`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  try {
+    const masterFileContent = `[${JSON.stringify(allProperties)}]`;
+    fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  } catch (err) {
+    logger.error("Failed to create master.json.");
+  }
 }
 
 const serverMaster = require("./serverMaster");
 const logger = require("./logger");
+const error = require("./error");
 
 // Server routes
 const documentsRoute = require("./routes/documents");
@@ -88,9 +93,11 @@ async function updateMasterfile(masterFile) {
     }
     return true;
   } catch (err) {
-    logger.error(
-      { error: err },
-      "Something went wrong updating master.json properties.",
+    error(
+      "master.json properties update",
+      "Failed to update master.json properties.",
+      {},
+      err,
     );
     return false;
   }
@@ -105,7 +112,7 @@ async function deleteDeprecatedMasterProperties() {
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
-  const deprecatedProperties = ["usedImages"];
+  const deprecatedProperties = ["usedImages", "applyAppUpdate"];
 
   // Deletes deprecated properties
   for (let i = 0; i < deprecatedProperties.length; i++) {
@@ -174,7 +181,9 @@ app.get("/api/getMaster", async (req, res) => {
       logger.info("Loaded Masterfile.");
     }
   } catch (err) {
-    logger.error({ error: err }, "Failed to load master.json.");
+    res
+      .status(500)
+      .json(error("master.json get", "Failed to get master.json.", {}, err));
   }
 });
 
@@ -196,8 +205,16 @@ app.put("/api/updateMaster", async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    logger.error({ error: err }, "Failed to update master.json.");
-    res.json({ error: err }).status(500);
+    res
+      .status(500)
+      .json(
+        error(
+          "master.json update",
+          "Failed to update master.json.",
+          { Data: data },
+          err,
+        ),
+      );
   }
 });
 
@@ -226,14 +243,34 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    logger.error({ error: err }, "Failed to update master.json.");
-    res.json({ error: err }).status(500);
+    res
+      .status(500)
+      .json(
+        error(
+          "Update master.json property",
+          "Failed to update master.json property.",
+          {},
+          err,
+        ),
+      );
   }
 });
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
-  await git.pull("origin", "main", ["--rebase"]);
+  try {
+    await git.pull("origin", "main", ["--rebase"]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json(error("App update", "Failed to update app.", {}, err));
+  }
+});
+
+// Returns a success.
+app.get("/api/", async (req, res) => {
+  if (serverMaster.detailLogs) {
+    logger.info("Got ping request.");
+  }
   res.json({ success: true });
 });
 
@@ -243,5 +280,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info({ port: port }, "Editor Backend running");
+  logger.info({ Port: port }, "Editor Backend running");
 });
