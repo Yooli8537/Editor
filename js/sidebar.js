@@ -288,7 +288,7 @@ function createFolderActions(path, previousEntry) {
           buildSidebar();
         } else {
           const responseJSON = await response.json();
-          handleServerErrors(responseJSON);
+          handleServerErrors(responseJSON, response.status);
         }
       },
     );
@@ -319,7 +319,7 @@ function createFolderActions(path, previousEntry) {
           buildSidebar();
         } else {
           const responseJSON = await response.json();
-          handleServerErrors(responseJSON);
+          handleServerErrors(responseJSON, response.status);
         }
       },
     );

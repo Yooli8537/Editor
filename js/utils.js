@@ -414,7 +414,7 @@ export async function checkForUpdate(manualCheck) {
 }
 
 // Handles errors from server responses.
-export function handleServerErrors(responseJSON) {
+export function handleServerErrors(responseJSON, errorStatus) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
@@ -425,7 +425,7 @@ export function handleServerErrors(responseJSON) {
   modal.classList.add("errorMsg");
 
   let errorHeading = document.createElement("h3");
-  errorHeading.textContent = "Error";
+  errorHeading.textContent = `Error ${errorStatus}`;
 
   let titleParagraph = document.createElement("p");
   titleParagraph.textContent = `${responseJSON.operation}: ${responseJSON.errorMsg}`;
