@@ -19,8 +19,12 @@ async function getMasterFile() {
   if (serverMaster.detailLogs) {
     logger.info("Getting master.json");
   }
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
-  return JSON.parse(rawMasterFile);
+  try {
+    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    return JSON.parse(rawMasterFile);
+  } catch (err) {
+    error("Get master.json", "Failed to read master.json.", {}, err);
+  }
 }
 
 // Adds unsaved filenames to the master.

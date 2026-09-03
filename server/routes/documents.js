@@ -17,31 +17,40 @@ const imageFolderPath = path.join(dataFolderPath, "images");
 // Recursively reads the full data folder.
 async function readDirRecursive(dir) {
   // Reads the specified directory
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  try {
+    const entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
 
-  // Returns data
-  return Promise.all(
-    entries.map(async (entry) => {
-      const fullPath = path.join(dir, entry.name);
+    // Returns data
+    return Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(dir, entry.name);
 
-      // If a folder is detected, it's read through again.
-      if (entry.isDirectory()) {
-        return {
-          name: entry.name,
-          isFolder: true,
-          children: await readDirRecursive(fullPath),
-        };
-      } else {
-        // Otherwise, it just gives back the file name.
-        return {
-          name: entry.name,
-          isFolder: false,
-        };
-      }
-    }),
-  );
+        // If a folder is detected, it's read through again.
+        if (entry.isDirectory()) {
+          return {
+            name: entry.name,
+            isFolder: true,
+            children: await readDirRecursive(fullPath),
+          };
+        } else {
+          // Otherwise, it just gives back the file name.
+          return {
+            name: entry.name,
+            isFolder: false,
+          };
+        }
+      }),
+    );
+  } catch (err) {
+    error(
+      "Get directory recursively",
+      "Failed to read specified directory.",
+      { Directory: dir },
+      err,
+    );
+  }
 }
 
 // Searches through notebooks & folders (same difference lol)
@@ -49,31 +58,40 @@ async function searchNotebooks(dir, key, searchResults) {
   // Sets key to be lowercase to make search case-insensitive.
   lowerKey = key.toLowerCase();
   // Reads specified directory.
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  try {
+    const entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
 
-  // Returns results, just like with the full data folder reading.
-  return Promise.all(
-    entries.map(async (entry) => {
-      const fullPath = path.join(dir, entry.name);
+    // Returns results, just like with the full data folder reading.
+    return Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(dir, entry.name);
 
-      if (entry.isDirectory()) {
-        // Folders aren't included in search results, instead their contents are searched.
-        return searchNotebooks(fullPath, lowerKey, searchResults);
-      } else {
-        const file = await fs.promises.readFile(fullPath, "utf-8");
-        const praseFile = JSON.parse(file);
-        return findText(
-          praseFile[0].content,
-          lowerKey,
-          fullPath,
-          searchResults,
-          praseFile[0].title,
-        );
-      }
-    }),
-  );
+        if (entry.isDirectory()) {
+          // Folders aren't included in search results, instead their contents are searched.
+          return searchNotebooks(fullPath, lowerKey, searchResults);
+        } else {
+          const file = await fs.promises.readFile(fullPath, "utf-8");
+          const praseFile = JSON.parse(file);
+          return findText(
+            praseFile[0].content,
+            lowerKey,
+            fullPath,
+            searchResults,
+            praseFile[0].title,
+          );
+        }
+      }),
+    );
+  } catch (err) {
+    error(
+      "Search notebooks",
+      "Failed to read specified directory.",
+      { Directory: dir, Key: key },
+      err,
+    );
+  }
 }
 
 // Finds the search key within the text of files.

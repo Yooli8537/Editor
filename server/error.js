@@ -6,17 +6,12 @@ const serverMaster = require("./serverMaster");
 function createErrorJSON(operation, errorMsg, reqestValues, detailError) {
   if (!detailError || !serverMaster.logErrorDetails) {
     logger.error(
-      {
-        "Request values": reqestValues,
-      },
+      { "Request values": reqestValues },
       `${operation}: ${errorMsg}`,
     );
   } else {
     logger.error(
-      {
-        "Request values": reqestValues,
-        "Detailed Error": detailError,
-      },
+      { "Request values": reqestValues, "Detailed Error": detailError },
       `${operation}: ${errorMsg}`,
     );
   }

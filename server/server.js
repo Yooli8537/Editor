@@ -58,12 +58,17 @@ for (let i = 0; i < userDataFolders.length; i++) {
 
 // Masterfile to store config across sessions
 if (!fs.existsSync(masterFilePath)) {
-  const masterFileContent = `[${JSON.stringify(allProperties)}]`;
-  fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  try {
+    const masterFileContent = `[${JSON.stringify(allProperties)}]`;
+    fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+  } catch (err) {
+    logger.error("Failed to create master.json.");
+  }
 }
 
 const serverMaster = require("./serverMaster");
 const logger = require("./logger");
+const error = require("./error");
 
 // Server routes
 const documentsRoute = require("./routes/documents");

@@ -74,9 +74,14 @@ router.delete("/api/clearLogs", async (req, res) => {
 
 // Searches for images in documents.
 async function findImages(dir) {
-  const entries = await fs.promises.readdir(dir, {
-    withFileTypes: true,
-  });
+  let entries;
+  try {
+    entries = await fs.promises.readdir(dir, {
+      withFileTypes: true,
+    });
+  } catch (err) {
+    error("Find images", "Failed to read directory.", { Directory: dir }, err);
+  }
 
   return Promise.all(
     entries.map(async (entry) => {
@@ -85,9 +90,18 @@ async function findImages(dir) {
       if (entry.isDirectory()) {
         return findImages(fullPath);
       } else {
-        const file = await fs.promises.readFile(fullPath, "utf-8");
-        const praseFile = JSON.parse(file);
-        return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+        try {
+          const file = await fs.promises.readFile(fullPath, "utf-8");
+          const praseFile = JSON.parse(file);
+          return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+        } catch (err) {
+          error(
+            "Find images",
+            "Failed to read file source.",
+            { Path: fullPath, "File Title": parseFile[0].title },
+            err,
+          );
+        }
       }
     }),
   );
