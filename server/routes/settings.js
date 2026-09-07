@@ -53,18 +53,29 @@ router.delete("/api/clearLogs", async (req, res) => {
   // Puts all the logs into the array.
   logFiles = fs.readdirSync(logsFolderPath);
 
-  console.log(logFiles);
+  if (serverMaster.detailLogs) {
+    logger.info({ "Log files": logFiles }, "Got logs folder.");
+  }
 
+  let logFilesLength;
   // Removes logs, excluding the newest one if saving logs is enabled.
   try {
     for (let i = 0; i < logFiles.length - 1; i++) {
       fs.rmSync(path.join(logsFolderPath, logFiles[i]));
+      logFilesLength = logFiles.length - 1;
+    }
+
+    // Deletes the newest file if logs aren't supposed to be saved.
+    if (!serverMaster.saveLogs) {
+      fs.rmSync(path.join(logsFolderPath, logFiles[logFiles.length - 1]));
+      logFilesLength = logFiles.length;
     }
 
     if (serverMaster.successLogs && logFiles.length > 0) {
       logger.info("Cleared logs.");
     }
-    res.json({ success: true, amount: logFiles.length });
+
+    res.json({ success: true, amount: logFilesLength });
   } catch (err) {
     res
       .status(500)
