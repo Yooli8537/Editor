@@ -148,7 +148,7 @@ If you're wondering why I had to create multiple releases for this, it's because
   - Update collapsed Folders: How long the delay between updates to the master property "collapsedFolders" is.
 - Tables can now be resized
 
-## v.1.4.0 - Folder Collapsing & Improvements
+## v1.4.0 - Folder Collapsing & Improvements
 
 ### Added
 

@@ -544,7 +544,6 @@ function childDocumentIsOpen(
         return true;
       }
     } else {
-      logger.info("FOLDER");
       // Checks any child folders of the folder being renamed.
       const childPath = path.join(
         directoryFolderPath,
