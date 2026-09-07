@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Image & Log clearing now shows how many respective files were deleted.
+
 ## v1.6.0 - Largely improved error handling & bug fixes
 
 ### Added

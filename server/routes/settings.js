@@ -35,10 +35,10 @@ router.delete("/api/cleanImages", async (req, res) => {
       fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
     }
 
-    if (serverMaster.successLogs && unusedImages.length !== 0) {
+    if (serverMaster.successLogs && unusedImages.length > 0) {
       logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
     }
-    res.json({ success: true });
+    res.json({ success: true, amount: unusedImages.length });
   } catch (err) {
     res
       .status(500)
@@ -61,10 +61,10 @@ router.delete("/api/clearLogs", async (req, res) => {
       fs.rmSync(path.join(logsFolderPath, logFiles[i]));
     }
 
-    if (serverMaster.successLogs) {
+    if (serverMaster.successLogs && logFiles.length > 0) {
       logger.info("Cleared logs.");
     }
-    res.json({ success: true });
+    res.json({ success: true, amount: logFiles.length });
   } catch (err) {
     res
       .status(500)

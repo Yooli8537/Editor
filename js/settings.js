@@ -62,7 +62,7 @@ const allSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
- // clientActionLogging,
+  // clientActionLogging,
 ];
 // All the settings which are a number value.
 const numberSettings = [
@@ -212,10 +212,20 @@ clearImagesButton.addEventListener("click", async (e) => {
     method: "DELETE",
   });
 
+  const clearJSON = await clear.json();
   if (clear.ok) {
-    createInfoModal("Successfully cleared unused images from server storage.");
+    if (clearJSON.amount <= 0) {
+      createInfoModal("No unused images found.");
+    } else if (clearJSON.amount === 1) {
+      createInfoModal(
+        "Successfully cleared an unused image from Server storage.",
+      );
+    } else {
+      createInfoModal(
+        `Successfully cleared ${clearJSON.amount} images from Server storage.`,
+      );
+    }
   } else {
-    const clearJSON = await clear.json();
     handleServerErrors(clearJSON, clear.status);
   }
 });
@@ -226,10 +236,20 @@ clearLogsButton.addEventListener("click", async (e) => {
     method: "DELETE",
   });
 
+  const clearJSON = await clear.json();
   if (clear.ok) {
-    createInfoModal("Successfully cleared logs from server storage.");
+    if (clearJSON.amount <= 0) {
+      createInfoModal("No logs found.");
+    } else if (clearJSON.amount === 1) {
+      createInfoModal(
+        "Successfully cleared a log file from Server storage.",
+      );
+    } else {
+      createInfoModal(
+        `Successfully cleared ${clearJSON.amount} log files from Server storage.`,
+      );
+    }
   } else {
-    const clearJSON = await clear.json();
     handleServerErrors(clearJSON, clear.status);
   }
 });
