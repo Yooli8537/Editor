@@ -10,7 +10,7 @@
 
 ### Added
 
-- Universal Server-side error handlingdetails ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Universal Server-side error handling details ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
 - Setting to toggle detailed errors.
 - Unfinished "Developer" section in settings.
 - Universal Client-side error handling ([Issue #77](https://github.com/Yooli8537/Editor/issues/77)).
