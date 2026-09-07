@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Setting for client side error logging.
+
 ## v1.6.0 - Largely improved error handling & bug fixes
 
 ### Added

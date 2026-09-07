@@ -47,6 +47,7 @@ const allProperties = {
   confirmExport: false,
   version: "v1.6.0",
   deniedVersion: null,
+  clientActionLogging: false,
 };
 
 // Creates any missing data folders.
