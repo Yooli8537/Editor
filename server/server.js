@@ -85,11 +85,11 @@ const settingsRoute = require("./routes/settings");
 
 app.use(express.json());
 app.use(express.static(rootPath));
+app.use(limiter);
 app.use(documentsRoute);
 app.use(exportRoute);
 app.use(autosaveRoute);
 app.use(settingsRoute);
-app.use(limiter);
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
