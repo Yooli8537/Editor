@@ -46,6 +46,8 @@ const saveLogs = document.querySelector("#saveLogs");
 const confirmExport = document.querySelector("#confirmExport");
 const logErrorDetails = document.querySelector("#logErrorDetails");
 //const clientActionLogging = document.querySelector("#clientActionLogging");
+const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
+const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -62,9 +64,17 @@ const allSettings = [
   confirmExport,
   logErrorDetails,
   // clientActionLogging,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
 ];
 // All the settings which only accept full numbers.
-const intSettings = [updateCollapsedFolders, sliceIndex, maxCharacterLength];
+const intSettings = [
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
+];
 // All the settings which accept any positive number.
 const decimalSettings = [autosaveInterval, helpTextHoverTime];
 // All the settings which are a string value.
