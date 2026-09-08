@@ -272,6 +272,51 @@
                 </div>
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
+                        <img src="../assets/settings/rate-limit.svg" class="groupIcon">
+                        <p>Rate Limiting</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle"><img src="../assets/icons/warning.svg"></div>
+                            <div>
+                                Rate Limiting blocks requests from a Client after a certain threshold is met. The limit
+                                is reset after a specified amount of time.
+                            </div>
+                            <div>
+                                Note that if you set these limits too harshly, you could have a very hard time changing
+                                them back without editing the <i>master.json</i> file directly.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum number of requests</div>
+                            <div class="settingDescription">
+                                The maximum amount of requests which can be sent within the specified interval.
+                            </div>
+                            <div class="settingDefault">Default: 200 requests</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="rateLimitMaxRequests">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Rate Limit reset time (minutes)</div>
+                            <div class="settingDescription">
+                                The interval at which the rate limit is reset back to 0. This doesn't mean that once
+                                you've sent X requests, you have to wait X minutes; instead, your request count resets
+                                every X minutes.
+                            </div>
+                            <div class="settingDefault">Default: 7 minutes</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="rateLimitResetTime">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
                         <img src="../assets/settings/server-logs.svg" class="groupIcon">
                         <p>Server Logs</p>
                     </div>
