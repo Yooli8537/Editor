@@ -3,12 +3,6 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-// Limits requests
-const RateLimit = require('express-rate-limit');
-const limiter = RateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: 200,
-});
 
 // Git for JS
 const gitJS = require("simple-git");
@@ -54,6 +48,8 @@ const allProperties = {
   version: "v1.6.0",
   deniedVersion: null,
   clientActionLogging: false,
+  rateLimitResetTime: 10,
+  rateLimitMaxRequests: 200,
 };
 
 // Creates any missing data folders.
@@ -76,6 +72,14 @@ if (!fs.existsSync(masterFilePath)) {
 const serverMaster = require("./serverMaster");
 const logger = require("./logger");
 const error = require("./error");
+
+// Limits requests
+// Placement to allow user settings to be used (must be placed after serverMaster).
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 200,
+});
 
 // Server routes
 const documentsRoute = require("./routes/documents");
