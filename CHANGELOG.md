@@ -5,6 +5,7 @@
 ### Added
 
 - Image & Log clearing now shows how many respective files were deleted.
+- Rate Limiting + Settings to change it.
 
 ## v1.6.0 - Largely improved error handling & bug fixes
 
