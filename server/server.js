@@ -3,6 +3,12 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+// Limits requests
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 200,
+});
 
 // Git for JS
 const gitJS = require("simple-git");
@@ -83,6 +89,7 @@ app.use(documentsRoute);
 app.use(exportRoute);
 app.use(autosaveRoute);
 app.use(settingsRoute);
+app.use(limiter);
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
