@@ -48,7 +48,7 @@ const allProperties = {
   version: "v1.6.0",
   deniedVersion: null,
   clientActionLogging: false,
-  rateLimitResetTime: 10,
+  rateLimitResetTime: 7,
   rateLimitMaxRequests: 200,
 };
 
