@@ -48,6 +48,7 @@ const logErrorDetails = document.querySelector("#logErrorDetails");
 //const clientActionLogging = document.querySelector("#clientActionLogging");
 const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
 const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
+const maxImageSize = document.querySelector("#maxImageSize");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -66,6 +67,7 @@ const allSettings = [
   // clientActionLogging,
   rateLimitMaxRequests,
   rateLimitResetTime,
+  maxImageSize,
 ];
 // All the settings which only accept full numbers.
 const intSettings = [
@@ -76,7 +78,7 @@ const intSettings = [
   rateLimitResetTime,
 ];
 // All the settings which accept any positive number.
-const decimalSettings = [autosaveInterval, helpTextHoverTime];
+const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.

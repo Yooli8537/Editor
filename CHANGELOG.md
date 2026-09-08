@@ -6,6 +6,7 @@
 
 - Image & Log clearing now shows how many respective files were deleted.
 - Rate Limiting + Settings to change it.
+- Configurable maximum image upload sizes ([Issue #33](https://github.com/Yooli8537/Editor/issues/33)).
 
 ## v1.6.0 - Largely improved error handling & bug fixes
 

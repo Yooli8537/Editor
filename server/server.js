@@ -30,7 +30,7 @@ const userDataFolders = [
   { name: "Attachments", path: attachmentsFolderPath },
 ];
 
-// Every property which should be in the masterfile.
+// Every property and default value which should be in master.json.
 const allProperties = {
   unsavedFiles: [],
   autosaveInterval: 10,
@@ -48,8 +48,9 @@ const allProperties = {
   version: "v1.6.0",
   deniedVersion: null,
   clientActionLogging: false,
-  rateLimitResetTime: 7,
-  rateLimitMaxRequests: 200,
+  rateLimitResetTime: 5,
+  rateLimitMaxRequests: 300,
+  maxImageSize: 10,
 };
 
 // Creates any missing data folders.
@@ -292,5 +293,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info({ Port: port }, "Editor Backend running");
+  logger.info({ Port: port }, "Editor Backend running.");
 });

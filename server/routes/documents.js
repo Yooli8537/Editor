@@ -721,7 +721,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
 // Uploads image files to the server.
 router.post(
   "/api/uploadImageFile",
-  express.raw({ type: "image/*", limit: "10mb" }),
+  express.raw({ type: "image/*", limit: `${serverMaster.maxImageSize}mb` }),
   async (req, res) => {
     const imgType = req.headers["content-type"];
     if (serverMaster.detailLogs) {

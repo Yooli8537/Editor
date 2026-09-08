@@ -213,6 +213,18 @@
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
+                            <div class="settingTitle">Maximum Image size (Megabytes)</div>
+                            <div class="settingDescription">
+                                Maximum file size which a single image uploaded to a document can be. Applying this setting requires a Server restart.
+                            </div>
+                            <div class="settingDefault">Default: 10mb</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxImageSize">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
                             <div class="settingTitle">Clear unused Images</div>
                             <div class="settingDescription">
                                 Searches through all your documents and removes any unused images from the server
@@ -297,7 +309,7 @@
                             <div class="settingDescription">
                                 The maximum amount of requests which can be sent within the specified interval.
                             </div>
-                            <div class="settingDefault">Default: 200 requests</div>
+                            <div class="settingDefault">Default: 300 requests</div>
                         </div>
                         <div class="settingValue">
                             <input type="number" id="rateLimitMaxRequests">
@@ -311,7 +323,7 @@
                                 you've sent X requests, you have to wait X minutes; instead, your request count resets
                                 every X minutes.
                             </div>
-                            <div class="settingDefault">Default: 7 minutes</div>
+                            <div class="settingDefault">Default: 5 minutes</div>
                         </div>
                         <div class="settingValue">
                             <input type="number" id="rateLimitResetTime">
