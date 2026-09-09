@@ -700,6 +700,18 @@ router.put("/api/documents/updateFile", async (req, res) => {
   }
 
   const filePath = path.join(notebooksFolderPath, folderPath, name);
+  if (!filePath.startsWith(dataFolderPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Update file",
+          "Invalid file path provided.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+  }
   const file = fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
