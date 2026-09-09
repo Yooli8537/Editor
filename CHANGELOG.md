@@ -9,6 +9,10 @@
 - Configurable maximum image upload sizes ([Issue #33](https://github.com/Yooli8537/Editor/issues/33)).
 - Hovering over a document highlights it ([Issue #91](https://github.com/Yooli8537/Editor/issues/91)).
 
+### Fixed
+
+- No more massive list margins ([Issue #80](https://github.com/Yooli8537/Editor/issues/80)).
+
 ## v1.6.0 - Largely improved error handling & bug fixes
 
 ### Added
