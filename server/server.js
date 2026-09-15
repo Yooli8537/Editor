@@ -14,7 +14,6 @@ const port = 8510;
 const userDataFolders = [
   { name: "Logs", path: GLOBAL.PATHS.FOLDERS.LOGS },
   { name: "Data", path: GLOBAL.PATHS.FOLDERS.DATA },
-  { name: "Autosaves", path: GLOBAL.PATHS.FOLDERS.AUTOSAVES },
   { name: "Notebooks", path: GLOBAL.PATHS.FOLDERS.NOTEBOOKS },
   { name: "Image", path: GLOBAL.PATHS.FOLDERS.IMAGES },
   { name: "Attachments", path: GLOBAL.PATHS.FOLDERS.ATTACHMENTS },
