@@ -72,13 +72,19 @@ const limiter = rateLimit({
   max: serverMaster.rateLimitMaxRequests,
 });
 
+// Server routes
+const documentsRoute = require(GLOBAL.PATHS.ROUTES.DOCUMENTS);
+const exportRoute = require(GLOBAL.PATHS.ROUTES.EXPORT);
+const autosaveRoute = require(GLOBAL.PATHS.ROUTES.AUTOSAVE);
+const settingsRoute = require(GLOBAL.PATHS.ROUTES.SETTINGS);
+
 app.use(express.json());
 app.use(express.static(GLOBAL.PATHS.FOLDERS.ROOT));
 app.use(limiter);
-app.use(GLOBAL.PATHS.ROUTES.DOCUMENTS);
-app.use(GLOBAL.PATHS.ROUTES.EXPORT);
-app.use(GLOBAL.PATHS.ROUTES.AUTOSAVE);
-app.use(GLOBAL.PATHS.ROUTES.SETTINGS);
+app.use(documentsRoute);
+app.use(exportRoute);
+app.use(autosaveRoute);
+app.use(settingsRoute);
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
