@@ -376,6 +376,12 @@ function createFileActions(path, previousEntry) {
   return buttons;
 }
 
+function fileIsAutosave(entry) {
+  const fileName = entry.name;
+  const truncatedFileName = fileName.slice(-14, -5);
+  return truncatedFileName === ".autosave";
+}
+
 // Rendering items
 function renderEntries(entries, indentlevel, previousEntry) {
   // Sorts entires alphabetically whilst prioritizing Folders
@@ -428,14 +434,16 @@ function renderEntries(entries, indentlevel, previousEntry) {
         );
       }
     } else {
-      // Creating File
-      const wrapper = createWrapper();
-      const file = createFile(entries[i], previousEntry);
-      file.appendChild(createFileActions(entries[i].name, previousEntry));
-      wrapper.appendChild(setIcon("../assets/function/file.svg", ""));
-      wrapper.appendChild(file);
-      wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
-      folderStructure.appendChild(wrapper);
+      if (!fileIsAutosave(entries[i])) {
+        // Creating File
+        const wrapper = createWrapper();
+        const file = createFile(entries[i], previousEntry);
+        file.appendChild(createFileActions(entries[i].name, previousEntry));
+        wrapper.appendChild(setIcon("../assets/function/file.svg", ""));
+        wrapper.appendChild(file);
+        wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
+        folderStructure.appendChild(wrapper);
+      }
     }
   }
 }

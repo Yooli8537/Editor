@@ -164,7 +164,6 @@ async function checkForAutosave(document, path) {
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
   if (await checkForAutosave(document, path)) {
-    console.log("CHECKED FOR AUTOSAVE: TRUE");
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
@@ -196,7 +195,6 @@ export async function loadAutosave(fileData, document, path) {
       },
     );
   } else {
-    console.log("CHECKED FOR AUTOSAVE: FALSE");
     loadDocument(fileData, document, path);
   }
 }

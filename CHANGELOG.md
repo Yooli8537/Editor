@@ -5,10 +5,12 @@
 ### Changed
 
 - Common Server variables standardized in the global.js file ([Issue #95](https://github.com/Yooli8537/Editor/issues/95)).
+- Improved autosaves.
 
 ### Deprecated
 
 - `master.json` property "unsavedFiles" has been deprecated and is no longer used by the app.
+- `data/autosaves` folder has been deprecated in favor of a better autosaves system.
 
 ### Fixed
 
