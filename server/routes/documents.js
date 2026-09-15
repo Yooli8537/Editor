@@ -862,7 +862,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
     logger.info({ Name: name, Path: folderPath }, "Reading file to save to...");
   }
 
-  const file = fs.readFileSync(filePath, "utf-8");
+  const file = fs.readFileSync(dirPath, "utf-8");
 
   const fileData = JSON.parse(file);
   // fileData[0] since everything in JSON is stored in one array.
@@ -872,7 +872,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
     logger.info({ Name: name, Path: folderPath }, "Writing updated file...");
   }
 
-  fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), "utf-8");
+  fs.writeFileSync(dirPath, JSON.stringify(fileData, null, 2), "utf-8");
 
   if (serverMaster.successLogs) {
     logger.info({ Name: name, Path: folderPath }, "Updated file.");
