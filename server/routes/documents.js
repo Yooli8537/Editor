@@ -4,9 +4,11 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+
 const serverMaster = require("../serverMaster");
 const logger = require("../utils/logger");
 const error = require("../utils/error");
+const validatePath = require("../utils/validatePath");
 
 // Data folder paths
 const rootPath = path.join(__dirname, "../../");
@@ -694,6 +696,24 @@ router.put("/api/documents/updateFile", async (req, res) => {
       { Name: name, Path: folderPath },
       "Recieved file update request.",
     );
+  }
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+  const dirPath = path.join(notebooksFolderPath, folderPath);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Update file",
+          "Recieved invalid path.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
   }
   if (serverMaster.detailLogs) {
     logger.info({ Name: name, Path: folderPath }, "Reading file to save to...");
