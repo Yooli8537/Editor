@@ -1,10 +1,11 @@
 // Exporting TipTap documents as .pdf-files
 // Importing server functions
+const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
-const serverMaster = require("../serverMaster");
-const logger = require("../utils/logger");
-const error = require("../utils/error");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.MASTER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Processes HTML and converts it into PDF

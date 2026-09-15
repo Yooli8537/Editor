@@ -1,20 +1,13 @@
-// CRUD for files & folders
-// Imports
+const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
-const serverMaster = require("../serverMaster");
-const logger = require("../utils/logger");
-const error = require("../utils/error");
-const validatePath = require("../utils/validatePath");
-
-// Data folder paths
-const rootPath = path.join(__dirname, "../../");
-const dataFolderPath = path.join(rootPath, "data");
-const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
-const imageFolderPath = path.join(dataFolderPath, "images");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
+const validatePath = require(GLOBAL.PATHS.UTILS.VALIDATE_PATH);
 
 // Recursively reads the full data folder.
 async function readDirRecursive(dir) {
@@ -132,7 +125,7 @@ router.get("/api/documents", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info("Recieved notebooks get request.");
   }
-  const resposneArray = await readDirRecursive(notebooksFolderPath);
+  const resposneArray = await readDirRecursive(GLOBAL.PATHS.FOLDERS.NOTEBOOKS);
 
   if (serverMaster.successLogs) {
     logger.info("Sent notebooks to Client.");
@@ -151,13 +144,13 @@ router.get("/api/documents/search", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info("Searching notebooks...");
   }
-  await searchNotebooks(notebooksFolderPath, key, searchResults);
+  await searchNotebooks(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, key, searchResults);
 
   // Results that can be used by the Sidebar loading function (requires paths for the event listeners to open the documents).
   const adjustedResults = searchResults.map((fullPath) => ({
-    path: path.relative(notebooksFolderPath, fullPath),
+    path: path.relative(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, fullPath),
     name: path.basename(fullPath),
-    folderPath: path.relative(notebooksFolderPath, path.dirname(fullPath)),
+    folderPath: path.relative(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, path.dirname(fullPath)),
   }));
 
   if (serverMaster.successLogs) {
@@ -177,7 +170,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -195,7 +188,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 
   try {
     // Makes the directory
-    fs.mkdirSync(path.join(notebooksFolderPath, name));
+    fs.mkdirSync(path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, name));
     if (serverMaster.successLogs) {
       logger.info({ Name: name }, "Created new notebook.");
     }
@@ -241,7 +234,7 @@ router.post("/api/documents/newFile", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -277,7 +270,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      location = path.join(notebooksFolderPath, folderPath, name + ".json");
+      location = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name + ".json");
       // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (await fs.promises.readFile(location)) {
@@ -342,7 +335,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -360,7 +353,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
+      fs.mkdirSync(path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name));
       if (serverMaster.successLogs) {
         logger.info({ Name: name, Path: folderPath }, "Created folder.");
       }
@@ -420,7 +413,7 @@ router.delete("/api/documents/deletePath", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath);
 
   if (!validatePath(dirPath)) {
     res
@@ -438,7 +431,7 @@ router.delete("/api/documents/deletePath", async (req, res) => {
 
   try {
     if (folderPath) {
-      const fullPath = path.join(notebooksFolderPath, folderPath);
+      const fullPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath);
       await fs.promises.rm(fullPath, { recursive: true, force: true });
       if (serverMaster.successLogs) {
         logger.info({ Path: folderPath }, "Deleted path.");
@@ -481,7 +474,7 @@ router.get("/api/documents/getFile", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -498,7 +491,7 @@ router.get("/api/documents/getFile", async (req, res) => {
   }
 
   try {
-    const fullPath = path.join(notebooksFolderPath, folderPath, name);
+    const fullPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
     const file = fs.readFileSync(fullPath, "utf-8"); // Reads out file data
     if (serverMaster.successLogs) {
       logger.info("Got file.");
@@ -548,7 +541,7 @@ router.post("/api/documents/renameFile", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -569,12 +562,12 @@ router.post("/api/documents/renameFile", async (req, res) => {
   }
   const baseName = path.parse(name).name;
   const filePath = path.join(
-    notebooksFolderPath,
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
     folderPath,
     baseName + ".json",
   );
   const newFilePath = path.join(
-    notebooksFolderPath,
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
     folderPath,
     newName + ".json",
   );
@@ -709,7 +702,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -725,8 +718,8 @@ router.post("/api/documents/renameFolder", async (req, res) => {
     return;
   }
 
-  const currentPath = path.join(notebooksFolderPath, folderPath, name);
-  const newPath = path.join(notebooksFolderPath, folderPath, newName);
+  const currentPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
+  const newPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, newName);
 
   if (serverMaster.detailLogs) {
     logger.info({ currentPath: currentPath, newPath: newPath });
@@ -842,7 +835,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
     logger.info({ Path: folderPath }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -908,7 +901,7 @@ router.post(
     }
     // Sets the image's name to a completely random ID.
     const fileName = imageName() + fileEnding;
-    let location = path.join(imageFolderPath, fileName);
+    let location = path.join(GLOBAL.PATHS.FOLDERS.IMAGES, fileName);
 
     if (serverMaster.detailLogs) {
       logger.info(

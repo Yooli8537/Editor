@@ -1,20 +1,15 @@
 // Document autosaves
 // Server imports
+const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
-const serverMaster = require("../serverMaster");
-const logger = require("../utils/logger");
-const error = require("../utils/error");
-const validatePath = require("../utils/validatePath");
-
-// Data paths
-const rootPath = path.join(__dirname, "../../");
-const dataFolderPath = path.join(rootPath, "data");
-const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
-const masterFilePath = path.join(dataFolderPath, "master.json");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
+const validatePath = require(GLOBAL.PATHS.UTILS.VALIDATE_PATH);
 
 // Gets the master.json and returns it.
 async function getMasterFile() {
@@ -22,7 +17,7 @@ async function getMasterFile() {
     logger.info("Getting master.json");
   }
   try {
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
     return JSON.parse(rawMasterFile);
   } catch (err) {
     error("Get master.json", "Failed to read master.json.", {}, err);
@@ -54,7 +49,7 @@ async function addUnsavedToMaster(filename) {
     masterFile[0].unsavedFiles = unsavedFiles;
     try {
       // Updates master.json on the fs.
-      fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+      fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
       if (serverMaster.successLogs) {
         logger.info(
           { Name: filename },
@@ -95,7 +90,7 @@ router.post("/api/autosave", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -113,7 +108,7 @@ router.post("/api/autosave", async (req, res) => {
 
   // Turns the saveData into the valid JSON array expected by TipTap.
   const saveArray = [saveData];
-  const autosaveFilePath = path.join(autosavesFolderPath, name); // Full path to the autosave file location.
+  const autosaveFilePath = path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name); // Full path to the autosave file location.
 
   if (serverMaster.detailLogs) {
     logger.info({ Name: name }, "Recieved autosave create request.");
@@ -157,7 +152,7 @@ router.delete("/api/removeAutosave", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -194,14 +189,14 @@ router.delete("/api/removeAutosave", async (req, res) => {
     }
 
     // Updates master.json on the fs.
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
 
     if (serverMaster.detailLogs) {
       logger.info({ Name: name }, "Removed saved filename from master.json.");
       logger.info({ Name: name }, "Deleting autosave...");
     }
 
-    fs.rmSync(path.join(autosavesFolderPath, name));
+    fs.rmSync(path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name));
   } catch (err) {
     res
       .status(500)
@@ -231,7 +226,7 @@ router.get("/api/getAutosave", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name);
 
   if (!validatePath(dirPath)) {
     res
@@ -248,7 +243,7 @@ router.get("/api/getAutosave", async (req, res) => {
     }
 
     const rawAutosave = fs.readFileSync(
-      path.join(autosavesFolderPath, name),
+      path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVE, name),
       "utf-8",
     );
 
