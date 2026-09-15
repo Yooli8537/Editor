@@ -32,7 +32,7 @@ if (seconds < 10) {
 
 const logPath = path.join(
   __dirname,
-  `../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
+  `../../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
 );
 
 let logger;
