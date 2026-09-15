@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.6.2 - Saving Hotfix
+
+### Fixed
+
+- Saving a file now works.
+
 ## v1.6.1 - Security patches & minor Improvements
 
 ### Added

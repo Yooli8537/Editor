@@ -45,7 +45,7 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.6.1",
+  version: "v1.6.2",
   deniedVersion: null,
   clientActionLogging: false,
   rateLimitResetTime: 5,
