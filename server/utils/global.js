@@ -23,6 +23,7 @@ const settingsRoutePath = path.join(routesFolderPath, "settings.js");
 const errorUtilPath = path.join(utilsFolderPath, "error.js");
 const loggerUtilPath = path.join(utilsFolderPath, "logger.js");
 const validatePathUtilPath = path.join(utilsFolderPath, "validatePath.js");
+const serverMasterUtilPath = path.join(serverFolderPath, "serverMaster.js");
 
 const GLOBAL = {
   PATHS: {
@@ -49,6 +50,7 @@ const GLOBAL = {
       ERROR: errorUtilPath,
       LOGGER: loggerUtilPath,
       VALIDATE_PATH: validatePathUtilPath,
+      MASTER: serverMasterUtilPath,
     },
   },
 };

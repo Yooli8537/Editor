@@ -60,9 +60,9 @@ if (!fs.existsSync(GLOBAL.PATHS.FILES.MASTERFILE)) {
   }
 }
 
-const serverMaster = require("./serverMaster");
-const logger = require("./utils/logger");
-const error = require("./utils/error");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
 
 // Limits requests
 // Placement to allow user settings to be used (must be placed after serverMaster).

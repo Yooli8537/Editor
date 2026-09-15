@@ -1,7 +1,8 @@
 // Creates the JSON for server-side errors.
 // This way, only res.json() is needed, and all logging is taken care of.
-const logger = require("./logger");
-const serverMaster = require("../serverMaster");
+const GLOBAL = require("./global");
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 
 function createErrorJSON(operation, errorMsg, reqestValues, detailError) {
   if (!detailError || !serverMaster.logErrorDetails) {

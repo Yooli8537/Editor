@@ -1,11 +1,11 @@
 const path = require("path");
 const fs = require("fs");
 
-const ROOT = path.join(__dirname, "../../");
+const GLOBAL = require("./global");
 
 function validatePath(inputPath) {
   try {
-    const realRoot = fs.realpathSync(ROOT);
+    const realRoot = fs.realpathSync(GLOBAL.PATHS.FOLDERS.ROOT);
 
     const parent = path.dirname(inputPath);
     const filename = path.basename(inputPath);
