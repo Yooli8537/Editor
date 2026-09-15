@@ -41,6 +41,14 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 3. Run `npm install` within the repository's directory.
 4. Run `npm run dev` and open [http://localhost:8511](http://localhost:8511).
 
+## Update Guide
+
+Updates are detected automatically by the App. If the user denies an automatic update check, the App will no longer alert you until a new version is released. A manual update check can be done from the settings.
+
+Updating will fail if the user has made changes to the source code, since it uses `git pull` to get the newest version. If there are any changes to package.json, these changes can be safely discarded.
+
+If a `module not found` or similar error occurs, running `npm install` is required. After this, the app should run normally again.
+
 ## Known Issues
 
 - Using Firefox will slow down the App a lot, and I don't know why. [Brave](https://brave.com) is a very good alternative to use instead. I don't actively test different browsers, so this may get better over time. (08/26)

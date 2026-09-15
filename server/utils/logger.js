@@ -2,7 +2,7 @@
 const pino = require("pino");
 const path = require("path");
 
-const serverMaster = require("./serverMaster");
+const serverMaster = require("../serverMaster");
 
 // Gets date and time of server start.
 const currentdate = new Date();
@@ -32,7 +32,7 @@ if (seconds < 10) {
 
 const logPath = path.join(
   __dirname,
-  `../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
+  `../../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
 );
 
 let logger;

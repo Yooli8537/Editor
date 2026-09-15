@@ -51,6 +51,9 @@
   cursor: pointer;
   text-decoration: none;
 }
+.file:hover {
+  background-color: #3cb372cc;
+}
 
 /* Icons & buttons on the sidebar. */
 .sidebarIcon,

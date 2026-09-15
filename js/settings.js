@@ -1,5 +1,4 @@
 // Settings Menu
-// Imports
 import {
   checkForUpdate,
   createErrorModal,
@@ -46,6 +45,10 @@ const detailLogs = document.querySelector("#detailLogs");
 const saveLogs = document.querySelector("#saveLogs");
 const confirmExport = document.querySelector("#confirmExport");
 const logErrorDetails = document.querySelector("#logErrorDetails");
+//const clientActionLogging = document.querySelector("#clientActionLogging");
+const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
+const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
+const maxImageSize = document.querySelector("#maxImageSize");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -61,15 +64,21 @@ const allSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
+  // clientActionLogging,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
+  maxImageSize,
 ];
-// All the settings which are a number value.
-const numberSettings = [
-  autosaveInterval,
+// All the settings which only accept full numbers.
+const intSettings = [
   updateCollapsedFolders,
   sliceIndex,
   maxCharacterLength,
-  helpTextHoverTime,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
 ];
+// All the settings which accept any positive number.
+const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
 // All the settings which are a string value.
 const stringSettings = [];
 // All the settings which are a boolean value.
@@ -81,6 +90,7 @@ const boolSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
+  //clientActionLogging,
 ];
 
 // Getting the master file
@@ -142,23 +152,33 @@ function hideAllPages() {
   }
 }
 
+function doesIncludeSettingInSettingsArray(setting) {
+  if (
+    intSettings.includes(setting) ||
+    decimalSettings.includes(setting) ||
+    stringSettings.includes(setting)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Loads settings data before anything else is shown.
 // Without this, values which weren't loaded are set to 0 / null.
 function preLoadSettingsData() {
   // Applies values into the settings as preview values.
   for (let i = 0; i < allSettings.length; i++) {
-    if (
-      numberSettings.includes(allSettings[i]) ||
-      stringSettings.includes(allSettings[i])
-    ) {
-      allSettings[i].value = master[allSettings[i].id];
+    const setting = allSettings[i];
+    if (doesIncludeSettingInSettingsArray(setting)) {
+      setting.value = master[setting.id];
     } else {
       // Value of a boolean setting within the master.
-      let settingMasterValue = master[allSettings[i].id];
+      let settingMasterValue = master[setting.id];
       if (settingMasterValue === true) {
-        allSettings[i].value = "True";
+        setting.value = "True";
       } else {
-        allSettings[i].value = "False";
+        setting.value = "False";
       }
     }
   }
@@ -173,15 +193,30 @@ function showPage(pageName) {
 // Saving the settings
 saveSettingsButton.addEventListener("click", async (e) => {
   // Looping through all the number settings and saving them to the master variable.
-  for (let i = 0; i < numberSettings.length; i++) {
+  for (let i = 0; i < intSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
-    if (Number(numberSettings[i].value) <= 0) {
+    // Rounds to next highest number to get rid of decimals.
+    const intValue = Math.ceil(Number(intSettings[i].value));
+    if (intValue <= 0) {
       createErrorModal(
-        `${numberSettings[i].id} has a value of 0 or below. Cancelling save.`,
+        `${intSettings[i].id} has a value of 0 or below. Cancelling save.`,
       );
       return;
     } else {
-      master[numberSettings[i].id] = Number(numberSettings[i].value);
+      master[intSettings[i].id] = intValue;
+    }
+  }
+
+  for (let i = 0; i < decimalSettings.length; i++) {
+    // .value returns a string, so it has to be converted into a number first.
+    const decValue = Number(decimalSettings[i].value);
+    if (decValue <= 0) {
+      createErrorModal(
+        `${decimalSettings[i].id} has a value of 0 or below. Cancelling save.`,
+      );
+      return;
+    } else {
+      master[decimalSettings[i].id] = decValue;
     }
   }
 
@@ -209,10 +244,20 @@ clearImagesButton.addEventListener("click", async (e) => {
     method: "DELETE",
   });
 
+  const clearJSON = await clear.json();
   if (clear.ok) {
-    createInfoModal("Successfully cleared unused images from server storage.");
+    if (clearJSON.amount <= 0) {
+      createInfoModal("No unused images found.");
+    } else if (clearJSON.amount === 1) {
+      createInfoModal(
+        "Successfully cleared an unused image from Server storage.",
+      );
+    } else {
+      createInfoModal(
+        `Successfully cleared ${clearJSON.amount} images from Server storage.`,
+      );
+    }
   } else {
-    const clearJSON = await clear.json();
     handleServerErrors(clearJSON, clear.status);
   }
 });
@@ -223,10 +268,18 @@ clearLogsButton.addEventListener("click", async (e) => {
     method: "DELETE",
   });
 
+  const clearJSON = await clear.json();
   if (clear.ok) {
-    createInfoModal("Successfully cleared logs from server storage.");
+    if (clearJSON.amount <= 0) {
+      createInfoModal("No logs found.");
+    } else if (clearJSON.amount === 1) {
+      createInfoModal("Successfully cleared a log file from Server storage.");
+    } else {
+      createInfoModal(
+        `Successfully cleared ${clearJSON.amount} log files from Server storage.`,
+      );
+    }
   } else {
-    const clearJSON = await clear.json();
     handleServerErrors(clearJSON, clear.status);
   }
 });

@@ -1,10 +1,31 @@
 # Changelog
 
+## v1.6.1 - Security patches & minor Improvements
+
+### Added
+
+- Image & Log clearing now shows how many respective files were deleted.
+- Configurable maximum image upload sizes ([Issue #33](https://github.com/Yooli8537/Editor/issues/33)).
+- Hovering over a document highlights it ([Issue #91](https://github.com/Yooli8537/Editor/issues/91)).
+
+### Changed
+
+- Made an adjustment to the color of the `.hljs-literal` class.
+
+### Fixed
+
+- No more massive list margins ([Issue #80](https://github.com/Yooli8537/Editor/issues/80)).
+
+### Security
+
+- Implemented Rate limiting and settings to adjust it.
+- Implemented Path injection prevention.
+
 ## v1.6.0 - Largely improved error handling & bug fixes
 
 ### Added
 
-- Universal Server-side error handlingdetails ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
+- Universal Server-side error handling details ([Issue #75](https://github.com/Yooli8537/Editor/issues/75)).
 - Setting to toggle detailed errors.
 - Unfinished "Developer" section in settings.
 - Universal Client-side error handling ([Issue #77](https://github.com/Yooli8537/Editor/issues/77)).
@@ -146,7 +167,7 @@ If you're wondering why I had to create multiple releases for this, it's because
   - Update collapsed Folders: How long the delay between updates to the master property "collapsedFolders" is.
 - Tables can now be resized
 
-## v.1.4.0 - Folder Collapsing & Improvements
+## v1.4.0 - Folder Collapsing & Improvements
 
 ### Added
 

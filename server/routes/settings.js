@@ -4,9 +4,10 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+
 const serverMaster = require("../serverMaster");
-const logger = require("../logger");
-const error = require("../error");
+const logger = require("../utils/logger");
+const error = require("../utils/error");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
@@ -35,10 +36,10 @@ router.delete("/api/cleanImages", async (req, res) => {
       fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
     }
 
-    if (serverMaster.successLogs && unusedImages.length !== 0) {
+    if (serverMaster.successLogs && unusedImages.length > 0) {
       logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
     }
-    res.json({ success: true });
+    res.json({ success: true, amount: unusedImages.length });
   } catch (err) {
     res
       .status(500)
@@ -53,18 +54,29 @@ router.delete("/api/clearLogs", async (req, res) => {
   // Puts all the logs into the array.
   logFiles = fs.readdirSync(logsFolderPath);
 
-  console.log(logFiles);
+  if (serverMaster.detailLogs) {
+    logger.info({ "Log files": logFiles }, "Got logs folder.");
+  }
 
+  let logFilesLength;
   // Removes logs, excluding the newest one if saving logs is enabled.
   try {
     for (let i = 0; i < logFiles.length - 1; i++) {
       fs.rmSync(path.join(logsFolderPath, logFiles[i]));
+      logFilesLength = logFiles.length - 1;
     }
 
-    if (serverMaster.successLogs) {
+    // Deletes the newest file if logs aren't supposed to be saved.
+    if (!serverMaster.saveLogs) {
+      fs.rmSync(path.join(logsFolderPath, logFiles[logFiles.length - 1]));
+      logFilesLength = logFiles.length;
+    }
+
+    if (serverMaster.successLogs && logFiles.length > 0) {
       logger.info("Cleared logs.");
     }
-    res.json({ success: true });
+
+    res.json({ success: true, amount: logFilesLength });
   } catch (err) {
     res
       .status(500)

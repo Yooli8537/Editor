@@ -67,7 +67,7 @@
                         <div class="settingInfo">
                             <div class="settingTitle">Maximum name character count (characters)</div>
                             <div class="settingDescription">
-                                Maximum amount of characters which a file / folder can have.
+                                Maximum amount of characters which a file / folder name can have.
                             </div>
                             <div class="settingDefault">Default: 30</div>
                         </div>
@@ -213,6 +213,18 @@
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
+                            <div class="settingTitle">Maximum Image size (Megabytes)</div>
+                            <div class="settingDescription">
+                                Maximum file size which a single image uploaded to a document can be. Applying this setting requires a Server restart.
+                            </div>
+                            <div class="settingDefault">Default: 10mb</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="maxImageSize">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
                             <div class="settingTitle">Clear unused Images</div>
                             <div class="settingDescription">
                                 Searches through all your documents and removes any unused images from the server
@@ -268,6 +280,54 @@
                         <p>
                             Welcome to the Server settings! In order to apply any updates, you must restart your server.
                         </p>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/rate-limit.svg" class="groupIcon">
+                        <p>Rate Limiting</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle"><img src="../assets/icons/warning.svg"></div>
+                            <div>
+                                Rate Limiting blocks requests from a Client after a certain threshold is met. The limit
+                                is reset after a specified amount of time.
+                            </div>
+                            <div>
+                                Note that if you set these limits too harshly, you could have a very hard time changing
+                                them back without editing the <i>master.json</i> file directly.
+                            </div>
+                            <div>
+                                Restarting the Server will remove any rate limit applied to anyone.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Maximum number of requests</div>
+                            <div class="settingDescription">
+                                The maximum amount of requests which can be sent within the specified interval.
+                            </div>
+                            <div class="settingDefault">Default: 300 requests</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="rateLimitMaxRequests">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Rate Limit reset time (minutes)</div>
+                            <div class="settingDescription">
+                                The interval at which the rate limit is reset back to 0. This doesn't mean that once
+                                you've sent X requests, you have to wait X minutes; instead, your request count resets
+                                every X minutes.
+                            </div>
+                            <div class="settingDefault">Default: 5 minutes</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="rateLimitResetTime">
+                        </div>
                     </div>
                 </div>
                 <div class="settingGroup">
@@ -390,7 +450,7 @@
                     <div class="setting">
                         <div class="settingInfo">
                             <div class="settingTitle">Version</div>
-                            <div>You are currently on Editor version <i>v1.6.0</i>.</div>
+                            <div>You are currently on Editor version <i>v1.6.1</i>.</div>
                         </div>
                         <div class="settingValue">
                             <button type="submit" id="versionCheckButton" class="button hoverClass">

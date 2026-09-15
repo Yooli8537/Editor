@@ -30,7 +30,7 @@ const userDataFolders = [
   { name: "Attachments", path: attachmentsFolderPath },
 ];
 
-// Every property which should be in the masterfile.
+// Every property and default value which should be in master.json.
 const allProperties = {
   unsavedFiles: [],
   autosaveInterval: 10,
@@ -45,8 +45,12 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.6.0",
+  version: "v1.6.1",
   deniedVersion: null,
+  clientActionLogging: false,
+  rateLimitResetTime: 5,
+  rateLimitMaxRequests: 300,
+  maxImageSize: 10,
 };
 
 // Creates any missing data folders.
@@ -67,8 +71,16 @@ if (!fs.existsSync(masterFilePath)) {
 }
 
 const serverMaster = require("./serverMaster");
-const logger = require("./logger");
-const error = require("./error");
+const logger = require("./utils/logger");
+const error = require("./utils/error");
+
+// Limits requests
+// Placement to allow user settings to be used (must be placed after serverMaster).
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: serverMaster.rateLimitResetTime * 60 * 1000,
+  max: serverMaster.rateLimitMaxRequests,
+});
 
 // Server routes
 const documentsRoute = require("./routes/documents");
@@ -78,6 +90,7 @@ const settingsRoute = require("./routes/settings");
 
 app.use(express.json());
 app.use(express.static(rootPath));
+app.use(limiter);
 app.use(documentsRoute);
 app.use(exportRoute);
 app.use(autosaveRoute);
@@ -280,5 +293,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info({ Port: port }, "Editor Backend running");
+  logger.info({ Port: port }, "Editor Backend running.");
 });

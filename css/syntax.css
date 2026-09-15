@@ -55,7 +55,6 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 }
 
 .hljs-class .hljs-title,
-.hljs-literal,
 .hljs-keyword,
 .hljs-number {
   color: #8D91FF
@@ -75,6 +74,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 }
 
 .hljs-params,
-.hljs-meta {
+.hljs-meta,
+.hljs-literal {
   color: #FF9101;
 }

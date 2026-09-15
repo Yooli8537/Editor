@@ -5,8 +5,8 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const serverMaster = require("../serverMaster");
-const logger = require("../logger");
-const error = require("../error");
+const logger = require("../utils/logger");
+const error = require("../utils/error");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
@@ -87,29 +87,47 @@ async function addUnsavedToMaster(filename) {
 
 // Creating an autosave
 router.post("/api/autosave", async (req, res) => {
-  const { saveData, folderPath, name } = req.body;
+  const { saveData, name } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: name }, "Validating path...");
+  }
+
+  const dirPath = path.join(autosavesFolderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Autosave create",
+          "Recieved invalid path.",
+          { Name: name },
+          null,
+        ),
+      );
+    return;
+  }
+
   // Turns the saveData into the valid JSON array expected by TipTap.
   const saveArray = [saveData];
   const autosaveFilePath = path.join(autosavesFolderPath, name); // Full path to the autosave file location.
 
   if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "Recieved autosave create request.",
-    );
+    logger.info({ Name: name }, "Recieved autosave create request.");
   }
 
   // If the file is successfully added to the unsavedFiles array, it creates the autosave.
   if (addUnsavedToMaster(name)) {
     try {
       if (serverMaster.detailLogs) {
-        logger.info({ Name: name, Path: folderPath }, "Writing autosave...");
+        logger.info({ Name: name }, "Writing autosave...");
       }
 
       fs.writeFileSync(autosaveFilePath, JSON.stringify(saveArray), "utf-8");
 
       if (serverMaster.successLogs) {
-        logger.info({ Name: name, Path: folderPath }, "Created autosave.");
+        logger.info({ Name: name }, "Created autosave.");
       }
 
       res.json({ success: true });
@@ -120,7 +138,7 @@ router.post("/api/autosave", async (req, res) => {
           error(
             "Autosave create",
             "Failed to create autosave.",
-            { Name: name, Path: folderPath },
+            { Name: name },
             err,
           ),
         );
@@ -134,6 +152,23 @@ router.delete("/api/removeAutosave", async (req, res) => {
 
   if (serverMaster.detailLogs) {
     logger.info({ Name: name }, "Recieved autosave delete request.");
+    logger.info({ Path: name }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Autosave delete",
+          "Recieved invalid path.",
+          { Name: name },
+          null,
+        ),
+      );
+    return;
   }
 
   let masterFile = await getMasterFile();
@@ -191,6 +226,18 @@ router.get("/api/getAutosave", async (req, res) => {
 
   if (serverMaster.detailLogs) {
     logger.info({ Name: name }, "Recieved autosave get request.");
+    logger.info({ Path: name }, "Validating path...");
+  }
+
+  const dirPath = path.join(autosavesFolderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error("Autosave get", "Recieved invalid path.", { Name: name }, null),
+      );
+    return;
   }
 
   try {

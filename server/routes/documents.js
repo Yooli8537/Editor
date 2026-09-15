@@ -4,9 +4,11 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+
 const serverMaster = require("../serverMaster");
-const logger = require("../logger");
-const error = require("../error");
+const logger = require("../utils/logger");
+const error = require("../utils/error");
+const validatePath = require("../utils/validatePath");
 
 // Data folder paths
 const rootPath = path.join(__dirname, "../../");
@@ -171,6 +173,26 @@ router.post("/api/documents/newNotebook", async (req, res) => {
     logger.info("Recieved notebook create request.");
   }
 
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: name }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Notebook create",
+          "Recieved invalid path.",
+          { Name: name },
+          null,
+        ),
+      );
+    return;
+  }
+
   try {
     // Makes the directory
     fs.mkdirSync(path.join(notebooksFolderPath, name));
@@ -214,6 +236,27 @@ router.post("/api/documents/newFile", async (req, res) => {
       "Recieved file create request.",
     );
   }
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "File create",
+          "Recieved invalid path.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
+  }
+
   // Builds up the expected content of a TipTap document.
   const defaultContent = JSON.stringify(
     [
@@ -295,6 +338,26 @@ router.post("/api/documents/newFolder", async (req, res) => {
     );
   }
 
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Folder create",
+          "Recieved invalid path.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
+  }
+
   try {
     if (name && folderPath) {
       fs.mkdirSync(path.join(notebooksFolderPath, folderPath, name));
@@ -353,6 +416,26 @@ router.delete("/api/documents/deletePath", async (req, res) => {
     );
   }
 
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Path delete",
+          "Recieved invalid path.",
+          { Path: folderPath },
+          null,
+        ),
+      );
+    return;
+  }
+
   try {
     if (folderPath) {
       const fullPath = path.join(notebooksFolderPath, folderPath);
@@ -392,6 +475,26 @@ router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
   if (serverMaster.detailLogs) {
     logger.info({ Name: name, Path: folderPath }, "Recieved file get request.");
+  }
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "File get",
+          "Recieved invalid path.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
   }
 
   try {
@@ -439,6 +542,26 @@ router.post("/api/documents/renameFile", async (req, res) => {
       { "Old name": name, "New name": newName, Path: folderPath },
       "Recieved file rename request.",
     );
+  }
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "File rename",
+          "Recieved invalid path.",
+          { "New name": newName, "Old name": name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
   }
 
   if (serverMaster.detailLogs) {
@@ -544,7 +667,6 @@ function childDocumentIsOpen(
         return true;
       }
     } else {
-      logger.info("FOLDER");
       // Checks any child folders of the folder being renamed.
       const childPath = path.join(
         directoryFolderPath,
@@ -581,6 +703,26 @@ router.post("/api/documents/renameFolder", async (req, res) => {
       { "Old name": name, "New name": newName, Path: folderPath },
       "Recieved file rename request.",
     );
+  }
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Fodler rename",
+          "Recieved invalid path.",
+          { "New Name": newName, "Old name": name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
   }
 
   const currentPath = path.join(notebooksFolderPath, folderPath, name);
@@ -697,10 +839,29 @@ router.put("/api/documents/updateFile", async (req, res) => {
     );
   }
   if (serverMaster.detailLogs) {
+    logger.info({ Path: folderPath }, "Validating path...");
+  }
+
+  const dirPath = path.join(notebooksFolderPath, folderPath, name);
+
+  if (!validatePath(dirPath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "File update",
+          "Recieved invalid path.",
+          { Name: name, Path: folderPath },
+          null,
+        ),
+      );
+    return;
+  }
+
+  if (serverMaster.detailLogs) {
     logger.info({ Name: name, Path: folderPath }, "Reading file to save to...");
   }
 
-  const filePath = path.join(notebooksFolderPath, folderPath, name);
   const file = fs.readFileSync(filePath, "utf-8");
 
   const fileData = JSON.parse(file);
@@ -722,7 +883,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
 // Uploads image files to the server.
 router.post(
   "/api/uploadImageFile",
-  express.raw({ type: "image/*", limit: "10mb" }),
+  express.raw({ type: "image/*", limit: `${serverMaster.maxImageSize}mb` }),
   async (req, res) => {
     const imgType = req.headers["content-type"];
     if (serverMaster.detailLogs) {
