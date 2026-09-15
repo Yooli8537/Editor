@@ -31,10 +31,13 @@ router.post("/api/autosave", async (req, res) => {
   }
 
   const autosaveName = createAutosaveName(name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
 
-  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
-
-  if (!validatePath(dirPath)) {
+  if (!validatePath(autosaveFilePath)) {
     res
       .status(403)
       .json(
@@ -50,21 +53,16 @@ router.post("/api/autosave", async (req, res) => {
 
   // Turns the saveData into the valid JSON array expected by TipTap.
   const saveArray = [saveData];
-  const autosaveFilePath = path.join(
-    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    folderPath,
-    autosaveName,
-  );
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Writing autosave...");
+      logger.info({ Path: folderPath, Name: name }, "Writing autosave...");
     }
 
     fs.writeFileSync(autosaveFilePath, JSON.stringify(saveArray), "utf-8");
 
     if (serverMaster.successLogs) {
-      logger.info({ Name: name }, "Created autosave.");
+      logger.info({ Path: folderPath, Name: name }, "Created autosave.");
     }
 
     res.json({ success: true });
@@ -75,7 +73,7 @@ router.post("/api/autosave", async (req, res) => {
         error(
           "Autosave create",
           "Failed to create autosave.",
-          { Name: name },
+          { Path: folderPath, Name: name },
           err,
         ),
       );
@@ -94,21 +92,21 @@ router.delete("/api/removeAutosave", async (req, res) => {
     logger.info("Validating path...");
   }
 
-  logger.info({
-    Notebooks: GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    Path: folderPath,
-    Name: name,
-  });
-  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
+  const autosaveName = createAutosaveName(name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
 
-  if (!validatePath(dirPath)) {
+  if (!validatePath(autosaveFilePath)) {
     res
       .status(403)
       .json(
         error(
           "Autosave delete",
           "Recieved invalid path.",
-          { Name: name },
+          { Path: folderPath, Name: name },
           null,
         ),
       );
@@ -117,16 +115,14 @@ router.delete("/api/removeAutosave", async (req, res) => {
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Deleting autosave...");
+      logger.info({ Path: folderPath, Name: name }, "Deleting autosave...");
     }
-
-    const autosaveName = createAutosaveName(name);
     fs.rmSync(
       path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, autosaveName),
     );
 
     if (serverMaster.successLogs) {
-      logger.info({ Name: name }, "Deleted autosave.");
+      logger.info({ Path: folderPath, Name: name }, "Deleted autosave.");
     }
 
     res.json({ success: true });
@@ -137,10 +133,55 @@ router.delete("/api/removeAutosave", async (req, res) => {
         error(
           "Autosave remove",
           "Failed to remove autosave.",
-          { Name: name },
+          { Path: folderPath, Name: name },
           err,
         ),
       );
+  }
+});
+
+router.get("/api/checkForAutosave", async (req, res) => {
+  const { folderPath, name } = req.query;
+
+  const autosaveName = createAutosaveName(name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
+
+  if (!validatePath(autosaveFilePath)) {
+    res
+      .status(403)
+      .json(
+        error(
+          "Autosave check",
+          "Recieved invalid path.",
+          { Path: folderPath, Name: name },
+          null,
+        ),
+      );
+    return;
+  }
+
+  try {
+    if (fs.existsSync(autosaveFilePath)) {
+      res.json({ success: true, autosaveExists: true });
+    } else {
+      res.json({ success: true, autosaveExists: false });
+    }
+  } catch (err) {
+    res.status(500).json(
+      error(
+        "Autosave check",
+        "Failed to check for autosave.",
+        {
+          Path: folderPath,
+          Name: name,
+        },
+        err,
+      ),
+    );
   }
 });
 
@@ -159,7 +200,7 @@ router.get("/api/getAutosave", async (req, res) => {
   }
 
   const autosaveFilePath = path.join(
-    GLOBAL.PATHS.FOLDERS.AUTOSAVES,
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
     folderPath,
     autosaveName,
   );

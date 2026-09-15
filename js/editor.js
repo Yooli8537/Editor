@@ -146,17 +146,25 @@ let currentEntry;
 let currentPreviousEntry;
 
 // Checks for an autosave
-export function checkForAutosave(document) {
-  if (getState("unsavedFiles").indexOf(document) > -1) {
-    return true;
+async function checkForAutosave(document, path) {
+  const response = await fetch(
+    `/api/checkForAutosave?name=${document}&folderPath=${path}`,
+    { method: "GET" },
+  );
+
+  const responseJSON = await response.json();
+  if (response.ok) {
+    return responseJSON.autosaveExists;
   } else {
+    handleServerErrors(responseJSON, response.status);
     return false;
   }
 }
 
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
-  if (checkForAutosave(document)) {
+  if (await checkForAutosave(document, path)) {
+    console.log("CHECKED FOR AUTOSAVE: TRUE");
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
@@ -188,6 +196,7 @@ export async function loadAutosave(fileData, document, path) {
       },
     );
   } else {
+    console.log("CHECKED FOR AUTOSAVE: FALSE");
     loadDocument(fileData, document, path);
   }
 }
@@ -262,7 +271,7 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
-    if (checkForAutosave(currentEntry)) {
+    if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
 
@@ -894,7 +903,7 @@ async function pushSaveData() {
   // Error handling
   if (response.ok) {
     setState("editorIsSaved", true);
-    if (checkForAutosave(currentEntry)) {
+    if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
     updateSaveIcons();
@@ -1012,10 +1021,7 @@ async function removeAutosave() {
     }),
   });
 
-  if (response.ok) {
-    // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
-    rmState("unsavedFiles", currentEntry);
-  } else {
+  if (!response.ok) {
     const responseJSON = await response.json();
     handleServerErrors(responseJSON, response.status);
   }
@@ -1071,9 +1077,7 @@ export async function onFirstStart() {
     // Getting the Document from the URL.
     const response = await fetch(
       `api/documents/getFile?folderPath=${path}&name=${document}`,
-      {
-        method: "GET",
-      },
+      { method: "GET" },
     );
 
     if (response.ok) {
