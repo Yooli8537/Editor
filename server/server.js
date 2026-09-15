@@ -22,7 +22,6 @@ const userDataFolders = [
 
 // Every property and default value which should be in master.json.
 const allProperties = {
-  unsavedFiles: [],
   autosaveInterval: 10,
   helpTextHoverTime: 1.5,
   confirmSave: true,
@@ -119,7 +118,7 @@ async function deleteDeprecatedMasterProperties() {
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
-  const deprecatedProperties = ["usedImages", "applyAppUpdate"];
+  const deprecatedProperties = ["usedImages", "applyAppUpdate", "unsavedFiles"];
 
   // Deletes deprecated properties
   for (let i = 0; i < deprecatedProperties.length; i++) {

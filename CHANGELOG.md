@@ -6,6 +6,10 @@
 
 - Common Server variables standardized in the global.js file ([Issue #95](https://github.com/Yooli8537/Editor/issues/95)).
 
+### Deprecated
+
+- `master.json` property "unsavedFiles" has been deprecated and is no longer used by the app.
+
 ### Fixed
 
 - Fixed an incorrect server response for `/api/documents/deletePath`.

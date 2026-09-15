@@ -988,10 +988,6 @@ async function initAutosave(autosaveInterval) {
     const saveData = editor.getJSON();
 
     if (!getState("editorIsSaved")) {
-      // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
-      if (!checkState("unsavedFiles", currentEntry)) {
-        addState("unsavedFiles", currentEntry);
-      }
       const createAutosave = await fetch("/api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
