@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## v1.6.3 - Autosaving Hotfix
 
 ### Fixed
 
-- Removing autosaves now works.
+- Autosaves now behave correctly with path checks.
+
+### Notes
+
+The previous fix was so important that I just instantly released it, but it seemes there was another evil among the code that I noticed just after releasing the previous version.
 
 ## v1.6.2 - Saving Hotfix
 
