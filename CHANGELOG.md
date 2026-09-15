@@ -19,6 +19,7 @@
 ### Security
 
 - Implemented Rate limiting and settings to adjust it.
+- Implemented Path injection prevention.
 
 ## v1.6.0 - Largely improved error handling & bug fixes
 

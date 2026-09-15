@@ -991,7 +991,6 @@ async function initAutosave(autosaveInterval) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           saveData: saveData,
-          folderPath: currentPreviousEntry, // currentPreviousEntry in the path up to the file,
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
