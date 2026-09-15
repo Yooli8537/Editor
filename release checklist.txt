@@ -6,3 +6,4 @@ Go through this before creating a new pull request & release on GitHub.
 - Delete "version" property in master.json
 - Merge & Delete Branch
 - Switch to a new branch `git checkout -b "Development_+vNEWLY.RELEASED.VERSION"`.
+- Publish branch

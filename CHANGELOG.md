@@ -24,7 +24,7 @@
 
 ### Security
 
-- Implemented Rate limiting and settings to adjust it.
+- Implemented Rate limiting and settings to adjust it ([Issue #89](https://github.com/Yooli8537/Editor/issues/89)).
 - Implemented Path injection prevention.
 
 ## v1.6.0 - Largely improved error handling & bug fixes
