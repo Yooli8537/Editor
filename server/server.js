@@ -76,8 +76,8 @@ const error = require("./utils/error");
 
 // Limits requests
 // Placement to allow user settings to be used (must be placed after serverMaster).
-const RateLimit = require('express-rate-limit');
-const limiter = RateLimit({
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
   windowMs: serverMaster.rateLimitResetTime * 60 * 1000,
   max: serverMaster.rateLimitMaxRequests,
 });
