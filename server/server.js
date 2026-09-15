@@ -3,30 +3,21 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-
-const GLOBAL = require("./utils/global");
-
-// Git for JS
 const gitJS = require("simple-git");
 const git = gitJS.default();
+
+const GLOBAL = require("./utils/global");
 
 const app = express();
 const port = 8510;
 
-// Paths to Folders which need to exist within the data folder.
-const rootPath = path.join(__dirname, "../");
-const notebooksFolderPath = path.join(GLOBAL.PATHS.DATA, "notebooks");
-const imageFolderPath = path.join(GLOBAL.PATHS.DATA, "images");
-const attachmentsFolderPath = path.join(GLOBAL.PATHS.DATA, "attachments");
-const masterFilePath = path.join(GLOBAL.PATHS.DATA, "master.json");
-
 const userDataFolders = [
-  { name: "Logs", path: GLOBAL.PATHS.LOGS },
-  { name: "Data", path: GLOBAL.PATHS.DATA },
-  { name: "Autosaves", path: GLOBAL.PATHS.AUTOSAVES },
-  { name: "Notebooks", path: notebooksFolderPath },
-  { name: "Image", path: imageFolderPath },
-  { name: "Attachments", path: attachmentsFolderPath },
+  { name: "Logs", path: GLOBAL.PATHS.FOLDERS.LOGS },
+  { name: "Data", path: GLOBAL.PATHS.FOLDERS.DATA },
+  { name: "Autosaves", path: GLOBAL.PATHS.FOLDERS.AUTOSAVES },
+  { name: "Notebooks", path: GLOBAL.PATHS.FOLDERS.NOTEBOOKS },
+  { name: "Image", path: GLOBAL.PATHS.FOLDERS.IMAGES },
+  { name: "Attachments", path: GLOBAL.PATHS.FOLDERS.ATTACHMENTS },
 ];
 
 // Every property and default value which should be in master.json.
@@ -60,10 +51,10 @@ for (let i = 0; i < userDataFolders.length; i++) {
 }
 
 // Masterfile to store config across sessions
-if (!fs.existsSync(masterFilePath)) {
+if (!fs.existsSync(GLOBAL.PATHS.FILES.MASTERFILE)) {
   try {
     const masterFileContent = `[${JSON.stringify(allProperties)}]`;
-    fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+    fs.writeFileSync(GLOBAL.PATHS.MASTERFILE, masterFileContent, "utf-8");
   } catch (err) {
     logger.error("Failed to create master.json.");
   }
@@ -81,25 +72,23 @@ const limiter = rateLimit({
   max: serverMaster.rateLimitMaxRequests,
 });
 
-// Server routes
-const documentsRoute = require("./routes/documents");
-const exportRoute = require("./routes/export");
-const autosaveRoute = require("./routes/autosave");
-const settingsRoute = require("./routes/settings");
-
 app.use(express.json());
-app.use(express.static(rootPath));
+app.use(express.static(GLOBAL.PATHS.FOLDERS.ROOT));
 app.use(limiter);
-app.use(documentsRoute);
-app.use(exportRoute);
-app.use(autosaveRoute);
-app.use(settingsRoute);
+app.use(GLOBAL.PATHS.ROUTES.DOCUMENTS);
+app.use(GLOBAL.PATHS.ROUTES.EXPORT);
+app.use(GLOBAL.PATHS.ROUTES.AUTOSAVE);
+app.use(GLOBAL.PATHS.ROUTES.SETTINGS);
 
 // Updates the masterfile and gives feedback on success.
 // This function is used after deprecated / missing properties are found.
 async function updateMasterfile(masterFile) {
   try {
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
       logger.warn("Updated masterfile properties.");
     }
@@ -120,7 +109,7 @@ async function deleteDeprecatedMasterProperties() {
   logger.info("Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
@@ -153,7 +142,7 @@ async function addMissingMasterProperties() {
   logger.info("Checking for missing master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
 
@@ -186,7 +175,10 @@ app.get("/api/getMaster", async (req, res) => {
     logger.info("Recived master.json get request.");
   }
   try {
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
     if (serverMaster.successLogs) {
@@ -207,7 +199,11 @@ app.put("/api/updateMaster", async (req, res) => {
   }
 
   try {
-    fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(data),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
       logger.info("Updated master.json.");
       if (serverMaster.detailLogs) {
@@ -242,14 +238,21 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
   try {
     // Gets master data
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
     const masterFile = JSON.parse(rawMasterFile);
 
     // Updates given property
     masterFile[0][property] = newValue;
 
     // Updates the master.
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
       logger.info({ Property: property }, "Updated master.json property.");
     }
@@ -288,7 +291,7 @@ app.get("/api/", async (req, res) => {
 
 // Sends index.html to the client.
 app.get("/", (req, res) => {
-  res.sendFile(path.join(rootPath, "index.html"));
+  res.sendFile(path.join(GLOBAL.PATHS.FOLDERS.ROOT, "index.html"));
 });
 
 app.listen(port, () => {
