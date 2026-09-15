@@ -1,8 +1,5 @@
 {
-  "name": "lerndokumentationseditor",
-  "version": "1.0.0",
   "description": "This Project is a Text Editor Webapp.",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"node server/server.js\" \"vite --port 8511\"",
@@ -13,11 +10,10 @@
     "url": "git+https://github.com/Yooli8537/Editor.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Yooli8537",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/Yooli8537/Editor/issues"
+    "url": "https://github.com/Yooli8537/Editor"
   },
   "homepage": "https://github.com/Yooli8537/Editor#readme",
   "dependencies": {
