@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Removing autosaves now works.
+
 ## v1.6.2 - Saving Hotfix
 
 ### Fixed

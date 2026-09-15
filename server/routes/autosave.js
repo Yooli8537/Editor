@@ -155,7 +155,7 @@ router.delete("/api/removeAutosave", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, name);
+  const dirPath = path.join(autosavesFolderPath, name);
 
   if (!validatePath(dirPath)) {
     res
