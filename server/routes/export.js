@@ -3,8 +3,8 @@
 const express = require("express");
 const router = express.Router();
 const serverMaster = require("../serverMaster");
-const logger = require("../logger");
-const error = require("../error");
+const logger = require("../utils/logger");
+const error = require("../utils/error");
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Processes HTML and converts it into PDF

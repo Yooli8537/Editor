@@ -71,8 +71,8 @@ if (!fs.existsSync(masterFilePath)) {
 }
 
 const serverMaster = require("./serverMaster");
-const logger = require("./logger");
-const error = require("./error");
+const logger = require("./utils/logger");
+const error = require("./utils/error");
 
 // Limits requests
 // Placement to allow user settings to be used (must be placed after serverMaster).

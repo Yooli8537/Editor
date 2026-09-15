@@ -5,8 +5,8 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const serverMaster = require("../serverMaster");
-const logger = require("../logger");
-const error = require("../error");
+const logger = require("../utils/logger");
+const error = require("../utils/error");
 
 // Data folder paths
 const rootPath = path.join(__dirname, "../../");
