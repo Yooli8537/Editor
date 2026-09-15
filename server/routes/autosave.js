@@ -4,9 +4,11 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+
 const serverMaster = require("../serverMaster");
 const logger = require("../utils/logger");
 const error = require("../utils/error");
+const validatePath = require("../utils/validatePath");
 
 // Data paths
 const rootPath = path.join(__dirname, "../../");
@@ -155,7 +157,7 @@ router.delete("/api/removeAutosave", async (req, res) => {
     logger.info({ Path: name }, "Validating path...");
   }
 
-  const dirPath = path.join(notebooksFolderPath, name);
+  const dirPath = path.join(autosavesFolderPath, name);
 
   if (!validatePath(dirPath)) {
     res

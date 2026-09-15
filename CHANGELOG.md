@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.6.3 - Autosaving Hotfix
+
+### Fixed
+
+- Autosaves now behave correctly with path checks.
+
+### Notes
+
+The previous fix was so important that I just instantly released it, but it seemes there was another evil among the code that I noticed just after releasing the previous version.
+
 ## v1.6.2 - Saving Hotfix
 
 ### Fixed
@@ -24,7 +34,7 @@
 
 ### Security
 
-- Implemented Rate limiting and settings to adjust it.
+- Implemented Rate limiting and settings to adjust it ([Issue #89](https://github.com/Yooli8537/Editor/issues/89)).
 - Implemented Path injection prevention.
 
 ## v1.6.0 - Largely improved error handling & bug fixes
