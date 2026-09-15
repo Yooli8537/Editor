@@ -168,9 +168,12 @@ export async function loadAutosave(fileData, document, path) {
       },
       async () => {
         // Gets the Autosave
-        const autosave = await fetch(`api/getAutosave?name=${document}`, {
-          method: "GET",
-        });
+        const autosave = await fetch(
+          `api/getAutosave?name=${document}&folderPath=${path}`,
+          {
+            method: "GET",
+          },
+        );
 
         if (autosave.ok) {
           const autosaveData = await autosave.json();

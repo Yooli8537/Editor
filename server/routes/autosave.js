@@ -10,22 +10,6 @@ const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const validatePath = require(GLOBAL.PATHS.UTILS.VALIDATE_PATH);
 
-// Gets the master.json and returns it.
-async function getMasterFile() {
-  if (serverMaster.detailLogs) {
-    logger.info("Getting master.json");
-  }
-  try {
-    const rawMasterFile = fs.readFileSync(
-      GLOBAL.PATHS.FILES.MASTERFILE,
-      "utf-8",
-    );
-    return JSON.parse(rawMasterFile);
-  } catch (err) {
-    error("Get master.json", "Failed to read master.json.", {}, err);
-  }
-}
-
 function createAutosaveName(filename) {
   let autosaveName = filename.slice(0, -5);
   autosaveName += ".autosave.json";
@@ -162,39 +146,56 @@ router.delete("/api/removeAutosave", async (req, res) => {
 
 // Gets the data of an autosave.
 router.get("/api/getAutosave", async (req, res) => {
-  const { name } = req.query;
+  const { folderPath, name } = req.query;
+
+  const autosaveName = createAutosaveName(name);
 
   if (serverMaster.detailLogs) {
-    logger.info({ Name: name }, "Recieved autosave get request.");
-    logger.info({ Path: name }, "Validating path...");
+    logger.info(
+      { Path: folderPath, Name: autosaveName },
+      "Recieved autosave get request.",
+    );
+    logger.info("Validating path...");
   }
 
-  const dirPath = path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVES, name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.AUTOSAVES,
+    folderPath,
+    autosaveName,
+  );
 
-  if (!validatePath(dirPath)) {
+  if (!validatePath(autosaveFilePath)) {
     res
       .status(403)
       .json(
-        error("Autosave get", "Recieved invalid path.", { Name: name }, null),
+        error(
+          "Autosave get",
+          "Recieved invalid path.",
+          { Path: folderPath, Name: autosaveName },
+          null,
+        ),
       );
     return;
   }
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Getting autosave data...");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Getting autosave data...",
+      );
     }
 
-    const rawAutosave = fs.readFileSync(
-      path.join(GLOBAL.PATHS.FOLDERS.AUTOSAVES, name),
-      "utf-8",
-    );
+    const rawAutosave = fs.readFileSync(path.join(autosaveFilePath), "utf-8");
 
     if (serverMaster.successLogs) {
-      logger.info({ Name: name }, "Got autosave.");
+      logger.info({ Path: folderPath, Name: autosaveName }, "Got autosave.");
     }
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Sent autosave to Client.");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Sent autosave to Client.",
+      );
     }
 
     res.json(JSON.parse(rawAutosave));
@@ -204,7 +205,7 @@ router.get("/api/getAutosave", async (req, res) => {
         404,
         "Autosave get",
         "Failed to find autosave.",
-        { Name: name },
+        { Path: folderPath, Name: autosaveName },
         err,
       );
     } else {
@@ -212,7 +213,7 @@ router.get("/api/getAutosave", async (req, res) => {
         500,
         "Autosave get",
         "Failed to get autosave.",
-        { Name: name },
+        { Path: folderPath, Name: autosaveName },
         err,
       );
     }
