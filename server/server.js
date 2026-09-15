@@ -4,6 +4,8 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
+const GLOBAL = require("./utils/global");
+
 // Git for JS
 const gitJS = require("simple-git");
 const git = gitJS.default();
@@ -13,18 +15,15 @@ const port = 8510;
 
 // Paths to Folders which need to exist within the data folder.
 const rootPath = path.join(__dirname, "../");
-const logsFolderPath = path.join(rootPath, "logs");
-const dataFolderPath = path.join(rootPath, "data");
-const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
-const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
-const imageFolderPath = path.join(dataFolderPath, "images");
-const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
-const masterFilePath = path.join(dataFolderPath, "master.json");
+const notebooksFolderPath = path.join(GLOBAL.PATHS.DATA, "notebooks");
+const imageFolderPath = path.join(GLOBAL.PATHS.DATA, "images");
+const attachmentsFolderPath = path.join(GLOBAL.PATHS.DATA, "attachments");
+const masterFilePath = path.join(GLOBAL.PATHS.DATA, "master.json");
 
 const userDataFolders = [
-  { name: "Logs", path: logsFolderPath },
-  { name: "Data", path: dataFolderPath },
-  { name: "Autosaves", path: autosavesFolderPath },
+  { name: "Logs", path: GLOBAL.PATHS.LOGS },
+  { name: "Data", path: GLOBAL.PATHS.DATA },
+  { name: "Autosaves", path: GLOBAL.PATHS.AUTOSAVES },
   { name: "Notebooks", path: notebooksFolderPath },
   { name: "Image", path: imageFolderPath },
   { name: "Attachments", path: attachmentsFolderPath },
