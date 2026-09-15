@@ -6,6 +6,10 @@
 
 - Common Server variables standardized in the global.js file ([Issue #95](https://github.com/Yooli8537/Editor/issues/95)).
 
+### Fixed
+
+- Fixed an incorrect server response for `/api/documents/deletePath`.
+
 ## v1.6.3 - Autosaving Hotfix
 
 ### Fixed

@@ -23,13 +23,7 @@ import {
   handleServerErrors,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import {
-  addState,
-  checkState,
-  getState,
-  rmState,
-  setState,
-} from "./state";
+import { addState, checkState, getState, rmState, setState } from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -991,6 +985,7 @@ async function initAutosave(autosaveInterval) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           saveData: saveData,
+          folderPath: currentPreviousEntry,
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
@@ -1009,6 +1004,7 @@ async function removeAutosave() {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      folderPath: currentPreviousEntry,
       name: currentEntry,
     }),
   });
