@@ -436,7 +436,7 @@ router.delete("/api/documents/deletePath", async (req, res) => {
       if (serverMaster.successLogs) {
         logger.info({ Path: folderPath }, "Deleted path.");
       }
-      res.send("Path successfully deleted.").json({ success: true });
+      res.json({ success: true });
     } else {
       res
         .status(404)
