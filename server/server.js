@@ -171,7 +171,7 @@ addMissingMasterProperties();
 // Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
   if (serverMaster.detailLogs) {
-    logger.info("Recived master.json get request.");
+    logger.info("Master get: Recived request.");
   }
   try {
     const rawMasterFile = fs.readFileSync(
@@ -181,12 +181,12 @@ app.get("/api/getMaster", async (req, res) => {
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
     if (serverMaster.successLogs) {
-      logger.info("Loaded Masterfile.");
+      logger.info("Master get: Loaded master.json.");
     }
   } catch (err) {
     res
       .status(500)
-      .json(error("master.json get", "Failed to get master.json.", {}, err));
+      .json(error("Master get: ", "Failed to get master.json.", {}, err));
   }
 });
 
