@@ -916,20 +916,16 @@ function saveEditor(isRestoration) {
   if (!getState("editorIsSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
-    if (isRestoration) {
+    if (isRestoration || !getState("confirmSave")) {
       pushSaveData();
     } else {
-      if (getState("confirmSave")) {
-        createConfirmModal(
-          "Are you sure you want to save this File?",
-          "Back to Editor",
-          "Save File",
-          () => {},
-          pushSaveData,
-        );
-      } else {
-        pushSaveData();
-      }
+      createConfirmModal(
+        "Are you sure you want to save this File?",
+        "Back to Editor",
+        "Save File",
+        () => {},
+        pushSaveData,
+      );
     }
   } else {
     // No changes = no need to update
