@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Documents can now be exported as JSON.
+
 ### Changed
 
 - Common Server variables standardized in the global.js file ([Issue #95](https://github.com/Yooli8537/Editor/issues/95)).

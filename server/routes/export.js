@@ -89,4 +89,10 @@ router.post("/api/export/pdf", async (req, res) => {
   }
 });
 
+router.post("/api/export/json", async (req, res) => {
+  const { documentJSON } = req.body;
+  console.log(documentJSON);
+  res.json({ success: true });
+});
+
 module.exports = router;

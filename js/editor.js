@@ -769,7 +769,7 @@ tableDeleteButton.addEventListener("click", (e) => {
   createSubmenu(tableDeleteButton, tableDeleteItems, 1);
 });
 
-const linkEditButtons = [
+const linkEditItems = [
   {
     icon: "format/link.svg",
     action: () =>
@@ -795,17 +795,31 @@ setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(linkButton, linkEditButtons, 1);
+  createSubmenu(linkButton, linkEditItems, 1);
 });
 
 // Functional Buttons
+const exportButtonItems = [
+  {
+    icon: "function/pdf.svg",
+    action: () => exportCurrentDocumentAsPDF(),
+    helpText: "Export as PDF",
+  },
+  {
+    icon: "function/json.svg",
+    action: () => exportCurrentDocumentAsJSON(),
+    helpText: "Export as JSON",
+  },
+];
+
 setHelpText(exportButton, "Export Document");
-exportButton.addEventListener("click", async (e) => {
+exportButton.addEventListener("click", (e) => {
   e.preventDefault();
-  exportCurrentDocumentAsPDF();
+  e.stopPropagation();
+  createSubmenu(exportButton, exportButtonItems, 1);
 });
 
-async function exportCurrentDocumentAsPDF() {
+function exportCurrentDocumentAsPDF() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -864,6 +878,39 @@ async function downloadDocumentPDF(response) {
   downloadElement.href = downloadURL;
   downloadElement.download = currentEntry.replace(".json", ".pdf");
   downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL);
+}
+
+function exportCurrentDocumentAsJSON() {
+  const exportDocument = editor.getJSON(); // Gets the JSON from the TipTap Editor
+  downloadDocumentJSON(exportDocument);
+  if (getState("confirmExport")) {
+    createConfirmModal(
+      "Are you sure you want to Export the current Document?",
+      "Back to Editor",
+      "Export as JSON",
+      () => {},
+      () => {
+        downloadDocumentJSON(exportDocument);
+      },
+    );
+  } else {
+    downloadDocumentJSON(exportDocument);
+  }
+}
+
+function downloadDocumentJSON(exportDocument) {
+  const blob = new Blob([JSON.stringify(exportDocument, null, 2)], {
+    type: "application/json",
+  });
+  let downloadURL = URL.createObjectURL(blob);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry;
+  downloadElement.click();
+
   URL.revokeObjectURL(downloadURL); // Deletes download Element
 }
 
