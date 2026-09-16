@@ -883,8 +883,11 @@ async function downloadDocumentPDF(response) {
 }
 
 function exportCurrentDocumentAsJSON() {
-  const exportDocument = editor.getJSON(); // Gets the JSON from the TipTap Editor
-  downloadDocumentJSON(exportDocument);
+  const editorJSON = editor.getJSON();
+  const exportDocument = [
+    { title: currentEntry.slice(0, -5), content: editorJSON },
+  ];
+
   if (getState("confirmExport")) {
     createConfirmModal(
       "Are you sure you want to Export the current Document?",
