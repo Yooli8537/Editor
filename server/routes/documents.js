@@ -172,17 +172,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Notebook create",
-          "Recieved invalid path.",
-          { Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "Notebook create", res)) {
     return;
   }
 
@@ -236,17 +226,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "File create",
-          "Recieved invalid path.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "File create", res)) {
     return;
   }
 
@@ -337,17 +317,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Folder create",
-          "Recieved invalid path.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "Folder create", res)) {
     return;
   }
 
@@ -415,17 +385,7 @@ router.delete("/api/documents/deletePath", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Path delete",
-          "Recieved invalid path.",
-          { Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "Path delete", res)) {
     return;
   }
 
@@ -476,17 +436,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "File get",
-          "Recieved invalid path.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "File get", res)) {
     return;
   }
 
@@ -543,17 +493,7 @@ router.post("/api/documents/renameFile", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "File rename",
-          "Recieved invalid path.",
-          { "New name": newName, "Old name": name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "File rename", res)) {
     return;
   }
 
@@ -704,17 +644,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Fodler rename",
-          "Recieved invalid path.",
-          { "New Name": newName, "Old name": name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "Folder rename", res)) {
     return;
   }
 
@@ -837,17 +767,7 @@ router.put("/api/documents/updateFile", async (req, res) => {
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "File update",
-          "Recieved invalid path.",
-          { Name: name, Path: folderPath },
-          null,
-        ),
-      );
+  if (!validatePath(dirPath, "File update", res)) {
     return;
   }
 
