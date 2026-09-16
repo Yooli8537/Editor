@@ -4,12 +4,12 @@ const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
-const logger = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Processes HTML and converts it into PDF
-router.post("/api/export", async (req, res) => {
+router.post("/api/export/pdf", async (req, res) => {
   const { exportDocument, name } = req.body;
   if (serverMaster.detailLogs) {
     logger.info(

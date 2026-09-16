@@ -798,37 +798,14 @@ linkButton.addEventListener("click", (e) => {
   createSubmenu(linkButton, linkEditButtons, 1);
 });
 
-// Handles the export of a file.
-async function handleExport(exportDocument) {
-  const response = await fetch("/api/export", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      exportDocument: exportDocument,
-      name: currentEntry.replace(".json", ""),
-    }),
-  });
-
-  if (response.ok) {
-    // Sends the response to the client, which then downloads it automatically.
-    const blobResponse = await response.blob();
-    let downloadURL = await URL.createObjectURL(blobResponse);
-
-    let downloadElement = document.createElement("a");
-    downloadElement.href = downloadURL;
-    downloadElement.download = currentEntry.replace(".json", ".pdf");
-    downloadElement.click();
-    URL.revokeObjectURL(downloadURL); // Deletes download Element
-  } else {
-    const responseJSON = await response.json();
-    handleServerErrors(responseJSON, response.status);
-  }
-}
-
 // Functional Buttons
-setHelpText(exportButton, "Export Document as PDF");
+setHelpText(exportButton, "Export Document");
 exportButton.addEventListener("click", async (e) => {
   e.preventDefault();
+  exportCurrentDocumentAsPDF();
+});
+
+async function exportCurrentDocumentAsPDF() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -850,13 +827,45 @@ exportButton.addEventListener("click", async (e) => {
       "Export as PDF",
       () => {},
       () => {
-        handleExport(exportDocument);
+        getDocumentPDF(exportDocument);
       },
     );
   } else {
-    handleExport(exportDocument);
+    getDocumentPDF(exportDocument);
   }
-});
+}
+
+// Gets the PDF export of a file.
+async function getDocumentPDF(exportDocument) {
+  const response = await fetch("/api/export/pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      exportDocument: exportDocument,
+      name: currentEntry.replace(".json", ""),
+    }),
+  });
+
+  if (response.ok) {
+    downloadDocumentPDF(response);
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
+  }
+}
+
+// Downloads the PDF export from a URL.
+async function downloadDocumentPDF(response) {
+  // Sends the response to the client, which then downloads it automatically.
+  const blobResponse = await response.blob();
+  let downloadURL = URL.createObjectURL(blobResponse);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry.replace(".json", ".pdf");
+  downloadElement.click();
+  URL.revokeObjectURL(downloadURL); // Deletes download Element
+}
 
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
