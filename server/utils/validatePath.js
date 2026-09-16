@@ -30,7 +30,7 @@ async function validatePath(inputPath, operation, res) {
       isValid = false;
     }
 
-    if (isValid && serverMaster.detailLogs) {
+    if (isValid && serverMaster.successLogs) {
       logger.info({ Path: inputPath }, `${operation}: Path validated.`);
     }
 
