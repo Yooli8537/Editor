@@ -12,7 +12,10 @@ const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 router.post("/api/export", async (req, res) => {
   const { exportDocument, name } = req.body;
   if (serverMaster.detailLogs) {
-    logger.info({ "Document name": name }, "Recived document export request.");
+    logger.info(
+      { "Document name": name },
+      "Document PDF export: Recived request.",
+    );
   }
 
   // Basic HTML structure.
@@ -32,7 +35,7 @@ router.post("/api/export", async (req, res) => {
   `;
   try {
     if (serverMaster.detailLogs) {
-      logger.info("Launching simulated browser.");
+      logger.info("Document PDF export: Launching simulated browser.");
     }
     // Simulated browser which Puppeteer uses to generate the PDF.
     const browser = await puppeteer.launch({
@@ -47,7 +50,7 @@ router.post("/api/export", async (req, res) => {
     });
 
     if (serverMaster.detailLogs) {
-      logger.info("Converting HTML to PDF.");
+      logger.info("Document PDF export: Converting HTML to PDF.");
     }
     // Converts the page into a PDF with specifications.
     const pdf = await page.pdf({
@@ -57,7 +60,7 @@ router.post("/api/export", async (req, res) => {
     });
 
     if (serverMaster.detailLogs) {
-      logger.info("Closing simulated browser.");
+      logger.info("Document PDF export: Closing simulated browser.");
     }
     // Closes the simulated browser.
     await browser.close();
@@ -70,12 +73,19 @@ router.post("/api/export", async (req, res) => {
     );
     res.send(pdf);
     if (serverMaster.successLogs) {
-      logger.info("Sent PDF-Export to Client.");
+      logger.info("Document PDF export: Sent PDF-Export to Client.");
     }
   } catch (err) {
     res
       .status(500)
-      .json(error("PDF export", "Failed to export PDF.", { Name: name }, err));
+      .json(
+        error(
+          "Document PDF export",
+          "Failed to export PDF.",
+          { Name: name },
+          err,
+        ),
+      );
   }
 });
 

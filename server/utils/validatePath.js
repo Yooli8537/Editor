@@ -7,6 +7,9 @@ const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 
 async function validatePath(inputPath, operation, res) {
+  if (serverMaster.detailLogs) {
+    logger.info({Path: inputPath}, `${operation}: Validating path...`)
+  }
   try {
     const realRoot = fs.realpathSync(GLOBAL.PATHS.FOLDERS.ROOT);
 
