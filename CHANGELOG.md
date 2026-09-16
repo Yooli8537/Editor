@@ -4,7 +4,7 @@
 
 ### Added
 
-- Documents can now be exported as JSON.
+- Documents can now be exported as JSON ([Issue #100](https://github.com/Yooli8537/Editor/issues/100)).
 
 ### Changed
 
