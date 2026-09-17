@@ -62,7 +62,9 @@ router.delete("/api/clearLogs", async (req, res) => {
 
     // Deletes the newest file if logs aren't supposed to be saved.
     if (!serverMaster.saveLogs) {
-      fs.rmSync(path.join(GLOBAL.PATHS.FOLDERS.LOGS, logFiles[logFiles.length - 1]));
+      fs.rmSync(
+        path.join(GLOBAL.PATHS.FOLDERS.LOGS, logFiles[logFiles.length - 1]),
+      );
       logFilesLength = logFiles.length;
     }
 
@@ -98,13 +100,13 @@ async function findImages(dir) {
       } else {
         try {
           const file = await fs.promises.readFile(fullPath, "utf-8");
-          const praseFile = JSON.parse(file);
-          return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+          const parseFile = JSON.parse(file);
+          return findSrc(parseFile[0].content, fullPath, parseFile[0].title);
         } catch (err) {
           error(
             "Find images",
             "Failed to read file source.",
-            { Path: fullPath, "File Title": parseFile[0].title },
+            { Path: fullPath },
             err,
           );
         }
