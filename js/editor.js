@@ -769,7 +769,7 @@ tableDeleteButton.addEventListener("click", (e) => {
   createSubmenu(tableDeleteButton, tableDeleteItems, 1);
 });
 
-const linkEditButtons = [
+const linkEditItems = [
   {
     icon: "format/link.svg",
     action: () =>
@@ -795,40 +795,31 @@ setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(linkButton, linkEditButtons, 1);
+  createSubmenu(linkButton, linkEditItems, 1);
 });
 
-// Handles the export of a file.
-async function handleExport(exportDocument) {
-  const response = await fetch("/api/export", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      exportDocument: exportDocument,
-      name: currentEntry.replace(".json", ""),
-    }),
-  });
-
-  if (response.ok) {
-    // Sends the response to the client, which then downloads it automatically.
-    const blobResponse = await response.blob();
-    let downloadURL = await URL.createObjectURL(blobResponse);
-
-    let downloadElement = document.createElement("a");
-    downloadElement.href = downloadURL;
-    downloadElement.download = currentEntry.replace(".json", ".pdf");
-    downloadElement.click();
-    URL.revokeObjectURL(downloadURL); // Deletes download Element
-  } else {
-    const responseJSON = await response.json();
-    handleServerErrors(responseJSON, response.status);
-  }
-}
-
 // Functional Buttons
-setHelpText(exportButton, "Export Document as PDF");
-exportButton.addEventListener("click", async (e) => {
+const exportButtonItems = [
+  {
+    icon: "function/pdf.svg",
+    action: () => exportCurrentDocumentAsPDF(),
+    helpText: "Export as PDF",
+  },
+  {
+    icon: "function/json.svg",
+    action: () => exportCurrentDocumentAsJSON(),
+    helpText: "Export as JSON",
+  },
+];
+
+setHelpText(exportButton, "Export Document");
+exportButton.addEventListener("click", (e) => {
   e.preventDefault();
+  e.stopPropagation();
+  createSubmenu(exportButton, exportButtonItems, 1);
+});
+
+function exportCurrentDocumentAsPDF() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -850,13 +841,81 @@ exportButton.addEventListener("click", async (e) => {
       "Export as PDF",
       () => {},
       () => {
-        handleExport(exportDocument);
+        getDocumentPDF(exportDocument);
       },
     );
   } else {
-    handleExport(exportDocument);
+    getDocumentPDF(exportDocument);
   }
-});
+}
+
+// Gets the PDF export of a file.
+async function getDocumentPDF(exportDocument) {
+  const response = await fetch("/api/export/pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      exportDocument: exportDocument,
+      name: currentEntry.replace(".json", ""),
+    }),
+  });
+
+  if (response.ok) {
+    downloadDocumentPDF(response);
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
+  }
+}
+
+// Downloads the PDF export from a URL.
+async function downloadDocumentPDF(response) {
+  // Sends the response to the client, which then downloads it automatically.
+  const blobResponse = await response.blob();
+  let downloadURL = URL.createObjectURL(blobResponse);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry.replace(".json", ".pdf");
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL);
+}
+
+function exportCurrentDocumentAsJSON() {
+  const editorJSON = editor.getJSON();
+  const exportDocument = [
+    { title: currentEntry.slice(0, -5), content: editorJSON },
+  ];
+
+  if (getState("confirmExport")) {
+    createConfirmModal(
+      "Are you sure you want to Export the current Document?",
+      "Back to Editor",
+      "Export as JSON",
+      () => {},
+      () => {
+        downloadDocumentJSON(exportDocument);
+      },
+    );
+  } else {
+    downloadDocumentJSON(exportDocument);
+  }
+}
+
+function downloadDocumentJSON(exportDocument) {
+  const blob = new Blob([JSON.stringify(exportDocument, null, 2)], {
+    type: "application/json",
+  });
+  let downloadURL = URL.createObjectURL(blob);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry;
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL); // Deletes download Element
+}
 
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
@@ -916,20 +975,16 @@ function saveEditor(isRestoration) {
   if (!getState("editorIsSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
-    if (isRestoration) {
+    if (isRestoration || !getState("confirmSave")) {
       pushSaveData();
     } else {
-      if (getState("confirmSave")) {
-        createConfirmModal(
-          "Are you sure you want to save this File?",
-          "Back to Editor",
-          "Save File",
-          () => {},
-          pushSaveData,
-        );
-      } else {
-        pushSaveData();
-      }
+      createConfirmModal(
+        "Are you sure you want to save this File?",
+        "Back to Editor",
+        "Save File",
+        () => {},
+        pushSaveData,
+      );
     }
   } else {
     // No changes = no need to update

@@ -13,15 +13,15 @@ const error = require(GLOBAL.PATHS.UTILS.ERROR);
 // Cleans unused images from the server.
 let unusedImages = [];
 router.delete("/api/cleanImages", async (req, res) => {
-  logger.info("Recieved image clear request.");
+  logger.info("Image clear: Recieved request.");
   // Puts all the images into the array.
   unusedImages = fs.readdirSync(GLOBAL.PATHS.FOLDERS.IMAGES);
   // Finds all unused images, removing all used ones from the array.
   await findImages(GLOBAL.PATHS.FOLDERS.DATA);
   if (unusedImages.length !== 0 && serverMaster.detailLogs) {
-    logger.info({ "Unused images": unusedImages }, "Found unused images.");
+    logger.info({ "Unused images": unusedImages }, "Image clear: Found unused images.");
   } else if (serverMaster.detailLogs) {
-    logger.info("Found no unused images.");
+    logger.info("Image clear: Found no unused images.");
   }
 
   // Removes all the unused images.
@@ -31,7 +31,7 @@ router.delete("/api/cleanImages", async (req, res) => {
     }
 
     if (serverMaster.successLogs && unusedImages.length > 0) {
-      logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
+      logger.info({ "Unused images": unusedImages }, "Image clear: Cleared unused images.");
     }
     res.json({ success: true, amount: unusedImages.length });
   } catch (err) {
@@ -44,12 +44,12 @@ router.delete("/api/cleanImages", async (req, res) => {
 // Cleans logs from the server.
 let logFiles = [];
 router.delete("/api/clearLogs", async (req, res) => {
-  logger.info("Recieved log clear request.");
+  logger.info("Log clear: Recieved request.");
   // Puts all the logs into the array.
   logFiles = fs.readdirSync(GLOBAL.PATHS.FOLDERS.LOGS);
 
   if (serverMaster.detailLogs) {
-    logger.info({ "Log files": logFiles }, "Got logs folder.");
+    logger.info({ "Log files": logFiles }, "Log clear: Got logs folder.");
   }
 
   let logFilesLength;
@@ -69,14 +69,14 @@ router.delete("/api/clearLogs", async (req, res) => {
     }
 
     if (serverMaster.successLogs && logFiles.length > 0) {
-      logger.info("Cleared logs.");
+      logger.info("Log clear: Cleared logs.");
     }
 
     res.json({ success: true, amount: logFilesLength });
   } catch (err) {
     res
       .status(500)
-      .json(error("Logs clear", "Failed to clear logs.", {}, null));
+      .json(error("Log clear", "Failed to clear logs.", {}, null));
   }
 });
 

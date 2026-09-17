@@ -25,9 +25,8 @@ router.post("/api/autosave", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info(
       { Path: folderPath, Name: name },
-      "Recieved autosave create request.",
+      "Autosave create: Recieved request.",
     );
-    logger.info("Validating path...");
   }
 
   const autosaveName = createAutosaveName(name);
@@ -37,17 +36,7 @@ router.post("/api/autosave", async (req, res) => {
     autosaveName,
   );
 
-  if (!validatePath(autosaveFilePath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave create",
-          "Recieved invalid path.",
-          { Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave create", res)) {
     return;
   }
 
@@ -56,13 +45,19 @@ router.post("/api/autosave", async (req, res) => {
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Path: folderPath, Name: name }, "Writing autosave...");
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave create: Writing autosave...",
+      );
     }
 
     fs.writeFileSync(autosaveFilePath, JSON.stringify(saveArray), "utf-8");
 
     if (serverMaster.successLogs) {
-      logger.info({ Path: folderPath, Name: name }, "Created autosave.");
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave create: Created autosave.",
+      );
     }
 
     res.json({ success: true });
@@ -87,9 +82,8 @@ router.delete("/api/removeAutosave", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info(
       { Path: folderPath, Name: name },
-      "Recieved autosave delete request.",
+      "Autosave remove: Recieved request.",
     );
-    logger.info("Validating path...");
   }
 
   const autosaveName = createAutosaveName(name);
@@ -99,34 +93,40 @@ router.delete("/api/removeAutosave", async (req, res) => {
     autosaveName,
   );
 
-  if (!validatePath(autosaveFilePath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave delete",
-          "Recieved invalid path.",
-          { Path: folderPath, Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave create", res)) {
     return;
   }
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Path: folderPath, Name: name }, "Deleting autosave...");
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave remove: Deleting autosave...",
+      );
     }
     fs.rmSync(
       path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, autosaveName),
     );
 
     if (serverMaster.successLogs) {
-      logger.info({ Path: folderPath, Name: name }, "Deleted autosave.");
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave remove: Removed autosave.",
+      );
     }
 
     res.json({ success: true });
   } catch (err) {
+    if (err.code === "ENOENT") {
+      if (serverMaster.detailLogs) {
+        logger.info(
+          { Path: folderPath, Name: name },
+          "Autosave remove: No autosave found.",
+        );
+      }
+      res.status(204).json({ success: true });
+      return;
+    }
     res
       .status(500)
       .json(
@@ -144,30 +144,43 @@ router.get("/api/checkForAutosave", async (req, res) => {
   const { folderPath, name } = req.query;
 
   const autosaveName = createAutosaveName(name);
+
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Path: folderPath, Name: name },
+      "Autosave check: Recieved request.",
+    );
+  }
+
   const autosaveFilePath = path.join(
     GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
     folderPath,
     autosaveName,
   );
 
-  if (!validatePath(autosaveFilePath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave check",
-          "Recieved invalid path.",
-          { Path: folderPath, Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave check", res)) {
     return;
   }
 
   try {
+    if (serverMaster.detailLogs) {
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave check: Reading file path...",
+      );
+    }
     if (fs.existsSync(autosaveFilePath)) {
+      if (serverMaster.successLogs) {
+        logger.info(
+          { Path: folderPath, Name: autosaveName },
+          "Autosave check: Autosave file found.",
+        );
+      }
       res.json({ success: true, autosaveExists: true });
     } else {
+      if (serverMaster.successLogs) {
+        logger.info("Autosave check: No autosave file found.");
+      }
       res.json({ success: true, autosaveExists: false });
     }
   } catch (err) {
@@ -178,6 +191,7 @@ router.get("/api/checkForAutosave", async (req, res) => {
         {
           Path: folderPath,
           Name: name,
+          "Autosave Name": autosaveName,
         },
         err,
       ),
@@ -194,9 +208,8 @@ router.get("/api/getAutosave", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info(
       { Path: folderPath, Name: autosaveName },
-      "Recieved autosave get request.",
+      "Autosave get: Recieved request.",
     );
-    logger.info("Validating path...");
   }
 
   const autosaveFilePath = path.join(
@@ -205,17 +218,7 @@ router.get("/api/getAutosave", async (req, res) => {
     autosaveName,
   );
 
-  if (!validatePath(autosaveFilePath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave get",
-          "Recieved invalid path.",
-          { Path: folderPath, Name: autosaveName },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave get", res)) {
     return;
   }
 
@@ -223,19 +226,22 @@ router.get("/api/getAutosave", async (req, res) => {
     if (serverMaster.detailLogs) {
       logger.info(
         { Path: folderPath, Name: autosaveName },
-        "Getting autosave data...",
+        "Autosave get: Getting autosave data...",
       );
     }
 
     const rawAutosave = fs.readFileSync(path.join(autosaveFilePath), "utf-8");
 
     if (serverMaster.successLogs) {
-      logger.info({ Path: folderPath, Name: autosaveName }, "Got autosave.");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave get: Got autosave.",
+      );
     }
     if (serverMaster.detailLogs) {
       logger.info(
         { Path: folderPath, Name: autosaveName },
-        "Sent autosave to Client.",
+        "Autosave get: Sent autosave to Client.",
       );
     }
 

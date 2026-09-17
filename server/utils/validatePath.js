@@ -2,8 +2,14 @@ const path = require("path");
 const fs = require("fs");
 
 const GLOBAL = require("./global");
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 
-function validatePath(inputPath) {
+async function validatePath(inputPath, operation, res) {
+  if (serverMaster.detailLogs) {
+    logger.info({Path: inputPath}, `${operation}: Validating path...`)
+  }
   try {
     const realRoot = fs.realpathSync(GLOBAL.PATHS.FOLDERS.ROOT);
 
@@ -15,14 +21,27 @@ function validatePath(inputPath) {
 
     const relativePath = path.relative(realRoot, realPath);
 
-    return (
+    let isValid;
+    if (
       relativePath === "" ||
       (relativePath !== ".." &&
         !relativePath.startsWith(".." + path.sep) &&
         !path.isAbsolute(relativePath))
-    );
+    ) {
+      isValid = true;
+    } else {
+      isValid = false;
+    }
+
+    if (isValid && serverMaster.successLogs) {
+      logger.info({ Path: inputPath }, `${operation}: Path validated.`);
+    }
+
+    return isValid;
   } catch (err) {
-    console.log(err);
+    res
+      .status(403)
+      .json(error(operation, "Invalid path.", { Path: inputPath }, err));
     return false;
   }
 }
