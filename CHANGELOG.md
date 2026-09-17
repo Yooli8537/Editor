@@ -20,6 +20,7 @@
 ### Fixed
 
 - Fixed an incorrect server response for `/api/documents/deletePath`.
+- Fixed large margins for ordered lists.
 
 ## v1.6.3 - Autosaving Hotfix
 
