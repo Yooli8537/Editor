@@ -6,6 +6,7 @@
 
 - Documents can now be exported as JSON ([Issue #100](https://github.com/Yooli8537/Editor/issues/100)).
 - When pressing a button on the editor toolbar, the editor will remain focused ([Issue #101](https://github.com/Yooli8537/Editor/issues/101)).
+- Collapsed folders can now be updated "manually" ([Issue #55](https://github.com/Yooli8537/Editor/issues/55)).
 
 ### Changed
 

@@ -30,6 +30,11 @@ const allTabs = [
   { name: "info", element: infoTab },
 ];
 
+// Every setting parent div element required for applying disabled settings
+const updateCollapsedFoldersDiv = document.querySelector(
+  "#updateCollapsedFoldersDiv",
+);
+
 // All the settings
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
@@ -71,6 +76,7 @@ const allSettings = [
   rateLimitMaxRequests,
   rateLimitResetTime,
   maxImageSize,
+  collapsedFolderUpdateMethod,
 ];
 // All the settings which only accept full numbers.
 const intSettings = [
@@ -128,6 +134,7 @@ async function updateMasterfile(updateData) {
     createInfoModal(
       "Successfully updated settings. Reload the Editor to apply.",
     );
+    disableSettings();
   } else {
     const masterUpdateJSON = await masterUpdate.json();
     handleServerErrors(masterUpdateJSON, masterUpdate.status);
@@ -156,15 +163,11 @@ function hideAllPages() {
 }
 
 function doesIncludeSettingInSettingsArray(setting) {
-  if (
+  return (
     intSettings.includes(setting) ||
     decimalSettings.includes(setting) ||
     stringSettings.includes(setting)
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+  );
 }
 
 // Loads settings data before anything else is shown.
@@ -224,16 +227,16 @@ saveSettingsButton.addEventListener("click", async (e) => {
   }
 
   // Looping through all the string settings and saving them to the master variable.
-  for (let j = 0; j < stringSettings.length; j++) {
-    master[stringSettings[j].id] = stringSettings[j].value;
+  for (let i = 0; i < stringSettings.length; i++) {
+    master[stringSettings[i].id] = stringSettings[i].value;
   }
 
   // Looping through all the boolean settings and saving them to the master variable.
-  for (let k = 0; k < boolSettings.length; k++) {
-    if (boolSettings[k].value == "True") {
-      master[boolSettings[k].id] = true;
+  for (let i = 0; i < boolSettings.length; i++) {
+    if (boolSettings[i].value == "True") {
+      master[boolSettings[i].id] = true;
     } else {
-      master[boolSettings[k].id] = false;
+      master[boolSettings[i].id] = false;
     }
   }
   // Sends the updated data to the server.
@@ -292,9 +295,32 @@ versionCheckButton.addEventListener("click", () => {
   checkForUpdate(true);
 });
 
+function applyDisabledOverlay(settingDivElement) {
+  const overlay = document.createElement("div");
+  overlay.classList.add("disabled");
+  settingDivElement.appendChild(overlay);
+}
+
+function removeDisabledOverlay(settingDivElement) {
+  const overlay = document.querySelector(".disabled");
+  if (overlay) {
+    overlay.remove();
+  }
+}
+
+// Disables certain settings if another setting is active.
+function disableSettings() {
+  if (master.collapsedFolderUpdateMethod !== "Auto") {
+    applyDisabledOverlay(updateCollapsedFoldersDiv);
+  } else {
+    removeDisabledOverlay(updateCollapsedFolders);
+  }
+}
+
 // Waits for the masterfile before adding the event listeners for the tabs.
 if (await getMasterfile()) {
   preLoadSettingsData();
+  disableSettings();
   addTabListeners();
 }
 

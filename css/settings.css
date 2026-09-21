@@ -108,12 +108,24 @@ hr.separator {
 
 /* A setting within the settings page. */
 .setting {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 2px solid #000000;
   border-radius: 5px;
   margin-top: 7px;
+  padding: 3px;
+}
+
+.disabled {
+  position: absolute;
+  background-color: #888888;
+  opacity: 0.5;
+  left: 0;
+  width: 99.5%;
+  height: 99.5%;
+  border-radius: 5px;
   padding: 3px;
 }
 
