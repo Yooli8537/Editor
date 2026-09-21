@@ -5,6 +5,7 @@
 ### Added
 
 - Documents can now be exported as JSON ([Issue #100](https://github.com/Yooli8537/Editor/issues/100)).
+- When pressing a button on the editor toolbar, the editor will remain focused ([Issue #101](https://github.com/Yooli8537/Editor/issues/101)).
 
 ### Changed
 
@@ -21,6 +22,7 @@
 ### Fixed
 
 - Fixed an incorrect server response for `/api/documents/deletePath`.
+- Fixed large margins for ordered lists.
 
 ## v1.6.3 - Autosaving Hotfix
 

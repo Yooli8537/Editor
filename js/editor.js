@@ -394,6 +394,7 @@ headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
   createSubmenu(headingsButton, headingItems, 1);
+  editor.chain().focus();
 });
 
 // Items for the Lists submenu
@@ -420,6 +421,7 @@ listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(listsButton, listItems, 1);
+  editor.chain().focus();
 });
 
 // Items for the Codeblock subemnu.
@@ -597,6 +599,7 @@ codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(codeBlockButton, codeItems, 3);
+  editor.chain().focus();
 });
 
 setHelpText(boldButton, "Bold");
@@ -696,6 +699,7 @@ setHelpText(highlightButton, "Highlight");
 highlightButton.addEventListener("click", (e) => {
   e.stopPropagation();
   createSubmenu(highlightButton, highlightItems, 4);
+  editor.chain().focus();
 });
 
 setHelpText(inlineCodeButton, "Inline Code");
@@ -742,6 +746,7 @@ tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(tableCreateButton, tableCreateItems, 2);
+  editor.chain().focus();
 });
 
 const tableDeleteItems = [
@@ -767,6 +772,7 @@ tableDeleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(tableDeleteButton, tableDeleteItems, 1);
+  editor.chain().focus();
 });
 
 const linkEditItems = [
@@ -796,6 +802,7 @@ linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(linkButton, linkEditItems, 1);
+  editor.chain().focus();
 });
 
 // Functional Buttons
@@ -817,6 +824,7 @@ exportButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(exportButton, exportButtonItems, 1);
+  editor.chain().focus();
 });
 
 function exportCurrentDocumentAsPDF() {
@@ -922,6 +930,7 @@ saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
   saveEditor(false);
+  editor.chain().focus();
 });
 
 // Discard Button's helptext is set within the autosave.
