@@ -19,7 +19,10 @@ router.delete("/api/cleanImages", async (req, res) => {
   // Finds all unused images, removing all used ones from the array.
   await findImages(GLOBAL.PATHS.FOLDERS.DATA);
   if (unusedImages.length !== 0 && serverMaster.detailLogs) {
-    logger.info({ "Unused images": unusedImages }, "Image clear: Found unused images.");
+    logger.info(
+      { "Unused images": unusedImages },
+      "Image clear: Found unused images.",
+    );
   } else if (serverMaster.detailLogs) {
     logger.info("Image clear: Found no unused images.");
   }
@@ -31,7 +34,10 @@ router.delete("/api/cleanImages", async (req, res) => {
     }
 
     if (serverMaster.successLogs && unusedImages.length > 0) {
-      logger.info({ "Unused images": unusedImages }, "Image clear: Cleared unused images.");
+      logger.info(
+        { "Unused images": unusedImages },
+        "Image clear: Cleared unused images.",
+      );
     }
     res.json({ success: true, amount: unusedImages.length });
   } catch (err) {
@@ -74,9 +80,7 @@ router.delete("/api/clearLogs", async (req, res) => {
 
     res.json({ success: true, amount: logFilesLength });
   } catch (err) {
-    res
-      .status(500)
-      .json(error("Log clear", "Failed to clear logs.", {}, null));
+    res.status(500).json(error("Log clear", "Failed to clear logs.", {}, null));
   }
 });
 
