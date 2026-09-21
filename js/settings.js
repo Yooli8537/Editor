@@ -13,7 +13,7 @@ const generalTab = document.querySelector("#generalTab");
 const displayTab = document.querySelector("#displayTab");
 const formatsTab = document.querySelector("#formatsTab");
 const keybindsTab = document.querySelector("#keybindsTab");
-const storageTrafficTab = document.querySelector("#storageTrafficTab");
+const storageTab = document.querySelector("#storageTab");
 const serverTab = document.querySelector("#serverTab");
 const developerTab = document.querySelector("#developerTab");
 const infoTab = document.querySelector("#infoTab");
@@ -24,7 +24,7 @@ const allTabs = [
   { name: "display", element: displayTab },
   { name: "formats", element: formatsTab },
   { name: "keybinds", element: keybindsTab },
-  { name: "storageTraffic", element: storageTrafficTab },
+  { name: "storage", element: storageTab },
   { name: "server", element: serverTab },
   { name: "developer", element: developerTab },
   { name: "info", element: infoTab },
@@ -49,6 +49,9 @@ const logErrorDetails = document.querySelector("#logErrorDetails");
 const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
 const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
 const maxImageSize = document.querySelector("#maxImageSize");
+const collapsedFolderUpdateMethod = document.querySelector(
+  "#collapsedFolderUpdateMethod",
+);
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -80,7 +83,7 @@ const intSettings = [
 // All the settings which accept any positive number.
 const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
 // All the settings which are a string value.
-const stringSettings = [];
+const stringSettings = [collapsedFolderUpdateMethod];
 // All the settings which are a boolean value.
 const boolSettings = [
   confirmSave,

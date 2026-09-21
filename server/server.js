@@ -39,6 +39,7 @@ const allProperties = {
   rateLimitResetTime: 5,
   rateLimitMaxRequests: 300,
   maxImageSize: 10,
+  collapsedFolderUpdateMethod: "Auto",
 };
 
 // Creates any missing data folders.
