@@ -24,6 +24,7 @@
 
 - Fixed an incorrect server response for `/api/documents/deletePath`.
 - Fixed large margins for ordered lists.
+- Incorrect error log for `/api/updateMasterProperty`.
 
 ## v1.6.3 - Autosaving Hotfix
 

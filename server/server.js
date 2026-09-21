@@ -261,7 +261,105 @@ app.put("/api/updateMasterProperty", async (req, res) => {
     res
       .status(500)
       .json(
-        error("Master property update", "Failed to update property.", {}, err),
+        error(
+          "Master property update",
+          "Failed to update property.",
+          { Property: property, Value: newValue },
+          err,
+        ),
+      );
+  }
+});
+
+app.post("/api/addCollapsedFolder", async (req, res) => {
+  const { folder } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Folder: folder }, "Collapsed folder add: Recived request.");
+  }
+
+  try {
+    // Gets master.json data.
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Updates collapsedFolders with property
+    masterFile[0].collapsedFolders.push(folder);
+
+    // Updates master.json
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
+    if (serverMaster.successLogs) {
+      logger.info({ Folder: folder }, "Collapsed folder add: Added folder.");
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(
+        error(
+          "Collapsed folder add",
+          "Failed to add folder.",
+          { Folder: folder },
+          err,
+        ),
+      );
+  }
+});
+
+app.post("/api/rmCollapsedFolder", async (req, res) => {
+  const { folder } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Folder: folder },
+      "Collapsed folder remove: Recived request.",
+    );
+  }
+
+  try {
+    // Gets master.json data
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Removes folder from master.json.
+    const rmIndex = masterFile[0].collapsedFolders.indexOf(value);
+    if (rmIndex > -1) {
+      masterFile[0].collapsedFolders.splice(rmIndex, 1);
+    }
+
+    // Updates master.json
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
+    if (serverMaster.successLogs) {
+      logger.info(
+        { Folder: folder },
+        "Collapsed folder remove: Removed folder.",
+      );
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(
+        error(
+          "Collapsed folder remove",
+          "Failed to remove folder.",
+          { Folder: folder },
+          err,
+        ),
       );
   }
 });

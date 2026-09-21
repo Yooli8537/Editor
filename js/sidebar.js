@@ -196,13 +196,45 @@ function createFile(entry, previousEntry) {
 const expandedIcon = "../assets/function/expanded.svg";
 const collapsedIcon = "../assets/function/collapsed.svg";
 // Toggles expanded folders on the sidebar.
-function toggleExpanded(path) {
+async function toggleExpanded(path) {
   // If the folder is collapsed, it's expanded.
   if (checkState("collapsedFolders", path)) {
     rmState("collapsedFolders", path);
+
+    if (getState(collapsedFolderUpdateMethod) === "Manual") {
+      const response = await fetch("/api/addCollapsedFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folder: path,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseJSON = await response.JSON();
+        handleServerErrors(responseJSON, response.status);
+      }
+    }
+
     return expandedIcon;
   } else {
     addState("collapsedFolders", path);
+
+    if (getState(collapsedFolderUpdateMethod) === "Manual") {
+      const response = await fetch("/api/rmCollapsedFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folder: path,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseJSON = await response.JSON();
+        handleServerErrors(responseJSON, response.status);
+      }
+    }
+
     return collapsedIcon;
   }
 }
@@ -212,7 +244,8 @@ function setIcon(iconPath, path) {
   // Current icon for collapsed / expanded. Local variable so that different folders don't get the icon that they're not supposed to.
   let currentIcon;
   // Gets the correct icon between expanded / collapsed.
-  if (checkState("collapsedFolders", path)) {
+  const isCollapsed = checkState("collapsedFolders", path);
+  if (isCollapsed) {
     currentIcon = collapsedIcon;
   } else {
     currentIcon = expandedIcon;
@@ -563,10 +596,12 @@ rootButton.addEventListener("click", async (e) => {
 
 // Updates master.json property "collapsedFolders" every 10s.
 export function createCollapsedFoldersUpdateInterval() {
-  setInterval(
-    () => {
-      sendState("collapsedFolders");
-    },
-    getState("updateCollapsedFolders") * 1000,
-  );
+  if (getState(collapsedFolderUpdateMethod) === "Auto") {
+    setInterval(
+      () => {
+        sendState("collapsedFolders");
+      },
+      getState("updateCollapsedFolders") * 1000,
+    );
+  }
 }
