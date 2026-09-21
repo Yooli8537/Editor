@@ -39,14 +39,21 @@ const logPath = path.join(
 let logger;
 if (serverMaster.saveLogs) {
   const transport = pino.transport({
-    targets: [
+targets: [
       {
-        target: "pino/file",
-        options: { destination: logPath },
+        target: "pino-pretty",
+        options: {
+          destination: logPath,
+          colorize: false,
+          translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
+          ignore: "pid,hostname",
+          levelFirst: false,
+        },
       },
       {
         target: "pino-pretty",
         options: {
+          destination: 1, // Console
           colorize: true,
           translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
           ignore: "pid,hostname",
