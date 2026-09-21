@@ -2,7 +2,7 @@
 import {
   createConfirmModal,
   createPromptModal,
-  createErrorModal,
+  getMaster,
   createInfoModal,
   handleServerErrors,
 } from "./utils";
@@ -201,8 +201,8 @@ async function toggleExpanded(path) {
   if (checkState("collapsedFolders", path)) {
     rmState("collapsedFolders", path);
 
-    if (getState(collapsedFolderUpdateMethod) === "Manual") {
-      const response = await fetch("/api/addCollapsedFolder", {
+    if (getState("collapsedFolderUpdateMethod") === "Manual") {
+      const response = await fetch("/api/rmCollapsedFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -220,8 +220,8 @@ async function toggleExpanded(path) {
   } else {
     addState("collapsedFolders", path);
 
-    if (getState(collapsedFolderUpdateMethod) === "Manual") {
-      const response = await fetch("/api/rmCollapsedFolder", {
+    if (getState("collapsedFolderUpdateMethod") === "Manual") {
+      const response = await fetch("/api/addCollapsedFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -595,13 +595,15 @@ rootButton.addEventListener("click", async (e) => {
 });
 
 // Updates master.json property "collapsedFolders" every 10s.
-export function createCollapsedFoldersUpdateInterval() {
-  if (getState(collapsedFolderUpdateMethod) === "Auto") {
-    setInterval(
-      () => {
-        sendState("collapsedFolders");
-      },
-      getState("updateCollapsedFolders") * 1000,
-    );
+export async function createCollapsedFoldersUpdateInterval() {
+  if (await getMaster()) {
+    if (getState("collapsedFolderUpdateMethod") === "Auto") {
+      setInterval(
+        () => {
+          sendState("collapsedFolders");
+        },
+        getState("updateCollapsedFolders") * 1000,
+      );
+    }
   }
 }

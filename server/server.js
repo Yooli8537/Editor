@@ -332,7 +332,7 @@ app.post("/api/rmCollapsedFolder", async (req, res) => {
     const masterFile = JSON.parse(rawMasterFile);
 
     // Removes folder from master.json.
-    const rmIndex = masterFile[0].collapsedFolders.indexOf(value);
+    const rmIndex = masterFile[0].collapsedFolders.indexOf(folder);
     if (rmIndex > -1) {
       masterFile[0].collapsedFolders.splice(rmIndex, 1);
     }
