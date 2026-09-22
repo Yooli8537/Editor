@@ -40,6 +40,34 @@ const allProperties = {
   rateLimitMaxRequests: 300,
   maxImageSize: 10,
   collapsedFolderUpdateMethod: "Auto",
+  format: {
+    fontSizes: {
+      default: 16,
+      h1: 32,
+      h2: 24,
+      h3: 20,
+      code: 12,
+    },
+    fontMargins: {
+      h1Top: 2,
+      h1Bottom: 5,
+      h2Top: 1,
+      h2Bottom: 3,
+      h3Bottom: 1,
+    },
+    tables: {
+      cellPadding: 8,
+      textAlign: "left",
+      headColor: "#ebebeb",
+    },
+    codeBlocks: {
+      backgroundColor: "#222222",
+      defaultFontColor: "#ffffff",
+    },
+    lists: {
+      listMargin: 0,
+    },
+  },
 };
 
 // Creates any missing data folders.

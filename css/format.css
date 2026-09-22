@@ -20,9 +20,7 @@
   --codeBlockBackgroundColor: #222222;
   --codeBlockDefaultFontColor: #ffffff;
   /* Lists */
-  --ulMargin: 0px;
-  --olMargin: 0px;
-  --taskListMargin: 0px;
+  --listMargin: 0px;
 }
 
 /* Format styling for the editor & export */
@@ -111,13 +109,13 @@
 }
 
 ul {
-  margin-top: var(--ulMargin);
-  margin-bottom: var(--ulMargin);
+  margin-top: var(--listMargin);
+  margin-bottom: var(--listMargin);
 }
 
 ol {
-  margin-top: var(--olMargin);
-  margin-bottom: var(--olMargin);
+  margin-top: var(--listMargin);
+  margin-bottom: var(--listMargin);
 }
 
 ul[data-type="taskList"] {
