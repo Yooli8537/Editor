@@ -836,6 +836,8 @@ function exportCurrentDocumentAsPDF() {
   const rawDocHTML = editorLocation[0].cloneNode(true);
   const documentImages = rawDocHTML.querySelectorAll("img");
   for (let i = 0; i < documentImages.length; i++) {
+    // Yes this is required.
+    // If it isn't set, the src will be incorrect and thus, images won't render in the export.
     documentImages[i].src = documentImages[i].src;
   }
 

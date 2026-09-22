@@ -1,9 +1,36 @@
+/* Variables */
+:root {
+  /* Font sizes */
+  --defaultFontSize: 16px;
+  --h1FontSize: 32px;
+  --h2FontSize: 24px;
+  --h3FontSize: 20px;
+  --codeFontSize: 12px;
+  /* Font margins */
+  --h1MarginTop: 2px;
+  --h1MarginBottom: 5px;
+  --h2MarginTop: 1px;
+  --h2MarginBottom: 3px;
+  --h3MarginBottom: 1px;
+  /* Tables */
+  --tableCellPadding: 8px;
+  --tableTextAlign: left;
+  --tableHeadColor: #ebebeb;
+  /* Code Blocks */
+  --codeBlockBackgroundColor: #222222;
+  --codeBlockDefaultFontColor: #ffffff;
+  /* Lists */
+  --ulMargin: 0px;
+  --olMargin: 0px;
+  --taskListMargin: 0px;
+}
+
 /* Format styling for the editor & export */
 .export-content,
 .Prosemirror {
   width: 794px;
   max-width: 794px;
-  font-size: 16px;
+  font-size: var(--defaultFontSize);
   font-family: "Calibri", sans-serif !important;
   font-weight: 500;
   color: #000000;
@@ -11,25 +38,27 @@
 
 .export-content h1,
 .ProseMirror h1 {
-  font-size: 32px !important;
-  margin: 5px;
+  font-size: var(--h1FontSize) !important;
+  margin-top: var(--h1MarginTop);
+  margin-bottom: var(--h1MarginBottom);
 }
 
 .export-content h2,
 .ProseMirror h2 {
-  font-size: 24px !important;
-  margin: 3px;
+  font-size: var(--h2FontSize) !important;
+  margin-top: var(--h2MarginTop);
+  margin-bottom: var(--h2MarginBottom);
 }
 
 .export-content h3,
 .ProseMirror h3 {
-  font-size: 20px !important;
-  margin: 1px;
+  font-size: var(--h3FontSize) !important;
+  margin-bottom: var(--h3MarginBottom);
 }
 
 .export-content p,
 .ProseMirror p {
-  font-size: 16px !important;
+  font-size: var(--defaultFontSize) !important;
   margin: 0;
 }
 
@@ -45,13 +74,13 @@
 .ProseMirror th,
 .ProseMirror td {
   border: 1px solid #cccccc;
-  padding: 8px;
-  text-align: left;
+  padding: var(--tableCellPadding);
+  text-align: var(--tableTextAlign);
 }
 
 .export-content th,
 .ProseMirror th {
-  background-color: #ebebeb;
+  background-color: var(--tableHeadColor);
   font-weight: bold;
 }
 
@@ -60,12 +89,12 @@
   background-color: #cdcdcd;
   padding: 2px 4px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: var(--codeFontSize);
 }
 
 .export-content pre,
 .ProseMirror pre {
-  background-color: #222222;
+  background-color: var(--codeBlockBackgroundColor);
   border-radius: 1px;
   max-width: 100%;
   box-sizing: border-box;
@@ -77,16 +106,18 @@
 .export-content pre code,
 .ProseMirror pre code {
   background-color: inherit;
-  color: #ffffff;
+  color: var(--codeBlockDefaultFontColor);
   padding: 0;
 }
 
 ul {
-  margin: 0;
+  margin-top: var(--ulMargin);
+  margin-bottom: var(--ulMargin);
 }
 
 ol {
-  margin: 0;
+  margin-top: var(--olMargin);
+  margin-bottom: var(--olMargin);
 }
 
 ul[data-type="taskList"] {
