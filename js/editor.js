@@ -23,13 +23,7 @@ import {
   handleServerErrors,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import {
-  addState,
-  checkState,
-  getState,
-  rmState,
-  setState,
-} from "./state";
+import { addState, checkState, getState, rmState, setState } from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -152,17 +146,24 @@ let currentEntry;
 let currentPreviousEntry;
 
 // Checks for an autosave
-export function checkForAutosave(document) {
-  if (getState("unsavedFiles").indexOf(document) > -1) {
-    return true;
+async function checkForAutosave(document, path) {
+  const response = await fetch(
+    `/api/checkForAutosave?name=${document}&folderPath=${path}`,
+    { method: "GET" },
+  );
+
+  const responseJSON = await response.json();
+  if (response.ok) {
+    return responseJSON.autosaveExists;
   } else {
+    handleServerErrors(responseJSON, response.status);
     return false;
   }
 }
 
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
-  if (checkForAutosave(document)) {
+  if (await checkForAutosave(document, path)) {
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
@@ -174,9 +175,12 @@ export async function loadAutosave(fileData, document, path) {
       },
       async () => {
         // Gets the Autosave
-        const autosave = await fetch(`api/getAutosave?name=${document}`, {
-          method: "GET",
-        });
+        const autosave = await fetch(
+          `api/getAutosave?name=${document}&folderPath=${path}`,
+          {
+            method: "GET",
+          },
+        );
 
         if (autosave.ok) {
           const autosaveData = await autosave.json();
@@ -265,7 +269,7 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
-    if (checkForAutosave(currentEntry)) {
+    if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
 
@@ -390,6 +394,7 @@ headingsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
   createSubmenu(headingsButton, headingItems, 1);
+  editor.chain().focus();
 });
 
 // Items for the Lists submenu
@@ -416,6 +421,7 @@ listsButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(listsButton, listItems, 1);
+  editor.chain().focus();
 });
 
 // Items for the Codeblock subemnu.
@@ -593,6 +599,7 @@ codeBlockButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(codeBlockButton, codeItems, 3);
+  editor.chain().focus();
 });
 
 setHelpText(boldButton, "Bold");
@@ -692,6 +699,7 @@ setHelpText(highlightButton, "Highlight");
 highlightButton.addEventListener("click", (e) => {
   e.stopPropagation();
   createSubmenu(highlightButton, highlightItems, 4);
+  editor.chain().focus();
 });
 
 setHelpText(inlineCodeButton, "Inline Code");
@@ -738,6 +746,7 @@ tableCreateButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(tableCreateButton, tableCreateItems, 2);
+  editor.chain().focus();
 });
 
 const tableDeleteItems = [
@@ -763,9 +772,10 @@ tableDeleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(tableDeleteButton, tableDeleteItems, 1);
+  editor.chain().focus();
 });
 
-const linkEditButtons = [
+const linkEditItems = [
   {
     icon: "format/link.svg",
     action: () =>
@@ -791,40 +801,33 @@ setHelpText(linkButton, "Links");
 linkButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  createSubmenu(linkButton, linkEditButtons, 1);
+  createSubmenu(linkButton, linkEditItems, 1);
+  editor.chain().focus();
 });
 
-// Handles the export of a file.
-async function handleExport(exportDocument) {
-  const response = await fetch("/api/export", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      exportDocument: exportDocument,
-      name: currentEntry.replace(".json", ""),
-    }),
-  });
-
-  if (response.ok) {
-    // Sends the response to the client, which then downloads it automatically.
-    const blobResponse = await response.blob();
-    let downloadURL = await URL.createObjectURL(blobResponse);
-
-    let downloadElement = document.createElement("a");
-    downloadElement.href = downloadURL;
-    downloadElement.download = currentEntry.replace(".json", ".pdf");
-    downloadElement.click();
-    URL.revokeObjectURL(downloadURL); // Deletes download Element
-  } else {
-    const responseJSON = await response.json();
-    handleServerErrors(responseJSON, response.status);
-  }
-}
-
 // Functional Buttons
-setHelpText(exportButton, "Export Document as PDF");
-exportButton.addEventListener("click", async (e) => {
+const exportButtonItems = [
+  {
+    icon: "function/pdf.svg",
+    action: () => exportCurrentDocumentAsPDF(),
+    helpText: "Export as PDF",
+  },
+  {
+    icon: "function/json.svg",
+    action: () => exportCurrentDocumentAsJSON(),
+    helpText: "Export as JSON",
+  },
+];
+
+setHelpText(exportButton, "Export Document");
+exportButton.addEventListener("click", (e) => {
   e.preventDefault();
+  e.stopPropagation();
+  createSubmenu(exportButton, exportButtonItems, 1);
+  editor.chain().focus();
+});
+
+function exportCurrentDocumentAsPDF() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -846,19 +849,88 @@ exportButton.addEventListener("click", async (e) => {
       "Export as PDF",
       () => {},
       () => {
-        handleExport(exportDocument);
+        getDocumentPDF(exportDocument);
       },
     );
   } else {
-    handleExport(exportDocument);
+    getDocumentPDF(exportDocument);
   }
-});
+}
+
+// Gets the PDF export of a file.
+async function getDocumentPDF(exportDocument) {
+  const response = await fetch("/api/export/pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      exportDocument: exportDocument,
+      name: currentEntry.replace(".json", ""),
+    }),
+  });
+
+  if (response.ok) {
+    downloadDocumentPDF(response);
+  } else {
+    const responseJSON = await response.json();
+    handleServerErrors(responseJSON, response.status);
+  }
+}
+
+// Downloads the PDF export from a URL.
+async function downloadDocumentPDF(response) {
+  // Sends the response to the client, which then downloads it automatically.
+  const blobResponse = await response.blob();
+  let downloadURL = URL.createObjectURL(blobResponse);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry.replace(".json", ".pdf");
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL);
+}
+
+function exportCurrentDocumentAsJSON() {
+  const editorJSON = editor.getJSON();
+  const exportDocument = [
+    { title: currentEntry.slice(0, -5), content: editorJSON },
+  ];
+
+  if (getState("confirmExport")) {
+    createConfirmModal(
+      "Are you sure you want to Export the current Document?",
+      "Back to Editor",
+      "Export as JSON",
+      () => {},
+      () => {
+        downloadDocumentJSON(exportDocument);
+      },
+    );
+  } else {
+    downloadDocumentJSON(exportDocument);
+  }
+}
+
+function downloadDocumentJSON(exportDocument) {
+  const blob = new Blob([JSON.stringify(exportDocument, null, 2)], {
+    type: "application/json",
+  });
+  let downloadURL = URL.createObjectURL(blob);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry;
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL); // Deletes download Element
+}
 
 setHelpText(saveButton, "Save Document");
 saveButton.addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
   saveEditor(false);
+  editor.chain().focus();
 });
 
 // Discard Button's helptext is set within the autosave.
@@ -897,7 +969,7 @@ async function pushSaveData() {
   // Error handling
   if (response.ok) {
     setState("editorIsSaved", true);
-    if (checkForAutosave(currentEntry)) {
+    if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
     updateSaveIcons();
@@ -912,20 +984,16 @@ function saveEditor(isRestoration) {
   if (!getState("editorIsSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
-    if (isRestoration) {
+    if (isRestoration || !getState("confirmSave")) {
       pushSaveData();
     } else {
-      if (getState("confirmSave")) {
-        createConfirmModal(
-          "Are you sure you want to save this File?",
-          "Back to Editor",
-          "Save File",
-          () => {},
-          pushSaveData,
-        );
-      } else {
-        pushSaveData();
-      }
+      createConfirmModal(
+        "Are you sure you want to save this File?",
+        "Back to Editor",
+        "Save File",
+        () => {},
+        pushSaveData,
+      );
     }
   } else {
     // No changes = no need to update
@@ -982,15 +1050,12 @@ async function initAutosave(autosaveInterval) {
     const saveData = editor.getJSON();
 
     if (!getState("editorIsSaved")) {
-      // Checks if the unsaved File is already included in the Array. If not, the File is added to the array.
-      if (!checkState("unsavedFiles", currentEntry)) {
-        addState("unsavedFiles", currentEntry);
-      }
       const createAutosave = await fetch("/api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           saveData: saveData,
+          folderPath: currentPreviousEntry,
           name: currentEntry, // currentEntry is the file's name.
         }),
       });
@@ -1009,14 +1074,12 @@ async function removeAutosave() {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      folderPath: currentPreviousEntry,
       name: currentEntry,
     }),
   });
 
-  if (response.ok) {
-    // Removes Document from unsaved Files Array so that you aren't prompted to restore every time you open the file until reload.
-    rmState("unsavedFiles", currentEntry);
-  } else {
+  if (!response.ok) {
     const responseJSON = await response.json();
     handleServerErrors(responseJSON, response.status);
   }
@@ -1072,9 +1135,7 @@ export async function onFirstStart() {
     // Getting the Document from the URL.
     const response = await fetch(
       `api/documents/getFile?folderPath=${path}&name=${document}`,
-      {
-        method: "GET",
-      },
+      { method: "GET" },
     );
 
     if (response.ok) {

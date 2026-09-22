@@ -1,43 +1,43 @@
 // Settings-related server routes
 // Server imports
+const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
-const serverMaster = require("../serverMaster");
-const logger = require("../utils/logger");
-const error = require("../utils/error");
-
-// Data paths
-const rootPath = path.join(__dirname, "../../");
-const logsFolderPath = path.join(rootPath, "logs");
-const dataFolderPath = path.join(rootPath, "data");
-const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
-const imageFolderPath = path.join(dataFolderPath, "images");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
 
 // Cleans unused images from the server.
 let unusedImages = [];
 router.delete("/api/cleanImages", async (req, res) => {
-  logger.info("Recieved image clear request.");
+  logger.info("Image clear: Recieved request.");
   // Puts all the images into the array.
-  unusedImages = fs.readdirSync(imageFolderPath);
+  unusedImages = fs.readdirSync(GLOBAL.PATHS.FOLDERS.IMAGES);
   // Finds all unused images, removing all used ones from the array.
-  await findImages(notebooksFolderPath);
+  await findImages(GLOBAL.PATHS.FOLDERS.DATA);
   if (unusedImages.length !== 0 && serverMaster.detailLogs) {
-    logger.info({ "Unused images": unusedImages }, "Found unused images.");
+    logger.info(
+      { "Unused images": unusedImages },
+      "Image clear: Found unused images.",
+    );
   } else if (serverMaster.detailLogs) {
-    logger.info("Found no unused images.");
+    logger.info("Image clear: Found no unused images.");
   }
 
   // Removes all the unused images.
   try {
     for (let i = 0; i < unusedImages.length; i++) {
-      fs.rmSync(path.join(imageFolderPath, unusedImages[i]));
+      fs.rmSync(path.join(GLOBAL.PATHS.FOLDERS.IMAGES, unusedImages[i]));
     }
 
     if (serverMaster.successLogs && unusedImages.length > 0) {
-      logger.info({ "Unused images": unusedImages }, "Cleared unused images.");
+      logger.info(
+        { "Unused images": unusedImages },
+        "Image clear: Cleared unused images.",
+      );
     }
     res.json({ success: true, amount: unusedImages.length });
   } catch (err) {
@@ -50,37 +50,37 @@ router.delete("/api/cleanImages", async (req, res) => {
 // Cleans logs from the server.
 let logFiles = [];
 router.delete("/api/clearLogs", async (req, res) => {
-  logger.info("Recieved log clear request.");
+  logger.info("Log clear: Recieved request.");
   // Puts all the logs into the array.
-  logFiles = fs.readdirSync(logsFolderPath);
+  logFiles = fs.readdirSync(GLOBAL.PATHS.FOLDERS.LOGS);
 
   if (serverMaster.detailLogs) {
-    logger.info({ "Log files": logFiles }, "Got logs folder.");
+    logger.info({ "Log files": logFiles }, "Log clear: Got logs folder.");
   }
 
   let logFilesLength;
   // Removes logs, excluding the newest one if saving logs is enabled.
   try {
     for (let i = 0; i < logFiles.length - 1; i++) {
-      fs.rmSync(path.join(logsFolderPath, logFiles[i]));
+      fs.rmSync(path.join(GLOBAL.PATHS.FOLDERS.LOGS, logFiles[i]));
       logFilesLength = logFiles.length - 1;
     }
 
     // Deletes the newest file if logs aren't supposed to be saved.
     if (!serverMaster.saveLogs) {
-      fs.rmSync(path.join(logsFolderPath, logFiles[logFiles.length - 1]));
+      fs.rmSync(
+        path.join(GLOBAL.PATHS.FOLDERS.LOGS, logFiles[logFiles.length - 1]),
+      );
       logFilesLength = logFiles.length;
     }
 
     if (serverMaster.successLogs && logFiles.length > 0) {
-      logger.info("Cleared logs.");
+      logger.info("Log clear: Cleared logs.");
     }
 
     res.json({ success: true, amount: logFilesLength });
   } catch (err) {
-    res
-      .status(500)
-      .json(error("Logs clear", "Failed to clear logs.", {}, null));
+    res.status(500).json(error("Log clear", "Failed to clear logs.", {}, null));
   }
 });
 
@@ -104,13 +104,13 @@ async function findImages(dir) {
       } else {
         try {
           const file = await fs.promises.readFile(fullPath, "utf-8");
-          const praseFile = JSON.parse(file);
-          return findSrc(praseFile[0].content, fullPath, praseFile[0].title);
+          const parseFile = JSON.parse(file);
+          return findSrc(parseFile[0].content, fullPath, parseFile[0].title);
         } catch (err) {
           error(
             "Find images",
             "Failed to read file source.",
-            { Path: fullPath, "File Title": parseFile[0].title },
+            { Path: fullPath },
             err,
           );
         }

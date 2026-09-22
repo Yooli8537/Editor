@@ -1,262 +1,248 @@
 // Document autosaves
-// Server imports
+const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
-const serverMaster = require("../serverMaster");
-const logger = require("../utils/logger");
-const error = require("../utils/error");
-const validatePath = require("../utils/validatePath");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
+const validatePath = require(GLOBAL.PATHS.UTILS.VALIDATE_PATH);
 
-// Data paths
-const rootPath = path.join(__dirname, "../../");
-const dataFolderPath = path.join(rootPath, "data");
-const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
-const masterFilePath = path.join(dataFolderPath, "master.json");
-
-// Gets the master.json and returns it.
-async function getMasterFile() {
-  if (serverMaster.detailLogs) {
-    logger.info("Getting master.json");
-  }
-  try {
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
-    return JSON.parse(rawMasterFile);
-  } catch (err) {
-    error("Get master.json", "Failed to read master.json.", {}, err);
-  }
-}
-
-// Adds unsaved filenames to the master.
-async function addUnsavedToMaster(filename) {
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: filename },
-      "Adding unsaved filename to master.json...",
-    );
-  }
-  let masterFile = await getMasterFile();
-  let unsavedFiles = masterFile[0].unsavedFiles; // Adds file to unsavedFiles array.
-  let addFile = true;
-
-  // If the filename is already included within the array, it isn't added again.
-  for (let i = 0; i < unsavedFiles.length; i++) {
-    if (unsavedFiles[i] === filename) {
-      addFile = false;
-    }
-  }
-
-  if (addFile) {
-    // Updates variable copy of master.json with new data.
-    unsavedFiles.push(filename);
-    masterFile[0].unsavedFiles = unsavedFiles;
-    try {
-      // Updates master.json on the fs.
-      fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
-      if (serverMaster.successLogs) {
-        logger.info(
-          { Name: filename },
-          "Added unsaved filename to master.json.",
-        );
-      }
-      return true;
-    } catch (err) {
-      res
-        .status(500)
-        .json(
-          error(
-            "Add unsaved filename to master.json",
-            "Failed to add unsaved filename to master.json.",
-            { "Full path": filename },
-            err,
-          ),
-        );
-      return false;
-    }
-  } else {
-    // Returns true if the file is already in the master.
-    if (serverMaster.detailLogs) {
-      logger.info(
-        { Name: filename },
-        "Filename is already in master.json. No changes made.",
-      );
-    }
-    return true;
-  }
+function createAutosaveName(filename) {
+  let autosaveName = filename.slice(0, -5);
+  autosaveName += ".autosave.json";
+  return autosaveName;
 }
 
 // Creating an autosave
 router.post("/api/autosave", async (req, res) => {
-  const { saveData, name } = req.body;
+  const { saveData, folderPath, name } = req.body;
+  //folderPath ends in /
+  //name ends in .json
 
   if (serverMaster.detailLogs) {
-    logger.info({ Path: name }, "Validating path...");
+    logger.info(
+      { Path: folderPath, Name: name },
+      "Autosave create: Recieved request.",
+    );
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const autosaveName = createAutosaveName(name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave create",
-          "Recieved invalid path.",
-          { Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave create", res)) {
     return;
   }
 
   // Turns the saveData into the valid JSON array expected by TipTap.
   const saveArray = [saveData];
-  const autosaveFilePath = path.join(autosavesFolderPath, name); // Full path to the autosave file location.
 
-  if (serverMaster.detailLogs) {
-    logger.info({ Name: name }, "Recieved autosave create request.");
-  }
-
-  // If the file is successfully added to the unsavedFiles array, it creates the autosave.
-  if (addUnsavedToMaster(name)) {
-    try {
-      if (serverMaster.detailLogs) {
-        logger.info({ Name: name }, "Writing autosave...");
-      }
-
-      fs.writeFileSync(autosaveFilePath, JSON.stringify(saveArray), "utf-8");
-
-      if (serverMaster.successLogs) {
-        logger.info({ Name: name }, "Created autosave.");
-      }
-
-      res.json({ success: true });
-    } catch (err) {
-      res
-        .status(500)
-        .json(
-          error(
-            "Autosave create",
-            "Failed to create autosave.",
-            { Name: name },
-            err,
-          ),
-        );
+  try {
+    if (serverMaster.detailLogs) {
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave create: Writing autosave...",
+      );
     }
+
+    fs.writeFileSync(autosaveFilePath, JSON.stringify(saveArray), "utf-8");
+
+    if (serverMaster.successLogs) {
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave create: Created autosave.",
+      );
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(
+        error(
+          "Autosave create",
+          "Failed to create autosave.",
+          { Path: folderPath, Name: name },
+          err,
+        ),
+      );
   }
 });
 
 // Removes autosave from the server.
 router.delete("/api/removeAutosave", async (req, res) => {
-  const { name } = req.body;
+  const { folderPath, name } = req.body;
 
   if (serverMaster.detailLogs) {
-    logger.info({ Name: name }, "Recieved autosave delete request.");
-    logger.info({ Path: name }, "Validating path...");
+    logger.info(
+      { Path: folderPath, Name: name },
+      "Autosave remove: Recieved request.",
+    );
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const autosaveName = createAutosaveName(name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error(
-          "Autosave delete",
-          "Recieved invalid path.",
-          { Name: name },
-          null,
-        ),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave create", res)) {
     return;
   }
-
-  let masterFile = await getMasterFile();
-  let unsavedFiles = masterFile[0].unsavedFiles;
-
-  // Removes the saved file from the unsavedFiles array within master.json
-  const removeIndex = unsavedFiles.indexOf(name);
-  if (removeIndex > -1) {
-    unsavedFiles.splice(removeIndex, 1);
-  }
-
-  // Updates variable copy of master.json with new data.
-  masterFile[0].unsavedFiles = unsavedFiles;
 
   try {
     if (serverMaster.detailLogs) {
       logger.info(
-        { Name: name },
-        "Removing saved filename from master.json...",
+        { Path: folderPath, Name: name },
+        "Autosave remove: Deleting autosave...",
+      );
+    }
+    fs.rmSync(
+      path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, autosaveName),
+    );
+
+    if (serverMaster.successLogs) {
+      logger.info(
+        { Path: folderPath, Name: name },
+        "Autosave remove: Removed autosave.",
       );
     }
 
-    // Updates master.json on the fs.
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
-
-    if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Removed saved filename from master.json.");
-      logger.info({ Name: name }, "Deleting autosave...");
-    }
-
-    fs.rmSync(path.join(autosavesFolderPath, name));
+    res.json({ success: true });
   } catch (err) {
+    if (err.code === "ENOENT") {
+      if (serverMaster.detailLogs) {
+        logger.info(
+          { Path: folderPath, Name: name },
+          "Autosave remove: No autosave found.",
+        );
+      }
+      res.status(204).json({ success: true });
+      return;
+    }
     res
       .status(500)
       .json(
         error(
           "Autosave remove",
           "Failed to remove autosave.",
-          { Name: name },
+          { Path: folderPath, Name: name },
           err,
         ),
       );
   }
-
-  if (serverMaster.successLogs) {
-    logger.info({ Name: name }, "Deleted autosave.");
-  }
-
-  res.json({ success: true });
 });
 
-// Gets the data of an autosave.
-router.get("/api/getAutosave", async (req, res) => {
-  const { name } = req.query;
+router.get("/api/checkForAutosave", async (req, res) => {
+  const { folderPath, name } = req.query;
+
+  const autosaveName = createAutosaveName(name);
 
   if (serverMaster.detailLogs) {
-    logger.info({ Name: name }, "Recieved autosave get request.");
-    logger.info({ Path: name }, "Validating path...");
+    logger.info(
+      { Path: folderPath, Name: name },
+      "Autosave check: Recieved request.",
+    );
   }
 
-  const dirPath = path.join(autosavesFolderPath, name);
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
 
-  if (!validatePath(dirPath)) {
-    res
-      .status(403)
-      .json(
-        error("Autosave get", "Recieved invalid path.", { Name: name }, null),
-      );
+  if (!validatePath(autosaveFilePath, "Autosave check", res)) {
     return;
   }
 
   try {
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Getting autosave data...");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave check: Reading file path...",
+      );
+    }
+    if (fs.existsSync(autosaveFilePath)) {
+      if (serverMaster.successLogs) {
+        logger.info(
+          { Path: folderPath, Name: autosaveName },
+          "Autosave check: Autosave file found.",
+        );
+      }
+      res.json({ success: true, autosaveExists: true });
+    } else {
+      if (serverMaster.successLogs) {
+        logger.info("Autosave check: No autosave file found.");
+      }
+      res.json({ success: true, autosaveExists: false });
+    }
+  } catch (err) {
+    res.status(500).json(
+      error(
+        "Autosave check",
+        "Failed to check for autosave.",
+        {
+          Path: folderPath,
+          Name: name,
+          "Autosave Name": autosaveName,
+        },
+        err,
+      ),
+    );
+  }
+});
+
+// Gets the data of an autosave.
+router.get("/api/getAutosave", async (req, res) => {
+  const { folderPath, name } = req.query;
+
+  const autosaveName = createAutosaveName(name);
+
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Path: folderPath, Name: autosaveName },
+      "Autosave get: Recieved request.",
+    );
+  }
+
+  const autosaveFilePath = path.join(
+    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
+    folderPath,
+    autosaveName,
+  );
+
+  if (!validatePath(autosaveFilePath, "Autosave get", res)) {
+    return;
+  }
+
+  try {
+    if (serverMaster.detailLogs) {
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave get: Getting autosave data...",
+      );
     }
 
-    const rawAutosave = fs.readFileSync(
-      path.join(autosavesFolderPath, name),
-      "utf-8",
-    );
+    const rawAutosave = fs.readFileSync(path.join(autosaveFilePath), "utf-8");
 
     if (serverMaster.successLogs) {
-      logger.info({ Name: name }, "Got autosave.");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave get: Got autosave.",
+      );
     }
     if (serverMaster.detailLogs) {
-      logger.info({ Name: name }, "Sent autosave to Client.");
+      logger.info(
+        { Path: folderPath, Name: autosaveName },
+        "Autosave get: Sent autosave to Client.",
+      );
     }
 
     res.json(JSON.parse(rawAutosave));
@@ -266,7 +252,7 @@ router.get("/api/getAutosave", async (req, res) => {
         404,
         "Autosave get",
         "Failed to find autosave.",
-        { Name: name },
+        { Path: folderPath, Name: autosaveName },
         err,
       );
     } else {
@@ -274,7 +260,7 @@ router.get("/api/getAutosave", async (req, res) => {
         500,
         "Autosave get",
         "Failed to get autosave.",
-        { Name: name },
+        { Path: folderPath, Name: autosaveName },
         err,
       );
     }

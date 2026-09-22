@@ -2,7 +2,7 @@
 import {
   createConfirmModal,
   createPromptModal,
-  createErrorModal,
+  getMaster,
   createInfoModal,
   handleServerErrors,
 } from "./utils";
@@ -196,13 +196,45 @@ function createFile(entry, previousEntry) {
 const expandedIcon = "../assets/function/expanded.svg";
 const collapsedIcon = "../assets/function/collapsed.svg";
 // Toggles expanded folders on the sidebar.
-function toggleExpanded(path) {
+async function toggleExpanded(path) {
   // If the folder is collapsed, it's expanded.
   if (checkState("collapsedFolders", path)) {
     rmState("collapsedFolders", path);
+
+    if (getState("collapsedFolderUpdateMethod") === "Manual") {
+      const response = await fetch("/api/rmCollapsedFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folder: path,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseJSON = await response.JSON();
+        handleServerErrors(responseJSON, response.status);
+      }
+    }
+
     return expandedIcon;
   } else {
     addState("collapsedFolders", path);
+
+    if (getState("collapsedFolderUpdateMethod") === "Manual") {
+      const response = await fetch("/api/addCollapsedFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folder: path,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseJSON = await response.JSON();
+        handleServerErrors(responseJSON, response.status);
+      }
+    }
+
     return collapsedIcon;
   }
 }
@@ -212,7 +244,8 @@ function setIcon(iconPath, path) {
   // Current icon for collapsed / expanded. Local variable so that different folders don't get the icon that they're not supposed to.
   let currentIcon;
   // Gets the correct icon between expanded / collapsed.
-  if (checkState("collapsedFolders", path)) {
+  const isCollapsed = checkState("collapsedFolders", path);
+  if (isCollapsed) {
     currentIcon = collapsedIcon;
   } else {
     currentIcon = expandedIcon;
@@ -376,6 +409,12 @@ function createFileActions(path, previousEntry) {
   return buttons;
 }
 
+function fileIsAutosave(entry) {
+  const fileName = entry.name;
+  const truncatedFileName = fileName.slice(-14, -5);
+  return truncatedFileName === ".autosave";
+}
+
 // Rendering items
 function renderEntries(entries, indentlevel, previousEntry) {
   // Sorts entires alphabetically whilst prioritizing Folders
@@ -428,14 +467,16 @@ function renderEntries(entries, indentlevel, previousEntry) {
         );
       }
     } else {
-      // Creating File
-      const wrapper = createWrapper();
-      const file = createFile(entries[i], previousEntry);
-      file.appendChild(createFileActions(entries[i].name, previousEntry));
-      wrapper.appendChild(setIcon("../assets/function/file.svg", ""));
-      wrapper.appendChild(file);
-      wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
-      folderStructure.appendChild(wrapper);
+      if (!fileIsAutosave(entries[i])) {
+        // Creating File
+        const wrapper = createWrapper();
+        const file = createFile(entries[i], previousEntry);
+        file.appendChild(createFileActions(entries[i].name, previousEntry));
+        wrapper.appendChild(setIcon("../assets/function/file.svg", ""));
+        wrapper.appendChild(file);
+        wrapper.style.marginLeft = 5 + indentlevel * 10 + "px";
+        folderStructure.appendChild(wrapper);
+      }
     }
   }
 }
@@ -554,11 +595,15 @@ rootButton.addEventListener("click", async (e) => {
 });
 
 // Updates master.json property "collapsedFolders" every 10s.
-export function createCollapsedFoldersUpdateInterval() {
-  setInterval(
-    () => {
-      sendState("collapsedFolders");
-    },
-    getState("updateCollapsedFolders") * 1000,
-  );
+export async function createCollapsedFoldersUpdateInterval() {
+  if (await getMaster()) {
+    if (getState("collapsedFolderUpdateMethod") === "Auto") {
+      setInterval(
+        () => {
+          sendState("collapsedFolders");
+        },
+        getState("updateCollapsedFolders") * 1000,
+      );
+    }
+  }
 }

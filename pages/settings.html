@@ -37,9 +37,9 @@
                 <img src="../assets/settings/keybinds.svg" class="tabIcon">
                 <p>Keybinds</p>
             </div>
-            <div id="storageTrafficTab" class="tab hoverClass">
+            <div id="storageTab" class="tab hoverClass">
                 <img src="../assets/settings/storage-traffic.svg" class="tabIcon">
-                <p>Storage & Traffic</p>
+                <p>Storage</p>
             </div>
             <div id="serverTab" class="tab hoverClass">
                 <img src="../assets/settings/server.svg" class="tabIcon">
@@ -61,7 +61,7 @@
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/function/save.svg" class="groupIcon">
-                        <p>Save Config</p>
+                        <p>Saving</p>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
@@ -108,7 +108,7 @@
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/function/export.svg" class="groupIcon">
-                        <p>Export Config</p>
+                        <p>Exports</p>
                     </div>
                     <div class="setting">
                         <div class="settingInfo">
@@ -123,6 +123,41 @@
                                 <option value="True">True</option>
                                 <option value="False">False</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/function/folder.svg" class="groupIcon">
+                        <p>Collapsed Folders</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Collapsed folder update method</div>
+                            <div class="settingDescription">
+                                How collapsed folders are updated. Note that automatic uses less resources when actively
+                                working on documents but still uses the same amount of resources whilst AFK. Manual mode
+                                may use more resources over a short burst, but is fully inactive when AFK.
+                            </div>
+                            <div class="settingDefault">Default: Automatic</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="collapsedFolderUpdateMethod">
+                                <option value="Auto">Automatic</option>
+                                <option value="Manual">Manual</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting" id="updateCollapsedFoldersDiv">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Update collapsed Folders (seconds)</div>
+                            <div class="settingDescription">
+                                Interval of saving the current collapsed folders to master.json for permanent storage.
+                            </div>
+                            <div class="settingDefault">Default: 15s</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="updateCollapsedFolders">
                         </div>
                     </div>
                 </div>
@@ -205,7 +240,7 @@
                 </div>
             </div>
 
-            <div id="storageTraffic" class="hidden">
+            <div id="storage" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
                         <img src="../assets/settings/storage.svg" class="groupIcon">
@@ -215,7 +250,8 @@
                         <div class="settingInfo">
                             <div class="settingTitle">Maximum Image size (Megabytes)</div>
                             <div class="settingDescription">
-                                Maximum file size which a single image uploaded to a document can be. Applying this setting requires a Server restart.
+                                Maximum file size which a single image uploaded to a document can be. Applying this
+                                setting requires a Server restart.
                             </div>
                             <div class="settingDefault">Default: 10mb</div>
                         </div>
@@ -250,24 +286,6 @@
                         </div>
                         <div class="settingValue">
                             <button type="submit" class="button hoverClass" id="clearLogsButton">Clear Logs</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/settings/traffic.svg" class="groupIcon">
-                        <p>Automated Traffic</p>
-                    </div>
-                    <div class="setting">
-                        <div class="settingInfo">
-                            <div class="settingTitle">Update collapsed Folders (seconds)</div>
-                            <div class="settingDescription">
-                                Interval of saving the current collapsed folders to master.json for permanent storage.
-                            </div>
-                            <div class="settingDefault">Default: 15s</div>
-                        </div>
-                        <div class="settingValue">
-                            <input type="number" id="updateCollapsedFolders">
                         </div>
                     </div>
                 </div>
@@ -450,7 +468,7 @@
                     <div class="setting">
                         <div class="settingInfo">
                             <div class="settingTitle">Version</div>
-                            <div>You are currently on Editor version <i>v1.6.3</i>.</div>
+                            <div>You are currently on Editor version <i>v1.6.4</i>.</div>
                         </div>
                         <div class="settingValue">
                             <button type="submit" id="versionCheckButton" class="button hoverClass">

@@ -85,6 +85,10 @@ ul {
   margin: 0;
 }
 
+ol {
+  margin: 0;
+}
+
 ul[data-type="taskList"] {
   list-style: none;
   padding: 0;

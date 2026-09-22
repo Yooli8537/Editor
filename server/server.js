@@ -3,36 +3,24 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-
-// Git for JS
 const gitJS = require("simple-git");
 const git = gitJS.default();
+
+const GLOBAL = require("./utils/global");
 
 const app = express();
 const port = 8510;
 
-// Paths to Folders which need to exist within the data folder.
-const rootPath = path.join(__dirname, "../");
-const logsFolderPath = path.join(rootPath, "logs");
-const dataFolderPath = path.join(rootPath, "data");
-const autosavesFolderPath = path.join(dataFolderPath, "autosaves");
-const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
-const imageFolderPath = path.join(dataFolderPath, "images");
-const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
-const masterFilePath = path.join(dataFolderPath, "master.json");
-
 const userDataFolders = [
-  { name: "Logs", path: logsFolderPath },
-  { name: "Data", path: dataFolderPath },
-  { name: "Autosaves", path: autosavesFolderPath },
-  { name: "Notebooks", path: notebooksFolderPath },
-  { name: "Image", path: imageFolderPath },
-  { name: "Attachments", path: attachmentsFolderPath },
+  { name: "Logs", path: GLOBAL.PATHS.FOLDERS.LOGS },
+  { name: "Data", path: GLOBAL.PATHS.FOLDERS.DATA },
+  { name: "Notebooks", path: GLOBAL.PATHS.FOLDERS.NOTEBOOKS },
+  { name: "Image", path: GLOBAL.PATHS.FOLDERS.IMAGES },
+  { name: "Attachments", path: GLOBAL.PATHS.FOLDERS.ATTACHMENTS },
 ];
 
 // Every property and default value which should be in master.json.
 const allProperties = {
-  unsavedFiles: [],
   autosaveInterval: 10,
   helpTextHoverTime: 1.5,
   confirmSave: true,
@@ -45,12 +33,13 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.6.3",
+  version: "v1.6.4",
   deniedVersion: null,
   clientActionLogging: false,
   rateLimitResetTime: 5,
   rateLimitMaxRequests: 300,
   maxImageSize: 10,
+  collapsedFolderUpdateMethod: "Auto",
 };
 
 // Creates any missing data folders.
@@ -61,18 +50,18 @@ for (let i = 0; i < userDataFolders.length; i++) {
 }
 
 // Masterfile to store config across sessions
-if (!fs.existsSync(masterFilePath)) {
+if (!fs.existsSync(GLOBAL.PATHS.FILES.MASTERFILE)) {
   try {
     const masterFileContent = `[${JSON.stringify(allProperties)}]`;
-    fs.writeFileSync(masterFilePath, masterFileContent, "utf-8");
+    fs.writeFileSync(GLOBAL.PATHS.MASTERFILE, masterFileContent, "utf-8");
   } catch (err) {
-    logger.error("Failed to create master.json.");
+    console.error("Server setup: Failed to create master.json.");
   }
 }
 
-const serverMaster = require("./serverMaster");
-const logger = require("./utils/logger");
-const error = require("./utils/error");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
+const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const error = require(GLOBAL.PATHS.UTILS.ERROR);
 
 // Limits requests
 // Placement to allow user settings to be used (must be placed after serverMaster).
@@ -83,13 +72,13 @@ const limiter = rateLimit({
 });
 
 // Server routes
-const documentsRoute = require("./routes/documents");
-const exportRoute = require("./routes/export");
-const autosaveRoute = require("./routes/autosave");
-const settingsRoute = require("./routes/settings");
+const documentsRoute = require(GLOBAL.PATHS.ROUTES.DOCUMENTS);
+const exportRoute = require(GLOBAL.PATHS.ROUTES.EXPORT);
+const autosaveRoute = require(GLOBAL.PATHS.ROUTES.AUTOSAVE);
+const settingsRoute = require(GLOBAL.PATHS.ROUTES.SETTINGS);
 
 app.use(express.json());
-app.use(express.static(rootPath));
+app.use(express.static(GLOBAL.PATHS.FOLDERS.ROOT));
 app.use(limiter);
 app.use(documentsRoute);
 app.use(exportRoute);
@@ -100,18 +89,17 @@ app.use(settingsRoute);
 // This function is used after deprecated / missing properties are found.
 async function updateMasterfile(masterFile) {
   try {
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
-      logger.warn("Updated masterfile properties.");
+      logger.info("Master properties update: Updated properties.");
     }
     return true;
   } catch (err) {
-    error(
-      "master.json properties update",
-      "Failed to update master.json properties.",
-      {},
-      err,
-    );
+    error("Master properties update", "Failed to update properties.", {}, err);
     return false;
   }
 }
@@ -121,11 +109,11 @@ async function deleteDeprecatedMasterProperties() {
   logger.info("Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
   // Array of ever property to be released and later be deprecated.
-  const deprecatedProperties = ["usedImages", "applyAppUpdate"];
+  const deprecatedProperties = ["usedImages", "applyAppUpdate", "unsavedFiles"];
 
   // Deletes deprecated properties
   for (let i = 0; i < deprecatedProperties.length; i++) {
@@ -133,7 +121,7 @@ async function deleteDeprecatedMasterProperties() {
       delete masterFile[0][deprecatedProperties[i]];
       logger.info(
         { "Deprecated Property": deprecatedProperties[i] },
-        "Deleted master.json property.",
+        "Deleted deprecated master.json property.",
       );
       changesMade = true;
     }
@@ -149,12 +137,12 @@ async function deleteDeprecatedMasterProperties() {
   }
 }
 
-// Adds any missing properties to the master.json file.
+// Adds any missing properties to master.json.
 async function addMissingMasterProperties() {
   logger.info("Checking for missing master.json properties...");
 
-  // Getting the masterfile data. Has to be parsed.
-  const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+  // Getting master.json data. Has to be parsed.
+  const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
   const masterFile = JSON.parse(rawMasterFile);
   let changesMade = false;
 
@@ -167,36 +155,39 @@ async function addMissingMasterProperties() {
     }
   }
 
-  // Updates the masterfile if changes were made
+  // Updates master.json if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
       logger.info("Added missing master.json properties.");
     }
   } else {
-    logger.info("No missing masterfile properties found.");
+    logger.info("No missing master.json properties found.");
   }
 }
 
-// Checks for deprecated and missing masterfile properties.
+// Checks for deprecated and missing master.json properties.
 deleteDeprecatedMasterProperties();
 addMissingMasterProperties();
 
 // Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
   if (serverMaster.detailLogs) {
-    logger.info("Recived master.json get request.");
+    logger.info("Master get: Recived request.");
   }
   try {
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
     if (serverMaster.successLogs) {
-      logger.info("Loaded Masterfile.");
+      logger.info("Master get: Loaded master.json.");
     }
   } catch (err) {
     res
       .status(500)
-      .json(error("master.json get", "Failed to get master.json.", {}, err));
+      .json(error("Master get: ", "Failed to get master.json.", {}, err));
   }
 });
 
@@ -204,16 +195,17 @@ app.get("/api/getMaster", async (req, res) => {
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
   if (serverMaster.detailLogs) {
-    logger.info("Recived master.json update request.");
+    logger.info("Master update: Recived request.");
   }
 
   try {
-    fs.writeFileSync(masterFilePath, JSON.stringify(data), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(data),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
-      logger.info("Updated master.json.");
-      if (serverMaster.detailLogs) {
-        logger.info({ "Updated master.json": data });
-      }
+      logger.info("Master update: Updated master.json.");
     }
 
     res.json({ success: true });
@@ -237,22 +229,32 @@ app.put("/api/updateMasterProperty", async (req, res) => {
   if (serverMaster.detailLogs) {
     logger.info(
       { Property: property, Value: newValue },
-      "Recived master.json property update request.",
+      "Master property update: Recived request.",
     );
   }
 
   try {
     // Gets master data
-    const rawMasterFile = fs.readFileSync(masterFilePath, "utf-8");
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
     const masterFile = JSON.parse(rawMasterFile);
 
     // Updates given property
     masterFile[0][property] = newValue;
 
     // Updates the master.
-    fs.writeFileSync(masterFilePath, JSON.stringify(masterFile), "utf-8");
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
     if (serverMaster.successLogs) {
-      logger.info({ Property: property }, "Updated master.json property.");
+      logger.info(
+        { Property: property },
+        "Master property update: Updated property.",
+      );
     }
     res.json({ success: true });
   } catch (err) {
@@ -260,9 +262,102 @@ app.put("/api/updateMasterProperty", async (req, res) => {
       .status(500)
       .json(
         error(
-          "Update master.json property",
-          "Failed to update master.json property.",
-          {},
+          "Master property update",
+          "Failed to update property.",
+          { Property: property, Value: newValue },
+          err,
+        ),
+      );
+  }
+});
+
+app.post("/api/addCollapsedFolder", async (req, res) => {
+  const { folder } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info({ Folder: folder }, "Collapsed folder add: Recived request.");
+  }
+
+  try {
+    // Gets master.json data.
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Updates collapsedFolders with property
+    masterFile[0].collapsedFolders.push(folder);
+
+    // Updates master.json
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
+    if (serverMaster.successLogs) {
+      logger.info({ Folder: folder }, "Collapsed folder add: Added folder.");
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(
+        error(
+          "Collapsed folder add",
+          "Failed to add folder.",
+          { Folder: folder },
+          err,
+        ),
+      );
+  }
+});
+
+app.post("/api/rmCollapsedFolder", async (req, res) => {
+  const { folder } = req.body;
+
+  if (serverMaster.detailLogs) {
+    logger.info(
+      { Folder: folder },
+      "Collapsed folder remove: Recived request.",
+    );
+  }
+
+  try {
+    // Gets master.json data
+    const rawMasterFile = fs.readFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      "utf-8",
+    );
+    const masterFile = JSON.parse(rawMasterFile);
+
+    // Removes folder from master.json.
+    const rmIndex = masterFile[0].collapsedFolders.indexOf(folder);
+    if (rmIndex > -1) {
+      masterFile[0].collapsedFolders.splice(rmIndex, 1);
+    }
+
+    // Updates master.json
+    fs.writeFileSync(
+      GLOBAL.PATHS.FILES.MASTERFILE,
+      JSON.stringify(masterFile),
+      "utf-8",
+    );
+    if (serverMaster.successLogs) {
+      logger.info(
+        { Folder: folder },
+        "Collapsed folder remove: Removed folder.",
+      );
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json(
+        error(
+          "Collapsed folder remove",
+          "Failed to remove folder.",
+          { Folder: folder },
           err,
         ),
       );
@@ -271,8 +366,12 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
+  logger.info("App update: Recieved request.");
   try {
     await git.pull("origin", "main", ["--rebase"]);
+    if (serverMaster.successLogs) {
+      logger.info("App update: Successfully updated app.");
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json(error("App update", "Failed to update app.", {}, err));
@@ -289,7 +388,7 @@ app.get("/api/", async (req, res) => {
 
 // Sends index.html to the client.
 app.get("/", (req, res) => {
-  res.sendFile(path.join(rootPath, "index.html"));
+  res.sendFile(path.join(GLOBAL.PATHS.FOLDERS.ROOT, "index.html"));
 });
 
 app.listen(port, () => {

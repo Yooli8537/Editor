@@ -440,7 +440,6 @@ export function handleServerErrors(responseJSON, errorStatus) {
   if (!isObjectEmpty(requestValues)) {
     hasValues = true;
     valuesDiv = document.createElement("div");
-    console.log(requestValues);
 
     for (const key in requestValues) {
       const valueParagraph = document.createElement("p");

@@ -2,7 +2,8 @@
 const pino = require("pino");
 const path = require("path");
 
-const serverMaster = require("../serverMaster");
+const GLOBAL = require("./global");
+const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 
 // Gets date and time of server start.
 const currentdate = new Date();
@@ -31,21 +32,28 @@ if (seconds < 10) {
 }
 
 const logPath = path.join(
-  __dirname,
-  `../../logs/${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
+  GLOBAL.PATHS.FOLDERS.LOGS,
+  `${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
 );
 
 let logger;
 if (serverMaster.saveLogs) {
   const transport = pino.transport({
-    targets: [
+targets: [
       {
-        target: "pino/file",
-        options: { destination: logPath },
+        target: "pino-pretty",
+        options: {
+          destination: logPath,
+          colorize: false,
+          translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
+          ignore: "pid,hostname",
+          levelFirst: false,
+        },
       },
       {
         target: "pino-pretty",
         options: {
+          destination: 1, // Console
           colorize: true,
           translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
           ignore: "pid,hostname",

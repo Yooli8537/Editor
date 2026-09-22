@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.6.4 - Autosave rework & Improvements
+
+### Added
+
+- Documents can now be exported as JSON ([Issue #100](https://github.com/Yooli8537/Editor/issues/100)).
+- When pressing a button on the editor toolbar, the editor will remain focused ([Issue #101](https://github.com/Yooli8537/Editor/issues/101)).
+- Collapsed folders can now be updated "manually" ([Issue #55](https://github.com/Yooli8537/Editor/issues/55)).
+
+### Changed
+
+- Common Server variables standardized in the global.js file ([Issue #95](https://github.com/Yooli8537/Editor/issues/95)).
+- Improved autosaves. Autosaves are now saved next to their regular counterparts, fixing an issue where autosaves of different files with the same name would likely overwrite each other (Issues [#22](https://github.com/Yooli8537/Editor/issues/22) and [#56](https://github.com/Yooli8537/Editor/issues/56)).
+- Improved Server-Side logging through standardization and by fixing errors ([Issue #99](https://github.com/Yooli8537/Editor/issues/99)).
+- Server log files are now much nicer to look at and way easier to read.
+
+### Deprecated
+
+- `master.json` property "unsavedFiles" has been deprecated and is no longer used by the app.
+- `data/autosaves` folder has been deprecated in favor of a better autosaves system and can be safely deleted.
+
+### Fixed
+
+- Fixed an incorrect server response for `/api/documents/deletePath`.
+- Fixed large margins for ordered lists.
+- Incorrect error log for `/api/updateMasterProperty`.
+
 ## v1.6.3 - Autosaving Hotfix
 
 ### Fixed
