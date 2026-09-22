@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.6.4 - Autosave rework & Improvements
 
 ### Added
 
