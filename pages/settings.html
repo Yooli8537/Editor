@@ -207,11 +207,231 @@
             <div id="formats" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <img src="../assets/icons/warning.svg" class="groupIcon">
                         <p>
-                            <del>Formats</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
+                            Format settings affect only formats within the editor itself. All changes affect every
+                            document.
                         </p>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/format.svg" class="groupIcon">
+                        <p>Format Sizes</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Default Format size (pixels)</div>
+                            <div class="settingDescription">
+                                The default font size is used by most formats in the Editor.
+                            </div>
+                            <div class="settingDefault">Default: 16 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontSizes.default">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H1 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 32 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontSizes.h1">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H2 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 24 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontSizes.h2">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 3 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H3 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 20 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontSizes.h3">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Code Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Size of the text within inline code and code blocks.
+                            </div>
+                            <div class="settingDefault">Default: 12 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontSizes.code">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/margins.svg" class="groupIcon">
+                        <p>Format Margins</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 top margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin above a Heading 1 block.
+                            </div>
+                            <div class="settingDefault">Default: 2 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.h1Top">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 1 block.
+                            </div>
+                            <div class="settingDefault">Default: 5 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.h1Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 top margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin above a Heading 2 block.
+                            </div>
+                            <div class="settingDefault">Default: 1 pixel</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.h2Top">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 2 block.
+                            </div>
+                            <div class="settingDefault">Default: 3 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.h2Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 3 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 3 block.
+                            </div>
+                            <div class="settingDefault">Default: 1 pixel</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.h3Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">List margins (pixels)</div>
+                            <div class="settingDescription">
+                                The margins above and below any list element.
+                            </div>
+                            <div class="settingDefault">Default: 0 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.fontMargins.listMargin">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/table.svg" class="groupIcon">
+                        <p>Tables</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Cell padding (pixels)</div>
+                            <div class="settingDescription">
+                                The distance between an element within a table to the borders of a cell.
+                            </div>
+                            <div class="settingDefault">Default: 8 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="format.tables.cellPadding">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Text alignment</div>
+                            <div class="settingDescription">
+                                How text is aligned within a table cell.
+                            </div>
+                            <div class="settingDefault">Default: Left</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="format.tables.textAlign">
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Table heading color (hexcode)</div>
+                            <div class="settingDescription">
+                                The color of a table's heading.
+                            </div>
+                            <div class="settingDefault">Default: #ebebeb</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="text" id="format.tables.headColor">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/format/code-block.svg" class="groupIcon">
+                        <p>Code Blocks</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Background color (hexcode)</div>
+                            <div class="settingDescription">
+                                The background color of a code block.
+                            </div>
+                            <div class="settingDefault">Default: #222222</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="text" id="format.codeBlocks.backgroundColor">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Default text color (hexcode)</div>
+                            <div class="settingDescription">
+                                The default color text within a code block (is overwritten by syntax highlighting).
+                            </div>
+                            <div class="settingDefault">Default: #ffffff</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="text" id="format.codeBlocks.defaultFontColor">
+                        </div>
                     </div>
                 </div>
             </div>
