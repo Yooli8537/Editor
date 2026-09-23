@@ -54,6 +54,7 @@ const allProperties = {
       h2Top: 1,
       h2Bottom: 3,
       h3Bottom: 1,
+      listMargin,
     },
     tables: {
       cellPadding: 8,
@@ -63,9 +64,6 @@ const allProperties = {
     codeBlocks: {
       backgroundColor: "#222222",
       defaultFontColor: "#ffffff",
-    },
-    lists: {
-      listMargin: 0,
     },
   },
 };
