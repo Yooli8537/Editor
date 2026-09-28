@@ -54,7 +54,7 @@ const allProperties = {
       h2Top: 1,
       h2Bottom: 3,
       h3Bottom: 1,
-      listMargin,
+      listMargin: 0,
     },
     tables: {
       cellPadding: 8,
