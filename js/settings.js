@@ -197,7 +197,7 @@ function showPage(pageName) {
 }
 
 // Saving the settings
-saveSettingsButton.addEventListener("click", async (e) => {
+saveSettingsButton.addEventListener("click", async () => {
   // Looping through all the number settings and saving them to the master variable.
   for (let i = 0; i < intSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
@@ -245,7 +245,7 @@ saveSettingsButton.addEventListener("click", async (e) => {
 
 // Buttons
 const clearImagesButton = document.querySelector("#clearImagesButton");
-clearImagesButton.addEventListener("click", async (e) => {
+clearImagesButton.addEventListener("click", async () => {
   const clear = await fetch("/api/cleanImages", {
     method: "DELETE",
   });
@@ -269,7 +269,7 @@ clearImagesButton.addEventListener("click", async (e) => {
 });
 
 const clearLogsButton = document.querySelector("#clearLogsButton");
-clearLogsButton.addEventListener("click", async (e) => {
+clearLogsButton.addEventListener("click", async () => {
   const clear = await fetch("/api/clearLogs", {
     method: "DELETE",
   });
@@ -302,7 +302,8 @@ function applyDisabledOverlay(settingDivElement) {
 }
 
 function removeDisabledOverlay(settingDivElement) {
-  const overlay = document.querySelector(".disabled");
+  const overlay =
+    settingDivElement.parentElement.parentElement.querySelector(".disabled");
   if (overlay) {
     overlay.remove();
   }
