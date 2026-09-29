@@ -207,9 +207,9 @@ function preLoadSettingsData() {
       // Value of a boolean setting within the master.
       let settingMasterValue = master[setting.id];
       if (settingMasterValue === true) {
-        setting.value = "True";
+        setting.value = "On";
       } else {
-        setting.value = "False";
+        setting.value = "Off";
       }
     }
   }
@@ -258,7 +258,7 @@ saveSettingsButton.addEventListener("click", async () => {
 
   // Looping through all the boolean settings and saving them to the master variable.
   for (let i = 0; i < boolSettings.length; i++) {
-    if (boolSettings[i].value == "True") {
+    if (boolSettings[i].value == "On") {
       master[boolSettings[i].id] = true;
     } else {
       master[boolSettings[i].id] = false;
