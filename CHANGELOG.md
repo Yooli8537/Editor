@@ -14,6 +14,7 @@
 - Improved autosaves. Autosaves are now saved next to their regular counterparts, fixing an issue where autosaves of different files with the same name would likely overwrite each other (Issues [#22](https://github.com/Yooli8537/Editor/issues/22) and [#56](https://github.com/Yooli8537/Editor/issues/56)).
 - Improved Server-Side logging through standardization and by fixing errors ([Issue #99](https://github.com/Yooli8537/Editor/issues/99)).
 - Server log files are now much nicer to look at and way easier to read.
+- Changed "True" and "False" in settings to "On" and "Off".
 
 ### Deprecated
 

@@ -96,36 +96,88 @@ const boolSettings = [
 ];
 
 // Formats need their own special handling
-const format = {
+const formatFontSizesDefault = document.querySelector(
+  "#formatFontSizesDefault",
+);
+const formatFontSizesH1 = document.querySelector("#formatFontSizesH1");
+const formatFontSizesH2 = document.querySelector("#formatFontSizesH2");
+const formatFontSizesH3 = document.querySelector("#formatFontSizesH3");
+const formatFontSizesCode = document.querySelector("#formatFontSizesCode");
+const formatFontMarginsH1Top = document.querySelector(
+  "#formatFontMarginsH1Top",
+);
+const formatFontMarginsH1Bottom = document.querySelector(
+  "#formatFontMarginsH1Bottom",
+);
+const formatFontMarginsH2Top = document.querySelector(
+  "#formatFontMarginsH2Top",
+);
+const formatFontMarginsH2Bottom = document.querySelector(
+  "#formatFontMarginsH2Bottom",
+);
+const formatFontMarginsH3Bottom = document.querySelector(
+  "#formatFontMarginsH3Bottom",
+);
+const formatFontMarginsListMargin = document.querySelector(
+  "#formatFontMarginsListMargin",
+);
+const formatTablesCellPadding = document.querySelector(
+  "#formatTablesCellPadding",
+);
+const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");
+const formatTablesHeadColor = document.querySelector("#formatTablesHeadColor");
+const formatCodeBlocksBackgroundColor = document.querySelector(
+  "#formatCodeBlocksBackgroundColor",
+);
+const formatCodeBlocksDefaultFontColor = document.querySelector(
+  "#formatCodeBlocksDefaultFontColor",
+);
+
+const allFormatSettings = [
+  formatFontSizesDefault,
+  formatFontSizesH1,
+  formatFontSizesH2,
+  formatFontSizesH3,
+  formatFontSizesCode,
+  formatFontMarginsH1Top,
+  formatFontMarginsH1Bottom,
+  formatFontMarginsH2Top,
+  formatFontMarginsH2Bottom,
+  formatFontMarginsH3Bottom,
+  formatFontMarginsListMargin,
+  formatTablesCellPadding,
+  formatTablesHeadColor,
+  formatCodeBlocksBackgroundColor,
+  formatCodeBlocksDefaultFontColor,
+];
+
+// Replica of the structure which format settings have in master.json.
+const formats = {
   fontSizes: {
-    default: document.querySelector("#formatFontSizesDefault"),
-    h1: document.querySelector("#formatFontSizesH1"),
-    h2: document.querySelector("#formatFontSizesH2"),
-    h3: document.querySelector("#formatFontSizesH3"),
-    code: document.querySelector("#formatFontSizesCode"),
+    default: Number(formatFontSizesDefault.value),
+    h1: Number(formatFontSizesH1.value),
+    h2: Number(formatFontSizesH2),
+    h3: Number(formatFontSizesH3),
+    code: Number(formatFontSizesCode),
   },
-  margins: {
-    h1Top: document.querySelector("#formatFontMarginsH1Top"),
-    h1Bottom: document.querySelector("#formatFontMarginsH1Bottom"),
-    h2Top: document.querySelector("#formatFontMarginsH2Top"),
-    h2Bottom: document.querySelector("#formatFontMarginsH2Bottom"),
-    h3Bottom: document.querySelector("#formatFontMarginsH3Bottom"),
-    listMargin: document.querySelector("#formatFontMarginsListMargin"),
+  fontMargins: {
+    h1Top: Number(formatFontMarginsH1Top),
+    h1Bottom: Number(formatFontMarginsH1Bottom),
+    h2Top: Number(formatFontMarginsH2Top),
+    h2Bottom: Number(formatFontMarginsH2Bottom),
+    h3Bottom: Number(formatFontMarginsH3Bottom),
+    listMargin: Number(formatFontMarginsListMargin),
   },
   tables: {
-    cellPadding: document.querySelector("#formatTablesCellPadding"),
-    textAlign: document.querySelector("#formatTablesTextAlign"),
-    headColor: document.querySelector("#formatTablesHeadColor"),
+    cellPadding: Number(formatTablesCellPadding),
+    textAlign: formatTablesTextAlign,
+    headColor: formatTablesHeadColor,
   },
   codeBlocks: {
-    backgroundColor: document.querySelector("#formatCodeBlocksBackgroundColor"),
-    defaultFontColor: document.querySelector(
-      "#formatCodeBlocksDefaultFontColor",
-    ),
+    backgroundColor: formatCodeBlocksBackgroundColor,
+    defaultFontColor: formatCodeBlocksDefaultFontColor,
   },
 };
-
-console.log(format.fontSizes.default);
 
 // Getting the master file
 let master;
