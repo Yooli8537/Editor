@@ -1120,6 +1120,57 @@ function initPing() {
   }, 250);
 }
 
+const customFormatPairs = {
+  cssVariable: [
+    "--defaultFontSize",
+    "--h1FontSize",
+    "--h2FontSize",
+    "--h3FontSize",
+    "--codeFontSize",
+    "--h1MarginTop",
+    "--h1MarginBottom",
+    "--h2MarginTop",
+    "--h2MarginBottom",
+    "--h3MarginBottom",
+    "--listMargin",
+    "--tableCellPadding",
+    "--tableTextAlign",
+    "--tableHeadColor",
+    "--codeBlockBackgroundColor",
+    "--codeBlockDefaultFontColor",
+  ],
+  masterValue: [
+    "formatFontSizesDefault",
+    "formatFontSizesH1",
+    "formatFontSizesH2",
+    "formatFontSizesH3",
+    "formatFontSizesCode",
+    "formatFontMarginsH1Top",
+    "formatFontMarginsH1Bottom",
+    "formatFontMarginsH2Top",
+    "formatFontMarginsH2Bottom",
+    "formatFontMarginsH3Bottom",
+    "formatFontMarginsListMargin",
+    "formatTablesCellPadding",
+    "formatTablesTextAlign",
+    "formatTablesHeadColor",
+    "formatCodeBlocksBackgroundColor",
+    "formatCodeBlocksDefaultFontColor",
+  ],
+};
+function applyCustomFormats() {
+  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
+    let newValue = getState(customFormatPairs.masterValue[i]);
+    if (typeof newValue === "number") {
+      newValue += "px";
+    }
+    document.documentElement.style.setProperty(
+      customFormatPairs.cssVariable[i],
+      newValue,
+    );
+  }
+}
+
 // Opens Document from URL if one is present.
 export async function onFirstStart() {
   // Loads Data from master.json and activates autosave upon success.
@@ -1150,6 +1201,7 @@ export async function onFirstStart() {
     }
   }
   buildSidebar();
+  applyCustomFormats();
   createCollapsedFoldersUpdateInterval();
   checkForUpdate(false);
 }

@@ -12,6 +12,7 @@
   --h2MarginTop: 1px;
   --h2MarginBottom: 3px;
   --h3MarginBottom: 1px;
+  --listMargin: 0px;
   /* Tables */
   --tableCellPadding: 8px;
   --tableTextAlign: left;
@@ -19,8 +20,6 @@
   /* Code Blocks */
   --codeBlockBackgroundColor: #222222;
   --codeBlockDefaultFontColor: #ffffff;
-  /* Lists */
-  --listMargin: 0px;
 }
 
 /* Format styling for the editor & export */
