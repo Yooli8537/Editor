@@ -1,2 +1,27 @@
 :root {
+  /* Colors */
+  --hoverColor: #3cb372cc;
+  --selectedColor: #84ecb3;
+  --red: #ff0000;
+  --transBlack: #000000aa;
+  /* Borders */
+  --largeBorder: 3px solid #000000;
+  --largeLightBorder: 3px solid #575757;
+  --mediumBorder: 2px solid #000000;
+  --smallBorder: 1px solid #000000;
+  /* Border-Radii */
+  --roundedQuarterPercent: 25%;
+  --roundedLarge: 8px;
+  --roundedMedium: 5px;
+  --roundedSmall: 3px;
+  /* Backgrounds */
+  --defaultBackgroundColor: #ffffff;
+  --darkerBackgroundColor: #eeeeee;
+  /* Padding */
+  --smallPadding: 2px;
+  /* Margins */
+  --smallMargin: 2px;
+  /* Sidebar */
+  --itemMargin: 5px 2% 0 2%;
+  --itemWidth: 90%;
 }

@@ -84,7 +84,7 @@
 .export-content code,
 .ProseMirror code {
   background-color: #cdcdcd;
-  padding: 2px 4px;
+  padding: var(--smallPadding) 4px;
   border-radius: 4px;
   font-size: var(--codeFontSize);
 }
