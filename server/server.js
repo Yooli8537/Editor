@@ -40,32 +40,22 @@ const allProperties = {
   rateLimitMaxRequests: 300,
   maxImageSize: 10,
   collapsedFolderUpdateMethod: "Auto",
-  format: {
-    fontSizes: {
-      default: 16,
-      h1: 32,
-      h2: 24,
-      h3: 20,
-      code: 12,
-    },
-    fontMargins: {
-      h1Top: 2,
-      h1Bottom: 5,
-      h2Top: 1,
-      h2Bottom: 3,
-      h3Bottom: 1,
-      listMargin: 0,
-    },
-    tables: {
-      cellPadding: 8,
-      textAlign: "left",
-      headColor: "#ebebeb",
-    },
-    codeBlocks: {
-      backgroundColor: "#222222",
-      defaultFontColor: "#ffffff",
-    },
-  },
+  formatFontSizesDefault : 16,
+  formatFontSizesH1: 32,
+  formatFontSizesH2:24,
+  formatFontSizesH3:20,
+  formatFontSizesCode:12,
+  formatFontMarginsH1Top:3,
+  formatFontMarginsH1Bottom:5,
+  formatFontMarginsH2Top:2,
+  formatFontMarginsH2Bottom:3,
+  formatFontMarginsH3Bottom:1,
+  formatFontMarginsListMargin:0,
+  formatTablesCellPadding:8,
+  formatTablesTextAlign:"left",
+  formatTablesHeadColor:"#ebebeb",
+  formatCodeBlocksBackgroundColor:"#222222",
+  formatCodeBlocksDefaultFontColor:"#ffffff",
 };
 
 // Creates any missing data folders.

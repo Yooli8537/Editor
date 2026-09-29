@@ -56,46 +56,6 @@ const maxImageSize = document.querySelector("#maxImageSize");
 const collapsedFolderUpdateMethod = document.querySelector(
   "#collapsedFolderUpdateMethod",
 );
-
-// Array of every setting which can be set (so it excludes one-time actions like the image clear).
-const allSettings = [
-  autosaveInterval,
-  confirmSave,
-  updateCollapsedFolders,
-  sliceIndex,
-  maxCharacterLength,
-  helpTextHoverTime,
-  warningLogs,
-  successLogs,
-  detailLogs,
-  saveLogs,
-  confirmExport,
-  logErrorDetails,
-  rateLimitMaxRequests,
-  rateLimitResetTime,
-  maxImageSize,
-  collapsedFolderUpdateMethod,
-];
-const intSettings = [
-  updateCollapsedFolders,
-  sliceIndex,
-  maxCharacterLength,
-  rateLimitMaxRequests,
-  rateLimitResetTime,
-];
-const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
-const stringSettings = [collapsedFolderUpdateMethod];
-const boolSettings = [
-  confirmSave,
-  warningLogs,
-  successLogs,
-  detailLogs,
-  saveLogs,
-  confirmExport,
-  logErrorDetails,
-];
-
-// Formats need their own special handling
 const formatFontSizesDefault = document.querySelector(
   "#formatFontSizesDefault",
 );
@@ -133,7 +93,24 @@ const formatCodeBlocksDefaultFontColor = document.querySelector(
   "#formatCodeBlocksDefaultFontColor",
 );
 
-const allFormatSettings = [
+// Array of every setting which can be set (so it excludes one-time actions like the image clear).
+const allSettings = [
+  autosaveInterval,
+  confirmSave,
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+  helpTextHoverTime,
+  warningLogs,
+  successLogs,
+  detailLogs,
+  saveLogs,
+  confirmExport,
+  logErrorDetails,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
+  maxImageSize,
+  collapsedFolderUpdateMethod,
   formatFontSizesDefault,
   formatFontSizesH1,
   formatFontSizesH2,
@@ -150,34 +127,46 @@ const allFormatSettings = [
   formatCodeBlocksBackgroundColor,
   formatCodeBlocksDefaultFontColor,
 ];
-
-// Replica of the structure which format settings have in master.json.
-const formats = {
-  fontSizes: {
-    default: Number(formatFontSizesDefault.value),
-    h1: Number(formatFontSizesH1.value),
-    h2: Number(formatFontSizesH2),
-    h3: Number(formatFontSizesH3),
-    code: Number(formatFontSizesCode),
-  },
-  fontMargins: {
-    h1Top: Number(formatFontMarginsH1Top),
-    h1Bottom: Number(formatFontMarginsH1Bottom),
-    h2Top: Number(formatFontMarginsH2Top),
-    h2Bottom: Number(formatFontMarginsH2Bottom),
-    h3Bottom: Number(formatFontMarginsH3Bottom),
-    listMargin: Number(formatFontMarginsListMargin),
-  },
-  tables: {
-    cellPadding: Number(formatTablesCellPadding),
-    textAlign: formatTablesTextAlign,
-    headColor: formatTablesHeadColor,
-  },
-  codeBlocks: {
-    backgroundColor: formatCodeBlocksBackgroundColor,
-    defaultFontColor: formatCodeBlocksDefaultFontColor,
-  },
-};
+const intSettings = [
+  updateCollapsedFolders,
+  sliceIndex,
+  maxCharacterLength,
+  rateLimitMaxRequests,
+  rateLimitResetTime,
+];
+const decimalSettings = [
+  autosaveInterval,
+  helpTextHoverTime,
+  maxImageSize,
+  formatFontSizesDefault,
+  formatFontSizesH1,
+  formatFontSizesH2,
+  formatFontSizesH3,
+  formatFontSizesCode,
+  formatFontMarginsH1Top,
+  formatFontMarginsH1Bottom,
+  formatFontMarginsH2Top,
+  formatFontMarginsH2Bottom,
+  formatFontMarginsH3Bottom,
+  formatFontMarginsListMargin,
+  formatTablesCellPadding,
+];
+const stringSettings = [
+  collapsedFolderUpdateMethod,
+  formatTablesTextAlign,
+  formatTablesHeadColor,
+  formatCodeBlocksBackgroundColor,
+  formatCodeBlocksDefaultFontColor,
+];
+const boolSettings = [
+  confirmSave,
+  warningLogs,
+  successLogs,
+  detailLogs,
+  saveLogs,
+  confirmExport,
+  logErrorDetails,
+];
 
 // Getting the master file
 let master;
@@ -293,9 +282,9 @@ saveSettingsButton.addEventListener("click", async () => {
   for (let i = 0; i < decimalSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
     const decValue = Number(decimalSettings[i].value);
-    if (decValue <= 0) {
+    if (decValue < 0) {
       createErrorModal(
-        `${decimalSettings[i].id} has a value of 0 or below. Cancelling save.`,
+        `${decimalSettings[i].id} has a value below 0. Cancelling save.`,
       );
       return;
     } else {
