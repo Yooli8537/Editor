@@ -50,7 +50,6 @@ const detailLogs = document.querySelector("#detailLogs");
 const saveLogs = document.querySelector("#saveLogs");
 const confirmExport = document.querySelector("#confirmExport");
 const logErrorDetails = document.querySelector("#logErrorDetails");
-//const clientActionLogging = document.querySelector("#clientActionLogging");
 const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
 const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
 const maxImageSize = document.querySelector("#maxImageSize");
@@ -72,13 +71,11 @@ const allSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
-  // clientActionLogging,
   rateLimitMaxRequests,
   rateLimitResetTime,
   maxImageSize,
   collapsedFolderUpdateMethod,
 ];
-// All the settings which only accept full numbers.
 const intSettings = [
   updateCollapsedFolders,
   sliceIndex,
@@ -86,11 +83,8 @@ const intSettings = [
   rateLimitMaxRequests,
   rateLimitResetTime,
 ];
-// All the settings which accept any positive number.
 const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
-// All the settings which are a string value.
 const stringSettings = [collapsedFolderUpdateMethod];
-// All the settings which are a boolean value.
 const boolSettings = [
   confirmSave,
   warningLogs,
@@ -99,8 +93,39 @@ const boolSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
-  //clientActionLogging,
 ];
+
+// Formats need their own special handling
+const format = {
+  fontSizes: {
+    default: document.querySelector("#formatFontSizesDefault"),
+    h1: document.querySelector("#formatFontSizesH1"),
+    h2: document.querySelector("#formatFontSizesH2"),
+    h3: document.querySelector("#formatFontSizesH3"),
+    code: document.querySelector("#formatFontSizesCode"),
+  },
+  margins: {
+    h1Top: document.querySelector("#formatFontMarginsH1Top"),
+    h1Bottom: document.querySelector("#formatFontMarginsH1Bottom"),
+    h2Top: document.querySelector("#formatFontMarginsH2Top"),
+    h2Bottom: document.querySelector("#formatFontMarginsH2Bottom"),
+    h3Bottom: document.querySelector("#formatFontMarginsH3Bottom"),
+    listMargin: document.querySelector("#formatFontMarginsListMargin"),
+  },
+  tables: {
+    cellPadding: document.querySelector("#formatTablesCellPadding"),
+    textAlign: document.querySelector("#formatTablesTextAlign"),
+    headColor: document.querySelector("#formatTablesHeadColor"),
+  },
+  codeBlocks: {
+    backgroundColor: document.querySelector("#formatCodeBlocksBackgroundColor"),
+    defaultFontColor: document.querySelector(
+      "#formatCodeBlocksDefaultFontColor",
+    ),
+  },
+};
+
+console.log(format.fontSizes.default);
 
 // Getting the master file
 let master;
