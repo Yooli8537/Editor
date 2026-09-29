@@ -51,7 +51,7 @@
 .export-content h3,
 .ProseMirror h3 {
   font-size: var(--h3FontSize) !important;
-  margin-bottom: var(--h3MarginBottom);
+  margin: 0, 0, var(--h3MarginBottom), 0;
 }
 
 .export-content p,
