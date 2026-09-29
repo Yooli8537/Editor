@@ -10,7 +10,7 @@ const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Processes HTML and converts it into PDF
 router.post("/api/export/pdf", async (req, res) => {
-  const { exportDocument, name } = req.body;
+  const { exportDocument, exportCSS, name } = req.body;
   if (serverMaster.detailLogs) {
     logger.info(
       { "Document name": name },
@@ -25,6 +25,9 @@ router.post("/api/export/pdf", async (req, res) => {
   <head>
     <link rel="stylesheet" href="http://localhost:8511/css/format.css" />
     <link rel="stylesheet" href="http://localhost:8511/css/syntax.css" />
+    <style>
+      ${exportCSS}
+    </style>
   </head>
   <body>
     <div class="export-content">

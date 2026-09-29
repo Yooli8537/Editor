@@ -851,21 +851,33 @@ function exportCurrentDocumentAsPDF() {
       "Export as PDF",
       () => {},
       () => {
-        getDocumentPDF(exportDocument);
+        convertDocumentToPDF(exportDocument);
       },
     );
   } else {
-    getDocumentPDF(exportDocument);
+    convertDocumentToPDF(exportDocument);
   }
 }
 
+function setCSSVariableValuesForExport() {
+  let CSSstring = `:root {\n`;
+  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
+    let newValue = getState(customFormatPairs.masterValue[i]);
+    newValue = correctCSSVariableValue(newValue);
+    CSSstring += `  ${customFormatPairs.cssVariable[i]}: ${newValue};\n`;
+  }
+  CSSstring += `}`;
+  return CSSstring;
+}
+
 // Gets the PDF export of a file.
-async function getDocumentPDF(exportDocument) {
+async function convertDocumentToPDF(exportDocument) {
   const response = await fetch("/api/export/pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       exportDocument: exportDocument,
+      exportCSS: setCSSVariableValuesForExport(),
       name: currentEntry.replace(".json", ""),
     }),
   });
@@ -1158,12 +1170,18 @@ const customFormatPairs = {
     "formatCodeBlocksDefaultFontColor",
   ],
 };
+
+function correctCSSVariableValue(value) {
+  if (typeof value === "number") {
+    value += "px";
+  }
+  return value;
+}
+
 function applyCustomFormats() {
   for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
     let newValue = getState(customFormatPairs.masterValue[i]);
-    if (typeof newValue === "number") {
-      newValue += "px";
-    }
+    newValue = correctCSSVariableValue(newValue);
     document.documentElement.style.setProperty(
       customFormatPairs.cssVariable[i],
       newValue,
