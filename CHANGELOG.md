@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Different Formats can now be customized. ([Issue #32](https://github.com/Yooli8537/Editor/issues/32)).
+
+### Changed
+
+- Changed "True" and "False" in settings to "On" and "Off".
+
 ## v1.6.4 - Autosave rework & Improvements
 
 ### Added
@@ -7,7 +17,6 @@
 - Documents can now be exported as JSON ([Issue #100](https://github.com/Yooli8537/Editor/issues/100)).
 - When pressing a button on the editor toolbar, the editor will remain focused ([Issue #101](https://github.com/Yooli8537/Editor/issues/101)).
 - Collapsed folders can now be updated "manually" ([Issue #55](https://github.com/Yooli8537/Editor/issues/55)).
-- Different Formats can now be customized. ([Issue #32](https://github.com/Yooli8537/Editor/issues/32)).
 
 ### Changed
 
@@ -15,7 +24,6 @@
 - Improved autosaves. Autosaves are now saved next to their regular counterparts, fixing an issue where autosaves of different files with the same name would likely overwrite each other (Issues [#22](https://github.com/Yooli8537/Editor/issues/22) and [#56](https://github.com/Yooli8537/Editor/issues/56)).
 - Improved Server-Side logging through standardization and by fixing errors ([Issue #99](https://github.com/Yooli8537/Editor/issues/99)).
 - Server log files are now much nicer to look at and way easier to read.
-- Changed "True" and "False" in settings to "On" and "Off".
 
 ### Deprecated
 
