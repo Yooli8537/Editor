@@ -419,6 +419,10 @@ export async function checkForUpdate(manualCheck) {
 
 // Handles errors from server responses.
 export function handleServerErrors(responseJSON, errorStatus) {
+  if (errorStatus === 429) {
+    handleClientTimeouts();
+    return;
+  }
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
@@ -478,6 +482,56 @@ export function handleServerErrors(responseJSON, errorStatus) {
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);
+}
+
+let timeoutIsActive = false;
+function handleClientTimeouts() {
+  if (timeoutIsActive) {
+    return;
+  }
+  const clickable = createClickable();
+  const modal = createModalBody();
+  const modalButtons = createModalButtonsDiv();
+  // Abortcontroller allows a modal to only be destroyed if the pressed key was enter.
+  const controller = new AbortController();
+
+  // Adds error message directly to modal.
+  modal.classList.add("errorMsg");
+
+  let errorHeading = document.createElement("h3");
+  errorHeading.textContent = "Too many Requests!";
+
+  let titleParagraph = document.createElement("p");
+  titleParagraph.textContent = `You have sent too many requests to the server. Please wait until your limit is reset.\nTip: Restarting the Express Server clears rate limits.`;
+
+  // Confirm button
+  const okButton = document.createElement("div");
+  okButton.classList.add("modalTextButton");
+  okButton.textContent = "Ok";
+
+  okButton.addEventListener("click", () => {
+    destroyModal();
+  });
+
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        destroyModal();
+        controller.abort();
+      }
+    },
+    { signal: controller.signal },
+  );
+
+  modal.appendChild(errorHeading);
+  modal.appendChild(titleParagraph);
+  modalButtons.appendChild(okButton);
+  modal.appendChild(modalButtons);
+  document.body.appendChild(clickable);
+  document.body.appendChild(modal);
+  timeoutIsActive = true;
 }
 
 export function isObjectEmpty(object) {

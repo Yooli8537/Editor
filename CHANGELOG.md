@@ -6,6 +6,7 @@
 
 - Different Formats can now be customized ([Issue #32](https://github.com/Yooli8537/Editor/issues/32)).
 - Documents can now be exported as Markdown ([Issue #84](https://github.com/Yooli8537/Editor/issues/84)).
+- Error handling for client timeouts from the server.
 
 ### Changed
 

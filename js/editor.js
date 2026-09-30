@@ -1128,16 +1128,20 @@ export function closeEditor() {
 // Periodically pings the backend and starts the app properly if an answer is recieved.
 let ping = null;
 async function pingBackend() {
-  const response = await fetch("/api/", {
-    method: "GET",
-  });
+  try {
+    const response = await fetch("/api/", {
+      method: "GET",
+    });
 
-  if (response.ok) {
-    clearInterval(ping);
-    onFirstStart();
-  } else {
-    const responseJSON = await response.json();
-    handleServerErrors(responseJSON, response.status);
+    if (response.ok) {
+      clearInterval(ping);
+      onFirstStart();
+    } else {
+      const responseJSON = await response.json();
+      handleServerErrors(responseJSON, response.status);
+    }
+  } catch (err) {
+    handleServerErrors({}, 429);
   }
 }
 
