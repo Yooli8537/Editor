@@ -7,7 +7,7 @@
     <title>Editor Settings</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/settings.css">
-  <link rel="stylesheet" href="../css/variables.css" />
+    <link rel="stylesheet" href="../css/variables.css" />
     <script type="module" src="../js/settings.js" defer></script>
     <link rel="icon" href="../assets/icons/settings.svg">
 </head>
@@ -671,11 +671,98 @@
             <div id="developer" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            <del>Developer</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
-                        </p>
+                        <img src="../assets/settings/server-logs.svg" class="groupIcon">
+                        <p>Client side logging</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client side logging</div>
+                            <div class="settingDescription">
+                                Enable / disable client side logging entirely.
+                            </div>
+                            <div class="settingDefault">Default: Off</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientSideLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client action logging</div>
+                            <div class="settingDescription">
+                                Log client side actions / clicks.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientActionLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client process logging</div>
+                            <div class="settingDescription">
+                                Log client side processes (functions).
+                            </div>
+                            <div class="settingDefault">Default: Off</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientProcessLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client request logging</div>
+                            <div class="settingDescription">
+                                Log client side requests to the API / backend.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientRequestLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client hover logging</div>
+                            <div class="settingDescription">
+                                Log certain element which have hover effects.
+                            </div>
+                            <div class="settingDefault">Default: Off</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientHoverLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client settings logging</div>
+                            <div class="settingDescription">
+                                Log the full array of settings upon saving them.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientSettingsLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
