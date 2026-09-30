@@ -10,6 +10,10 @@
 
 - Changed "True" and "False" in settings to "On" and "Off".
 
+### Fixed
+
+- Image clear no longer reports nonsense errors.
+
 ## v1.6.4 - Autosave rework & Improvements
 
 ### Added

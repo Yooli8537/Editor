@@ -101,19 +101,25 @@ async function findImages(dir) {
 
       if (entry.isDirectory()) {
         return findImages(fullPath);
-      } else {
-        try {
-          const file = await fs.promises.readFile(fullPath, "utf-8");
-          const parseFile = JSON.parse(file);
-          return findSrc(parseFile[0].content, fullPath, parseFile[0].title);
-        } catch (err) {
-          error(
-            "Find images",
-            "Failed to read file source.",
-            { Path: fullPath },
-            err,
-          );
-        }
+      }
+
+      if (path.extname(entry.name).toLowerCase() !== ".json") {
+        return;
+      } else if (entry.name === "master.json") {
+        return;
+      }
+
+      try {
+        const file = await fs.promises.readFile(fullPath, "utf-8");
+        const parseFile = JSON.parse(file);
+        return findSrc(parseFile[0].content, fullPath, parseFile[0].title);
+      } catch (err) {
+        error(
+          "Find images",
+          "Failed to read file source.",
+          { Path: fullPath },
+          err,
+        );
       }
     }),
   );
