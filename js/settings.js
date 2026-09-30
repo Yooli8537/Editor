@@ -92,6 +92,7 @@ const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientHoverLogging = document.querySelector("#clientHoverLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
+const clientErrorLogging = document.querySelector("#clientErrorLogging");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -131,6 +132,7 @@ const allSettings = [
   clientProcessLogging,
   clientHoverLogging,
   clientSettingsLogging,
+  clientErrorLogging,
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -176,6 +178,7 @@ const boolSettings = [
   clientProcessLogging,
   clientHoverLogging,
   clientSettingsLogging,
+  clientErrorLogging,
 ];
 
 // Getting the master file
@@ -397,6 +400,7 @@ function disableSettings() {
     clientProcessLogging,
     clientHoverLogging,
     clientSettingsLogging,
+    clientErrorLogging,
   ];
   for (let i = 0; i < clientLoggingSettings.length; i++) {
     if (!master.clientSideLogging) {

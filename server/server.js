@@ -39,11 +39,6 @@ const allProperties = {
   rateLimitMaxRequests: 300,
   maxImageSize: 10,
   collapsedFolderUpdateMethod: "Auto",
-  clientSideLogging: false,
-  clientActionLogging: true,
-  clientProcessLogging: false,
-  clientHoverLogging: false,
-  clientSettingsLogging: true,
   formatFontSizesDefault: 16,
   formatFontSizesH1: 32,
   formatFontSizesH2: 24,
@@ -60,6 +55,12 @@ const allProperties = {
   formatTablesHeadColor: "#ebebeb",
   formatCodeBlocksBackgroundColor: "#222222",
   formatCodeBlocksDefaultFontColor: "#ffffff",
+  clientSideLogging: false,
+  clientActionLogging: true,
+  clientProcessLogging: false,
+  clientHoverLogging: false,
+  clientSettingsLogging: true,
+  clientErrorLogging: true,
 };
 
 // Creates any missing data folders.
