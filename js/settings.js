@@ -92,6 +92,12 @@ const formatCodeBlocksBackgroundColor = document.querySelector(
 const formatCodeBlocksDefaultFontColor = document.querySelector(
   "#formatCodeBlocksDefaultFontColor",
 );
+const clientSideLogging = document.querySelector("#clientSideLogging");
+const clientActionLogging = document.querySelector("#clientActionLogging");
+const clientProcessLogging = document.querySelector("#clientProcessLogging");
+const clientRequestLogging = document.querySelector("#clientRequestLogging");
+const clientHoverLogging = document.querySelector("#clientHoverLogging");
+const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -126,6 +132,12 @@ const allSettings = [
   formatTablesHeadColor,
   formatCodeBlocksBackgroundColor,
   formatCodeBlocksDefaultFontColor,
+  clientSideLogging,
+  clientActionLogging,
+  clientProcessLogging,
+  clientRequestLogging,
+  clientHoverLogging,
+  clientSettingsLogging,
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -166,6 +178,12 @@ const boolSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
+  clientSideLogging,
+  clientActionLogging,
+  clientProcessLogging,
+  clientRequestLogging,
+  clientHoverLogging,
+  clientSettingsLogging,
 ];
 
 // Getting the master file
