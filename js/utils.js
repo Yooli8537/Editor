@@ -545,11 +545,18 @@ export function isObjectEmpty(object) {
   return true;
 }
 
-export function log(message, type) {
+// type = Hover / Request / Settings
+// level = 0 -> log / 1 -> warning / 2 -> error
+export function log(message, type, level) {
   if (getState("clientSideLogging")) {
-    // type = Hover / Request / Settings
     if (getState(`client${type}Logging`)) {
-      console.log(`${type}: ${message}`);
+      if (level === 2) {
+        console.error(`${type}: ${message}`);
+      } else if (level === 1) {
+        console.warn(`${type}: ${message}`);
+      } else {
+        console.log(`${type}: ${message}`);
+      }
     }
   } else {
     return;
