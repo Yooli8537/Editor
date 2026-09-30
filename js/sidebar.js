@@ -157,7 +157,7 @@ function createFile(entry, previousEntry) {
     // Cancels document loading if the current document is already opened.
     if (pathParam === previousEntry && documentParam === entry.name) {
       return;
-    } else if (!getState("editorIsSaved")) {
+    } else if (!getState("isEditorSaved")) {
       // Prevents the document from loading entirely if the document isn't saved.
       createInfoModal(
         "You must save your document before changing to a different one.",
