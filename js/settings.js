@@ -1,10 +1,5 @@
 // Settings Menu
-import {
-  checkForUpdate,
-  createErrorModal,
-  createInfoModal,
-  handleServerErrors,
-} from "./utils";
+import { checkForUpdate, createErrorModal, createInfoModal, handleServerErrors } from "./utils";
 
 // Save button
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
@@ -33,9 +28,7 @@ const allTabs = [
 // All the settings
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
-const updateCollapsedFolders = document.querySelector(
-  "#updateCollapsedFolders",
-);
+const updateCollapsedFolders = document.querySelector("#updateCollapsedFolders");
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
 const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
@@ -48,45 +41,20 @@ const logErrorDetails = document.querySelector("#logErrorDetails");
 const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
 const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
 const maxImageSize = document.querySelector("#maxImageSize");
-const collapsedFolderUpdateMethod = document.querySelector(
-  "#collapsedFolderUpdateMethod",
-);
-const formatFontSizesDefault = document.querySelector(
-  "#formatFontSizesDefault",
-);
+const collapsedFolderUpdateMethod = document.querySelector("#collapsedFolderUpdateMethod");
+const formatFontSizesDefault = document.querySelector("#formatFontSizesDefault");
 const formatFontSizesH1 = document.querySelector("#formatFontSizesH1");
 const formatFontSizesH2 = document.querySelector("#formatFontSizesH2");
 const formatFontSizesH3 = document.querySelector("#formatFontSizesH3");
 const formatFontSizesCode = document.querySelector("#formatFontSizesCode");
-const formatFontMarginsH1Top = document.querySelector(
-  "#formatFontMarginsH1Top",
-);
-const formatFontMarginsH1Bottom = document.querySelector(
-  "#formatFontMarginsH1Bottom",
-);
-const formatFontMarginsH2Top = document.querySelector(
-  "#formatFontMarginsH2Top",
-);
-const formatFontMarginsH2Bottom = document.querySelector(
-  "#formatFontMarginsH2Bottom",
-);
-const formatFontMarginsH3Bottom = document.querySelector(
-  "#formatFontMarginsH3Bottom",
-);
-const formatFontMarginsListMargin = document.querySelector(
-  "#formatFontMarginsListMargin",
-);
-const formatTablesCellPadding = document.querySelector(
-  "#formatTablesCellPadding",
-);
+const formatFontMarginsH1Top = document.querySelector("#formatFontMarginsH1Top");
+const formatFontMarginsH1Bottom = document.querySelector("#formatFontMarginsH1Bottom");
+const formatFontMarginsH2Top = document.querySelector("#formatFontMarginsH2Top");
+const formatFontMarginsH2Bottom = document.querySelector("#formatFontMarginsH2Bottom");
+const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bottom");
+const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
+const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
 const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");
-const formatTablesHeadColor = document.querySelector("#formatTablesHeadColor");
-const formatCodeBlocksBackgroundColor = document.querySelector(
-  "#formatCodeBlocksBackgroundColor",
-);
-const formatCodeBlocksDefaultFontColor = document.querySelector(
-  "#formatCodeBlocksDefaultFontColor",
-);
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
@@ -124,9 +92,6 @@ const allSettings = [
   formatFontMarginsH3Bottom,
   formatFontMarginsListMargin,
   formatTablesCellPadding,
-  formatTablesHeadColor,
-  formatCodeBlocksBackgroundColor,
-  formatCodeBlocksDefaultFontColor,
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
@@ -158,13 +123,7 @@ const decimalSettings = [
   formatFontMarginsListMargin,
   formatTablesCellPadding,
 ];
-const stringSettings = [
-  collapsedFolderUpdateMethod,
-  formatTablesTextAlign,
-  formatTablesHeadColor,
-  formatCodeBlocksBackgroundColor,
-  formatCodeBlocksDefaultFontColor,
-];
+const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign];
 const boolSettings = [
   confirmSave,
   warningLogs,
@@ -210,9 +169,7 @@ async function updateMasterfile(updateData) {
   });
 
   if (masterUpdate.ok) {
-    createInfoModal(
-      "Successfully updated settings. Reload the Editor to apply.",
-    );
+    createInfoModal("Successfully updated settings. Reload the Editor to apply.");
     disableSettings();
   } else {
     const masterUpdateJSON = await masterUpdate.json();
@@ -235,18 +192,12 @@ function addTabListeners() {
 function hideAllPages() {
   for (let i = 0; i < allTabs.length; i++) {
     document.querySelector(`#${allTabs[i].name}`).classList.add("hidden");
-    document
-      .querySelector(`#${allTabs[i].name}Tab`)
-      .classList.remove("tabHighlight");
+    document.querySelector(`#${allTabs[i].name}Tab`).classList.remove("tabHighlight");
   }
 }
 
 function doesIncludeSettingInSettingsArray(setting) {
-  return (
-    intSettings.includes(setting) ||
-    decimalSettings.includes(setting) ||
-    stringSettings.includes(setting)
-  );
+  return intSettings.includes(setting) || decimalSettings.includes(setting) || stringSettings.includes(setting);
 }
 
 // Loads settings data before anything else is shown.
@@ -283,9 +234,7 @@ saveSettingsButton.addEventListener("click", async () => {
     // Rounds to next highest number to get rid of decimals.
     const intValue = Math.ceil(Number(intSettings[i].value));
     if (intValue <= 0) {
-      createErrorModal(
-        `${intSettings[i].id} has a value of 0 or below. Cancelling save.`,
-      );
+      createErrorModal(`${intSettings[i].id} has a value of 0 or below. Cancelling save.`);
       return;
     } else {
       master[intSettings[i].id] = intValue;
@@ -296,9 +245,7 @@ saveSettingsButton.addEventListener("click", async () => {
     // .value returns a string, so it has to be converted into a number first.
     const decValue = Number(decimalSettings[i].value);
     if (decValue < 0) {
-      createErrorModal(
-        `${decimalSettings[i].id} has a value below 0. Cancelling save.`,
-      );
+      createErrorModal(`${decimalSettings[i].id} has a value below 0. Cancelling save.`);
       return;
     } else {
       master[decimalSettings[i].id] = decValue;
@@ -334,13 +281,9 @@ clearImagesButton.addEventListener("click", async () => {
     if (clearJSON.amount <= 0) {
       createInfoModal("No unused images found.");
     } else if (clearJSON.amount === 1) {
-      createInfoModal(
-        "Successfully cleared an unused image from Server storage.",
-      );
+      createInfoModal("Successfully cleared an unused image from Server storage.");
     } else {
-      createInfoModal(
-        `Successfully cleared ${clearJSON.amount} images from Server storage.`,
-      );
+      createInfoModal(`Successfully cleared ${clearJSON.amount} images from Server storage.`);
     }
   } else {
     handleServerErrors(clearJSON, clear.status);
@@ -360,9 +303,7 @@ clearLogsButton.addEventListener("click", async () => {
     } else if (clearJSON.amount === 1) {
       createInfoModal("Successfully cleared a log file from Server storage.");
     } else {
-      createInfoModal(
-        `Successfully cleared ${clearJSON.amount} log files from Server storage.`,
-      );
+      createInfoModal(`Successfully cleared ${clearJSON.amount} log files from Server storage.`);
     }
   } else {
     handleServerErrors(clearJSON, clear.status);
@@ -381,8 +322,7 @@ function applyDisabledOverlay(settingDivElement) {
 }
 
 function removeDisabledOverlay(settingDivElement) {
-  const overlay =
-    settingDivElement.parentElement.parentElement.querySelector(".disabled");
+  const overlay = settingDivElement.parentElement.parentElement.querySelector(".disabled");
   if (overlay) {
     overlay.remove();
   }
