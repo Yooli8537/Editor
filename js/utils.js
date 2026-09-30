@@ -422,6 +422,8 @@ export function handleServerErrors(responseJSON, errorStatus) {
   if (errorStatus === 429) {
     handleClientTimeouts();
     return;
+  } else {
+    timeoutIsActive = false;
   }
   const clickable = createClickable();
   const modal = createModalBody();
