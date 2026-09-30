@@ -28,11 +28,12 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 - Sidebar allowing for easy navigation of the Folder Structure
 - Search Bar
 - Undo / Redo
-- Export Documents as .pdf files.
+- Export Documents as PDF, Markdown or JSON files.
 - Always continue where you left off with URLs for any page.
 - Avoid losing Data with Autosaves.
 - Configure the app to your liking with the Settings page (WIP).
 - Collapse and Expand folders to keep the stuff you don't need out of sight and out of mind.
+- Lots of customization with settings.
 
 ## Installation
 
@@ -45,7 +46,7 @@ This is a Web-based Editor which can run locally or on a home server. The projec
 
 Updates are detected automatically by the App. If the user denies an automatic update check, the App will no longer alert you until a new version is released. A manual update check can be done from the settings.
 
-Updating will fail if the user has made changes to the source code, since it uses `git pull` to get the newest version. If there are any changes to package.json, these changes can be safely discarded.
+Updating will fail if the user has made changes to the source code, since it uses `git pull` to get the newest version. If there are any changes to package.json, these changes can be safely discarded (`git restore .`).
 
 If a `module not found` or similar error occurs, running `npm install` is required. After this, the app should run normally again.
 
