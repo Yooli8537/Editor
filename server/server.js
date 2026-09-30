@@ -41,6 +41,7 @@ const allProperties = {
   collapsedFolderUpdateMethod: "Auto",
   clientSideLogging: false,
   clientActionLogging: true,
+  clientProcessLogging: false,
   clientHoverLogging: false,
   clientRequestLogging: true,
   clientSettingsLogging: true,
