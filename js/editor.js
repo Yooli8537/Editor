@@ -1,4 +1,3 @@
-// Importing TipTap Extensions
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
@@ -12,7 +11,6 @@ import Highlight from "@tiptap/extension-highlight";
 
 import { NodeHtmlMarkdown } from "node-html-markdown";
 
-// Importing custom functions
 import {
   createConfirmModal,
   createSubmenu,
@@ -23,6 +21,8 @@ import {
   removeSubmenus,
   checkForUpdate,
   handleServerErrors,
+  log,
+  logTypes,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { getState, setState } from "./state";
@@ -32,7 +32,7 @@ const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
 // Specifically supported languages:
 /*
-chash (csharp),
+chash,
 cpp,
 css,
 dockerfile,
@@ -53,7 +53,6 @@ const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
 
-// Defining and configuring extensions
 const extensions = [
   StarterKit.configure({
     codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
@@ -104,7 +103,6 @@ const extensions = [
   }),
 ];
 
-// Creating the TipTap Editor
 const editor = new Editor({
   element: wrapper, // Parent Element
   extensions: extensions,
@@ -116,7 +114,6 @@ const editor = new Editor({
   },
 });
 
-// Uploading Images to the Server.
 async function uploadImage(file) {
   const response = await fetch("/api/uploadImageFile", {
     method: "POST",
@@ -135,11 +132,10 @@ async function uploadImage(file) {
   }
 }
 
-// Warns before reloading / closing a Tab
 window.addEventListener("beforeunload", (e) => {
   if (!getState("editorIsSaved")) {
+    log("Prevented reload", logTypes.process, 1);
     e.preventDefault();
-    e.returnValue = "";
   }
 });
 

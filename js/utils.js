@@ -545,6 +545,13 @@ export function isObjectEmpty(object) {
   return true;
 }
 
+export const logTypes = {
+  action: "Action",
+  process: "Process",
+  request: "Request",
+  hover: "Hover",
+  settings: "Settings",
+};
 // type = Hover / Request / Settings
 // level = 0 -> log / 1 -> warning / 2 -> error
 export function log(message, type, level) {
