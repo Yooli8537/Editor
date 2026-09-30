@@ -10,6 +10,8 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
 
+import { NodeHtmlMarkdown } from "node-html-markdown";
+
 // Importing custom functions
 import {
   createConfirmModal,
@@ -23,7 +25,7 @@ import {
   handleServerErrors,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
+import { getState, setState } from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -809,12 +811,26 @@ linkButton.addEventListener("click", (e) => {
 const exportButtonItems = [
   {
     icon: "function/pdf.svg",
-    action: () => exportCurrentDocumentAsPDF(),
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsPDF();
+      }),
     helpText: "Export as PDF",
   },
   {
+    icon: "code-languages/markdown.svg",
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsMD();
+      }),
+    helpText: "Export as Markdown",
+  },
+  {
     icon: "function/json.svg",
-    action: () => exportCurrentDocumentAsJSON(),
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsJSON();
+      }),
     helpText: "Export as JSON",
   },
 ];
@@ -827,7 +843,7 @@ exportButton.addEventListener("click", (e) => {
   editor.chain().focus();
 });
 
-function exportCurrentDocumentAsPDF() {
+function getEditorHTML() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -841,9 +857,10 @@ function exportCurrentDocumentAsPDF() {
     documentImages[i].src = documentImages[i].src;
   }
 
-  const exportDocument = rawDocHTML.outerHTML;
+  return rawDocHTML.outerHTML;
+}
 
-  // Checks if the export should be confirmed.
+function confirmDocumentExport(onSubmit) {
   if (getState("confirmExport")) {
     createConfirmModal(
       "Are you sure you want to Export the current Document?",
@@ -851,27 +868,16 @@ function exportCurrentDocumentAsPDF() {
       "Export as PDF",
       () => {},
       () => {
-        convertDocumentToPDF(exportDocument);
+        onSubmit();
       },
     );
   } else {
-    convertDocumentToPDF(exportDocument);
+    onSubmit();
   }
 }
 
-function setCSSVariableValuesForExport() {
-  let CSSstring = `:root {\n`;
-  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
-    let newValue = getState(customFormatPairs.masterValue[i]);
-    newValue = correctCSSVariableValue(newValue);
-    CSSstring += `  ${customFormatPairs.cssVariable[i]}: ${newValue};\n`;
-  }
-  CSSstring += `}`;
-  return CSSstring;
-}
-
-// Gets the PDF export of a file.
-async function convertDocumentToPDF(exportDocument) {
+async function exportCurrentDocumentAsPDF() {
+  const exportDocument = getEditorHTML();
   const response = await fetch("/api/export/pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -888,6 +894,17 @@ async function convertDocumentToPDF(exportDocument) {
     const responseJSON = await response.json();
     handleServerErrors(responseJSON, response.status);
   }
+}
+
+function setCSSVariableValuesForExport() {
+  let CSSstring = `:root {\n`;
+  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
+    let newValue = getState(customFormatPairs.masterValue[i]);
+    newValue = correctCSSVariableValue(newValue);
+    CSSstring += `  ${customFormatPairs.cssVariable[i]}: ${newValue};\n`;
+  }
+  CSSstring += `}`;
+  return CSSstring;
 }
 
 // Downloads the PDF export from a URL.
@@ -910,22 +927,6 @@ function exportCurrentDocumentAsJSON() {
     { title: currentEntry.slice(0, -5), content: editorJSON },
   ];
 
-  if (getState("confirmExport")) {
-    createConfirmModal(
-      "Are you sure you want to Export the current Document?",
-      "Back to Editor",
-      "Export as JSON",
-      () => {},
-      () => {
-        downloadDocumentJSON(exportDocument);
-      },
-    );
-  } else {
-    downloadDocumentJSON(exportDocument);
-  }
-}
-
-function downloadDocumentJSON(exportDocument) {
   const blob = new Blob([JSON.stringify(exportDocument, null, 2)], {
     type: "application/json",
   });
@@ -937,6 +938,21 @@ function downloadDocumentJSON(exportDocument) {
   downloadElement.click();
 
   URL.revokeObjectURL(downloadURL); // Deletes download Element
+}
+
+function exportCurrentDocumentAsMD() {
+  const exportDocument = getEditorHTML();
+  const exportMD = NodeHtmlMarkdown.translate(exportDocument);
+
+  const blob = new Blob([exportMD], { type: "text/markdown;charset=utf-8" });
+  const downloadURL = URL.createObjectURL(blob);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry.slice(0, -5) + ".md";
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL);
 }
 
 setHelpText(saveButton, "Save Document");
