@@ -552,17 +552,16 @@ export const logTypes = {
   hover: "Hover",
   settings: "Settings",
 };
-// type = Hover / Request / Settings
 // level = 0 -> log / 1 -> warning / 2 -> error
-export function log(message, type, level) {
+export function log(operation, message, type, level) {
   if (getState("clientSideLogging")) {
     if (getState(`client${type}Logging`)) {
       if (level === 2) {
-        console.error(`${type}: ${message}`);
+        console.error(`${operation}: ${message}`);
       } else if (level === 1) {
-        console.warn(`${type}: ${message}`);
+        console.warn(`${operation}: ${message}`);
       } else {
-        console.log(`${type}: ${message}`);
+        console.log(`${operation}: ${message}`);
       }
     }
   } else {

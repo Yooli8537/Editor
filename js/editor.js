@@ -134,7 +134,7 @@ async function uploadImage(file) {
 
 window.addEventListener("beforeunload", (e) => {
   if (!getState("editorIsSaved")) {
-    log("Prevented reload", logTypes.process, 1);
+    log("Reload validation", "Prevented reload", logTypes.process, 1);
     e.preventDefault();
   }
 });
