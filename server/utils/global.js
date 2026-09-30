@@ -11,6 +11,7 @@ const dataFolderPath = path.join(rootPath, "data");
 const notebooksFolderPath = path.join(dataFolderPath, "notebooks");
 const imagesFolderPath = path.join(dataFolderPath, "images");
 const attachmentsFolderPath = path.join(dataFolderPath, "attachments");
+const profilesFolderPath = path.join(dataFolderPath, "profiles");
 // Files
 const masterFilePath = path.join(dataFolderPath, "master.json");
 // Routes
@@ -34,6 +35,7 @@ const GLOBAL = {
       NOTEBOOKS: notebooksFolderPath,
       IMAGES: imagesFolderPath,
       ATTACHMENTS: attachmentsFolderPath,
+      PROFILES: profilesFolderPath,
     },
     FILES: {
       MASTERFILE: masterFilePath,
