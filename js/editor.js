@@ -151,12 +151,14 @@ async function checkForAutosave(document, path) {
     { method: "GET" },
   );
 
-  log("Autosave check", "Building response JSON", logTypes.process, 0);
+  log("Autosave check", "Building response JSON...", logTypes.process, 0);
   const responseJSON = await response.json();
   if (response.ok) {
-    log("Autosave check", responseJSON.autosaveExists, logTypes.process, 0);
-    return responseJSON.autosaveExists;
+    const exists = responseJSON.autosaveExists;
+    log("Autosave check", `Exists: ${exists}`, logTypes.process, 0);
+    return exists;
   } else {
+    log("Autosave check", "Error", logTypes.process, 2);
     handleServerErrors(responseJSON, response.status);
     return false;
   }
@@ -165,17 +167,26 @@ async function checkForAutosave(document, path) {
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
   if (await checkForAutosave(document, path)) {
+    log(
+      "Autosave load",
+      "Autosave found. Prompting user to restore...",
+      logTypes.process,
+      0,
+    );
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
       "Restore autosave & continue to editor",
       () => {
         // Loads document with Data from the file if restoration is cancelled.
+        log("Autosave load", "Restoration denied.", logTypes.process, 0);
         loadDocument(fileData, document, path);
         removeAutosave();
       },
       async () => {
         // Gets the Autosave
+        log("Autosave load", "Restoration confirmed.", logTypes.process, 0);
+        log("Autosave load", "Fetching autosave...", logTypes.process, 0);
         const autosave = await fetch(
           `api/getAutosave?name=${document}&folderPath=${path}`,
           {
@@ -183,15 +194,17 @@ export async function loadAutosave(fileData, document, path) {
           },
         );
 
+        log("Autosave load", "Building document JSON...", logTypes.process, 0);
+        const autosaveData = await autosave.json();
         if (autosave.ok) {
-          const autosaveData = await autosave.json();
           loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
           setState("editorIsSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
+          log("Autosave load", "Success", logTypes.process, 0);
         } else {
-          const autosaveJSON = await autosave.json();
-          handleServerErrors(autosaveJSON, autosave.status);
+          log("Autosave load", "Error", logTypes.process, 0);
+          handleServerErrors(autosaveData, autosave.status);
         }
       },
     );
