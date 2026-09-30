@@ -544,3 +544,14 @@ export function isObjectEmpty(object) {
   }
   return true;
 }
+
+export function log(message, type) {
+  if (getState("clientSideLogging")) {
+    // type = Hover / Request / Settings
+    if (getState(`client${type}Logging`)) {
+      console.log(`${type}: ${message}`);
+    }
+  } else {
+    return;
+  }
+}
