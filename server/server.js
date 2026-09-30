@@ -43,7 +43,6 @@ const allProperties = {
   clientActionLogging: true,
   clientProcessLogging: false,
   clientHoverLogging: false,
-  clientRequestLogging: true,
   clientSettingsLogging: true,
   formatFontSizesDefault: 16,
   formatFontSizesH1: 32,

@@ -90,7 +90,6 @@ const formatCodeBlocksDefaultFontColor = document.querySelector(
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
-const clientRequestLogging = document.querySelector("#clientRequestLogging");
 const clientHoverLogging = document.querySelector("#clientHoverLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 
@@ -130,7 +129,6 @@ const allSettings = [
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
-  clientRequestLogging,
   clientHoverLogging,
   clientSettingsLogging,
 ];
@@ -176,7 +174,6 @@ const boolSettings = [
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
-  clientRequestLogging,
   clientHoverLogging,
   clientSettingsLogging,
 ];
@@ -398,7 +395,6 @@ function disableSettings() {
   const clientLoggingSettings = [
     clientActionLogging,
     clientProcessLogging,
-    clientRequestLogging,
     clientHoverLogging,
     clientSettingsLogging,
   ];

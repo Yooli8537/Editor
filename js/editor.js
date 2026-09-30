@@ -134,7 +134,7 @@ async function uploadImage(file) {
 
 window.addEventListener("beforeunload", (e) => {
   if (!getState("editorIsSaved")) {
-    log("Reload validation", "Prevented reload", logTypes.process, 1);
+    log("Reload validation", "Prevented reload.", logTypes.process, 1);
     e.preventDefault();
   }
 });
@@ -145,13 +145,16 @@ let currentPreviousEntry;
 
 // Checks for an autosave
 async function checkForAutosave(document, path) {
+  log("Autosave check", "Checking for autosave...", logTypes.process, 0);
   const response = await fetch(
     `/api/checkForAutosave?name=${document}&folderPath=${path}`,
     { method: "GET" },
   );
 
+  log("Autosave check", "Building response JSON", logTypes.process, 0);
   const responseJSON = await response.json();
   if (response.ok) {
+    log("Autosave check", responseJSON.autosaveExists, logTypes.process, 0);
     return responseJSON.autosaveExists;
   } else {
     handleServerErrors(responseJSON, response.status);
