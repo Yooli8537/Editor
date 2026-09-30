@@ -484,6 +484,12 @@ export function handleServerErrors(responseJSON, errorStatus) {
   modal.appendChild(modalButtons);
   document.body.appendChild(clickable);
   document.body.appendChild(modal);
+  if (getState("clientErrorLogging")) {
+    console.error(
+      `Status: ${errorStatus}\n${responseJSON.operation}: ${responseJSON.errorMsg}`,
+      requestValues,
+    );
+  }
 }
 
 let timeoutIsActive = false;
