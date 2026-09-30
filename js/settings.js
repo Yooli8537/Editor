@@ -30,11 +30,6 @@ const allTabs = [
   { name: "info", element: infoTab },
 ];
 
-// Every setting parent div element required for applying disabled settings
-const updateCollapsedFoldersDiv = document.querySelector(
-  "#updateCollapsedFoldersDiv",
-);
-
 // All the settings
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
@@ -382,7 +377,7 @@ versionCheckButton.addEventListener("click", () => {
 function applyDisabledOverlay(settingDivElement) {
   const overlay = document.createElement("div");
   overlay.classList.add("disabled");
-  settingDivElement.appendChild(overlay);
+  settingDivElement.parentElement.parentElement.appendChild(overlay);
 }
 
 function removeDisabledOverlay(settingDivElement) {
@@ -396,9 +391,23 @@ function removeDisabledOverlay(settingDivElement) {
 // Disables certain settings if another setting is active.
 function disableSettings() {
   if (master.collapsedFolderUpdateMethod !== "Auto") {
-    applyDisabledOverlay(updateCollapsedFoldersDiv);
+    applyDisabledOverlay(updateCollapsedFolders);
   } else {
     removeDisabledOverlay(updateCollapsedFolders);
+  }
+  const clientLoggingSettings = [
+    clientActionLogging,
+    clientProcessLogging,
+    clientRequestLogging,
+    clientHoverLogging,
+    clientSettingsLogging,
+  ];
+  for (let i = 0; i < clientLoggingSettings.length; i++) {
+    if (!master.clientSideLogging) {
+      applyDisabledOverlay(clientLoggingSettings[i]);
+    } else {
+      removeDisabledOverlay(clientLoggingSettings[i]);
+    }
   }
 }
 
