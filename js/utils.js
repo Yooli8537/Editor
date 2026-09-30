@@ -378,7 +378,6 @@ export async function checkForUpdate(manualCheck) {
       );
 
       const release = await latest.json();
-      console.log(release);
 
       if (release.tag_name !== getState("version")) {
         createConfirmModal(
