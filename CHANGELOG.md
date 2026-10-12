@@ -11,6 +11,7 @@
 ### Changed
 
 - Changed "True" and "False" in settings to "On" and "Off".
+- Reduced Code Block margins.
 
 ### Fixed
 

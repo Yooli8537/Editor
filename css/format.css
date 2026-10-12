@@ -94,6 +94,8 @@
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: break-word;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 
 .export-content pre code,
