@@ -87,7 +87,7 @@ function detail(operation, message, requestValues) {
   if (serverMaster.detailLogs && !requestValues) {
     logger.info(`${operation}: ${message}`);
   } else if (serverMaster.detailLogs) {
-    logger.info({ requestValues }, `${operation}: ${message}`);
+    logger.info(requestValues, `${operation}: ${message}`);
   }
 }
 
@@ -95,7 +95,7 @@ function success(operation, message, requestValues) {
   if (serverMaster.successLogs && !requestValues) {
     logger.info(`${operation}: ${message}`);
   } else if (serverMaster.successLogs) {
-    logger.info({ requestValues }, `${operation}: ${message}`);
+    logger.info(requestValues, `${operation}: ${message}`);
   }
 }
 
@@ -107,6 +107,4 @@ function warn(operation, message, requestValues) {
   }
 }
 
-const log = { info, detail, success, warn };
-
-module.exports = log;
+module.exports = { info, detail, success, warn };
