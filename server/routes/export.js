@@ -60,8 +60,8 @@ router.post("/api/export/pdf", async (req, res) => {
     // Sends the PDF back to the client.
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${req.body.name}.pdf`);
-    res.send(pdf);
     log.success("Document PDF export", "Sent PDF-Export to Client.");
+    res.send(pdf);
   } catch (err) {
     res.status(500).json(error("Document PDF export", "Failed to export PDF.", { Name: name }, err));
   }
