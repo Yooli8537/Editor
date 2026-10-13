@@ -79,7 +79,7 @@ if (!fs.existsSync(GLOBAL.PATHS.FILES.MASTERFILE)) {
 }
 
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
-const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const log = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
 
 // Limits requests
@@ -109,9 +109,7 @@ app.use(settingsRoute);
 async function updateMasterfile(masterFile) {
   try {
     fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
-    if (serverMaster.successLogs) {
-      logger.info("Master properties update: Updated properties.");
-    }
+    log.success("Master properties update", "Updated properties.", {});
     return true;
   } catch (err) {
     error("Master properties update", "Failed to update properties.", {}, err);
@@ -121,7 +119,7 @@ async function updateMasterfile(masterFile) {
 
 // Deletes deprecated master.json properties
 async function deleteDeprecatedMasterProperties() {
-  logger.info("Checking for deprecated master.json properties...");
+  log.detail("Delete deprecated master properties", "Checking for deprecated master.json properties...");
 
   // Getting the masterfile data. Has to be parsed.
   const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
@@ -134,7 +132,9 @@ async function deleteDeprecatedMasterProperties() {
   for (let i = 0; i < deprecatedProperties.length; i++) {
     if (masterFile[0][deprecatedProperties[i]]) {
       delete masterFile[0][deprecatedProperties[i]];
-      logger.info({ "Deprecated Property": deprecatedProperties[i] }, "Deleted deprecated master.json property.");
+      log.success("Delete deprecated master properties", "Deleted master.json property.", {
+        "Deprecated Property": deprecatedProperties[i],
+      });
       changesMade = true;
     }
   }
@@ -142,16 +142,16 @@ async function deleteDeprecatedMasterProperties() {
   // Updates the masterfile if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
-      logger.info("Removed deprecated master.json properties.");
+      log.detail("Delete deprecated master properties", "Removed deprecated master.json properties.");
     }
   } else {
-    logger.info("No deprecated master.json properties found.");
+    log.detail("Delete deprecated master properties", "No deprecated master.json properties found.");
   }
 }
 
 // Adds any missing properties to master.json.
 async function addMissingMasterProperties() {
-  logger.info("Checking for missing master.json properties...");
+  log.detail("Add missing master properties", "Checking for missing master.json properties...");
 
   // Getting master.json data. Has to be parsed.
   const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
@@ -162,7 +162,7 @@ async function addMissingMasterProperties() {
   for (const key in allProperties) {
     if (!Object.hasOwn(masterFile[0], key)) {
       masterFile[0][key] = allProperties[key];
-      logger.info({ Property: key }, "Added missing master.json property.");
+      log.success("Add missing master properties", "Added missing master.json property.", { Property: key });
       changesMade = true;
     }
   }
@@ -170,10 +170,10 @@ async function addMissingMasterProperties() {
   // Updates master.json if changes were made
   if (changesMade) {
     if (updateMasterfile(masterFile)) {
-      logger.info("Added missing master.json properties.");
+      log.detail("Add missing master properties", "Added missing master.json properties.");
     }
   } else {
-    logger.info("No missing master.json properties found.");
+    log.detail("Add missing master properties", "No missing master.json properties found.");
   }
 }
 
@@ -183,16 +183,12 @@ addMissingMasterProperties();
 
 // Gets master.json for client.
 app.get("/api/getMaster", async (req, res) => {
-  if (serverMaster.detailLogs) {
-    logger.info("Master get: Recived request.");
-  }
+  log.detail("Master get", "Recived request.");
   try {
     const rawMasterFile = fs.readFileSync(GLOBAL.PATHS.FILES.MASTERFILE, "utf-8");
     const masterFile = JSON.parse(rawMasterFile);
     res.json(masterFile[0]);
-    if (serverMaster.successLogs) {
-      logger.info("Master get: Loaded master.json.");
-    }
+    log.success("Master get", "Loaded master.json.");
   } catch (err) {
     res.status(500).json(error("Master get: ", "Failed to get master.json.", {}, err));
   }
@@ -201,16 +197,11 @@ app.get("/api/getMaster", async (req, res) => {
 // Updates master.json from client.
 app.put("/api/updateMaster", async (req, res) => {
   const { data } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info("Master update: Recived request.");
-  }
+  log.detail("Master update", "Recived request.");
 
   try {
     fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(data), "utf-8");
-    if (serverMaster.successLogs) {
-      logger.info("Master update: Updated master.json.");
-    }
-
+    log.success("Master update", "Updated master.json.");
     res.json({ success: true });
   } catch (err) {
     res.status(500).json(error("master.json update", "Failed to update master.json.", { Data: data }, err));
@@ -220,9 +211,7 @@ app.put("/api/updateMaster", async (req, res) => {
 // Updates a certain master.json property.
 app.put("/api/updateMasterProperty", async (req, res) => {
   const { property, newValue } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info({ Property: property, Value: newValue }, "Master property update: Recived request.");
-  }
+  log.detail("Master property update", "Recived request.", { Property: property, Value: newValue });
 
   try {
     // Gets master data
@@ -234,9 +223,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
     // Updates the master.
     fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
-    if (serverMaster.successLogs) {
-      logger.info({ Property: property }, "Master property update: Updated property.");
-    }
+    log.success("Master property update", "Master property update: Updated property.", { Property: property });
     res.json({ success: true });
   } catch (err) {
     res
@@ -249,10 +236,7 @@ app.put("/api/updateMasterProperty", async (req, res) => {
 
 app.post("/api/addCollapsedFolder", async (req, res) => {
   const { folder } = req.body;
-
-  if (serverMaster.detailLogs) {
-    logger.info({ Folder: folder }, "Collapsed folder add: Recived request.");
-  }
+  log.detail("Collapsed folder add", "Recived request.", { Folder: folder });
 
   try {
     // Gets master.json data.
@@ -264,9 +248,7 @@ app.post("/api/addCollapsedFolder", async (req, res) => {
 
     // Updates master.json
     fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
-    if (serverMaster.successLogs) {
-      logger.info({ Folder: folder }, "Collapsed folder add: Added folder.");
-    }
+    log.success("Collapsed folder add", "Added folder.", { Folder: folder });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json(error("Collapsed folder add", "Failed to add folder.", { Folder: folder }, err));
@@ -275,10 +257,7 @@ app.post("/api/addCollapsedFolder", async (req, res) => {
 
 app.post("/api/rmCollapsedFolder", async (req, res) => {
   const { folder } = req.body;
-
-  if (serverMaster.detailLogs) {
-    logger.info({ Folder: folder }, "Collapsed folder remove: Recived request.");
-  }
+  log.detail("Collapsed folder remove", "Recived request.", { Folder: folder });
 
   try {
     // Gets master.json data
@@ -293,9 +272,7 @@ app.post("/api/rmCollapsedFolder", async (req, res) => {
 
     // Updates master.json
     fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, JSON.stringify(masterFile), "utf-8");
-    if (serverMaster.successLogs) {
-      logger.info({ Folder: folder }, "Collapsed folder remove: Removed folder.");
-    }
+    log.success("Collapsed folder remove", "Removed folder.", { Folder: folder });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json(error("Collapsed folder remove", "Failed to remove folder.", { Folder: folder }, err));
@@ -304,12 +281,10 @@ app.post("/api/rmCollapsedFolder", async (req, res) => {
 
 // Applies an update.
 app.get("/api/applyAppUpdate", async (req, res) => {
-  logger.info("App update: Recieved request.");
+  log.detail("App update", "Recieved request.");
   try {
     await git.pull("origin", "main", ["--rebase"]);
-    if (serverMaster.successLogs) {
-      logger.info("App update: Successfully updated app.");
-    }
+    log.success("App update", "Successfully updated app.");
     res.json({ success: true });
   } catch (err) {
     res.status(500).json(error("App update", "Failed to update app.", {}, err));
@@ -318,9 +293,7 @@ app.get("/api/applyAppUpdate", async (req, res) => {
 
 // Returns a success.
 app.get("/api/", async (req, res) => {
-  if (serverMaster.detailLogs) {
-    logger.info("Got ping request.");
-  }
+  log.detail("Ping", "Received Request.");
   res.json({ success: true });
 });
 
@@ -330,5 +303,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info({ Port: port }, "Editor Backend running.");
+  log.info("Editor Backend running.", { Port: port });
 });
