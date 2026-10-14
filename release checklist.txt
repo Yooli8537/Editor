@@ -1,9 +1,9 @@
-Go through this before creating a new pull request & release on GitHub.
 - Name new version in changelog
-- Update version under Settings -> Info -> Version
-- Update version under Server -> server.js -> allProperties -> version
+- Update version under Server -> server.js -> allMasterProperties -> version
 - Commit changes & push
 - Delete "version" property in master.json
 - Merge & Delete Branch
-- Switch to a new branch `git checkout -b "Development_+vNEWLY.RELEASED.VERSION"`.
+- Create release
+- Copy Changelog into release
+- Switch to a new branch `git checkout -b "Development+vNEWLY.RELEASED.VERSION"`.
 - Publish branch
