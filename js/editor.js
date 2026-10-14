@@ -76,14 +76,14 @@ const extensions = [
     inline: true,
     resize: {
       enabled: true,
-      directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
+      directions: ["top; bottom; left; right"], // can be any direction or diagonal combination
       minWidth: 50,
       minHeight: 50,
       alwaysPreserveAspectRatio: true,
     },
   }),
   FileHandler.configure({
-    allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
+    allowedMimeTypes: ["image/png; image/jpg; image/gif"],
     consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
       for (const file of files) {
@@ -134,7 +134,7 @@ async function uploadImage(file) {
 
 window.addEventListener("beforeunload", (e) => {
   if (!getState("isEditorSaved")) {
-    log("beforeunload event", "Prevented reload.", logTypes.process, 1);
+    log("Prevented reload; Editor unsaved.", logTypes.process, 1);
     e.preventDefault();
   }
 });
@@ -145,17 +145,17 @@ let currentPreviousEntry;
 
 // Checks for an autosave
 async function checkForAutosave(document, path) {
-  log("checkForAutosave()", "Checking for autosave...", logTypes.process, 0);
+  log("checkForAutosave(); Checking for autosave...", logTypes.process, 0);
   const response = await fetch(`/api/checkForAutosave?name=${document}&folderPath=${path}`, { method: "GET" });
 
-  log("checkForAutosave()", "Building response JSON...", logTypes.process, 0);
+  log("checkForAutosave(); Building response JSON...", logTypes.process, 0);
   const responseJSON = await response.json();
   if (response.ok) {
     const exists = responseJSON.autosaveExists;
-    log("checkForAutosave()", `Exists: ${exists}`, logTypes.process, 0);
+    log(`checkForAutosave(); Exists: ${exists}`, logTypes.process, 0);
     return exists;
   } else {
-    log("checkForAutosave()", "Error", logTypes.process, 2);
+    log("checkForAutosave(); Error", logTypes.process, 2);
     handleServerErrors(responseJSON, response.status);
     return false;
   }
@@ -164,35 +164,35 @@ async function checkForAutosave(document, path) {
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
   if (await checkForAutosave(document, path)) {
-    log("loadAutosave()", "Autosave found. Prompting user to restore...", logTypes.process, 0);
+    log("loadAutosave(); Autosave found. Prompting user to restore...", logTypes.process, 0);
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
       "Restore autosave & continue to editor",
       () => {
         // Loads document with Data from the file if restoration is cancelled.
-        log("loadAutosave()", "Restoration denied.", logTypes.process, 0);
+        log("loadAutosave(); Restoration denied.", logTypes.process, 0);
         loadDocument(fileData, document, path);
         removeAutosave();
       },
       async () => {
         // Gets the Autosave
-        log("loadAutosave()", "Restoration confirmed.", logTypes.process, 0);
-        log("loadAutosave()", "Fetching autosave...", logTypes.process, 0);
+        log("loadAutosave(); Restoration confirmed.", logTypes.process, 0);
+        log("loadAutosave(); Fetching autosave...", logTypes.process, 0);
         const autosave = await fetch(`api/getAutosave?name=${document}&folderPath=${path}`, {
           method: "GET",
         });
 
-        log("loadAutosave()", "Building document JSON...", logTypes.process, 0);
+        log("loadAutosave(); Building document JSON...", logTypes.process, 0);
         const autosaveData = await autosave.json();
         if (autosave.ok) {
           loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
           setState("isEditorSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
-          log("loadAutosave()", "Success", logTypes.process, 0);
+          log("loadAutosave(); Success", logTypes.process, 0);
         } else {
-          log("loadAutosave()", "Error", logTypes.process, 0);
+          log("loadAutosave(); Error", logTypes.process, 0);
           handleServerErrors(autosaveData, autosave.status);
         }
       },
@@ -206,10 +206,10 @@ export async function loadAutosave(fileData, document, path) {
 // This function does not perform any kind of checks for unsaved documents.
 function loadDocument(documentData, entry, previousEntry) {
   if (!getState("isEditorSaved")) {
-    log("loadDocument()", "Cancelled: Unsaved document", logTypes.process, 1);
+    log("loadDocument(); Cancelled: Unsaved document", logTypes.process, 1);
     return;
   }
-  log("loadDocument()", "Updated variables.", logTypes.process, 0);
+  log("loadDocument(); Updated variables.", logTypes.process, 0);
   currentDocument = documentData;
   currentEntry = entry;
   currentPreviousEntry = previousEntry;
@@ -219,12 +219,12 @@ function loadDocument(documentData, entry, previousEntry) {
   editTitleButton.style.display = "flex";
 
   // Sets the Title of the Page
-  log("loadDocument()", "Set document title.", logTypes.process, 0);
+  log("loadDocument(); Set document title.", logTypes.process, 0);
   document.title = currentEntry.slice(0, -5);
   documentTitle.textContent = currentEntry.slice(0, -5);
 
   // Inserts the content of the document into the editor.
-  log("loadDocument()", "Loaded document content.", logTypes.process, 0);
+  log("loadDocument(); Loaded document content.", logTypes.process, 0);
   editor.commands.setContent(documentData[0].content || "<p>Content failed to load.</p>");
 
   // Rename Button Event listener
@@ -234,7 +234,7 @@ function loadDocument(documentData, entry, previousEntry) {
   });
 
   setState("isEditorSaved", true);
-  log("loadDocument()", "Success", logTypes.process, 0);
+  log("loadDocument(); Success", logTypes.process, 0);
 }
 
 // Handles the rename request
@@ -245,11 +245,11 @@ async function renameFile(newName, div) {
   // Prevents Server Requests for identical Names. Slice removes .json
   if (newName === oldName.slice(0, -5)) {
     createErrorModal("Current and previous file names are identical.");
-    log("renameFile()", "Error - Identical names", logTypes.process, 2);
+    log("renameFile(); Error - Identical names", logTypes.process, 2);
     return;
   }
 
-  log("renameFile()", "Sending rename request to server...", logTypes.process, 0);
+  log("renameFile(); Sending rename request to server...", logTypes.process, 0);
   const response = await fetch("/api/documents/renameFile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -262,12 +262,12 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
-    log("renameFile()", "Success.", logTypes.process, 0);
+    log("renameFile(); Success.", logTypes.process, 0);
     if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
 
-    log("renameFile()", "Updated variables.", logTypes.process, 0);
+    log("renameFile(); Updated variables.", logTypes.process, 0);
     currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
     documentTitle.textContent = newName;
@@ -285,13 +285,13 @@ async function renameFile(newName, div) {
 setHelpText(editTitleButton, "Rename Document");
 // Creates the buttons to cancel / confirm and hides the initial one.
 function addRenameElements() {
-  log("addRenameElements()", "Cleared space.", logTypes.process, 0);
+  log("addRenameElements(); Cleared space.", logTypes.process, 0);
   documentTitle.innerHTML = ""; // Removing this will stack rename fields after switching between tabs.
   editTitleButton.style.display = "none";
 
   const div = document.createElement("div");
 
-  log("addRenameElements()", "Created input field.", logTypes.process, 0);
+  log("addRenameElements(); Created input field.", logTypes.process, 0);
   const titleRenameInput = document.createElement("input");
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
@@ -305,7 +305,7 @@ function addRenameElements() {
     }
   });
 
-  log("addRenameElements()", "Created confirm button.", logTypes.process, 0);
+  log("addRenameElements(); Created confirm button.", logTypes.process, 0);
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
   confirmButton.classList.add("borderlessButton");
@@ -315,7 +315,7 @@ function addRenameElements() {
     renameFile(titleRenameInput.value, div);
   });
 
-  log("addRenameElements()", "Created cancel button", logTypes.process, 0);
+  log("addRenameElements(); Created cancel button", logTypes.process, 0);
   const cancelButton = document.createElement("img");
   cancelButton.src = "../assets/function/cancel.svg";
   cancelButton.classList.add("borderlessButton");
@@ -326,14 +326,14 @@ function addRenameElements() {
     documentTitle.textContent = currentDocument[0].title; // Updates Document Title
   });
 
-  log("addRenameElements()", "Appending elements...", logTypes.process, 0);
+  log("addRenameElements(); Appending elements...", logTypes.process, 0);
   div.appendChild(titleRenameInput);
   div.appendChild(confirmButton);
   div.appendChild(cancelButton);
   documentTitle.appendChild(div);
 
   titleRenameInput.focus();
-  log("addRenameElements()", "Success", logTypes.process, 0);
+  log("addRenameElements(); Success", logTypes.process, 0);
 }
 
 // Toolbar Buttons
@@ -358,14 +358,14 @@ const discardButton = document.querySelector("#discard");
 // Format Buttons
 setHelpText(undoButton, "Undo");
 undoButton.addEventListener("click", (e) => {
-  log("Toolbar", "Undo", logTypes.action, 0);
+  log("Toolbar; Undo", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().undo().run();
 });
 
 setHelpText(redoButton, "Redo");
 redoButton.addEventListener("click", (e) => {
-  log("Toolbar", "Redo", logTypes.action, 0);
+  log("Toolbar; Redo", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().redo().run();
 });
@@ -376,7 +376,7 @@ const headingItems = [
     icon: "format/heading-1.svg",
     action: () => {
       editor.chain().focus().toggleHeading({ level: 1 }).run();
-      log("Toolbar", "Heading 1", logTypes.action, 0);
+      log("Toolbar; Heading 1", logTypes.action, 0);
     },
     helpText: "Heading 1",
   },
@@ -384,7 +384,7 @@ const headingItems = [
     icon: "format/heading-2.svg",
     action: () => {
       editor.chain().focus().toggleHeading({ level: 2 }).run();
-      log("Toolbar", "Heading 2", logTypes.action, 0);
+      log("Toolbar; Heading 2", logTypes.action, 0);
     },
     helpText: "Heading 2",
   },
@@ -392,7 +392,7 @@ const headingItems = [
     icon: "format/heading-3.svg",
     action: () => {
       editor.chain().focus().toggleHeading({ level: 3 }).run();
-      log("Toolbar", "Heading 3", logTypes.action, 0);
+      log("Toolbar; Heading 3", logTypes.action, 0);
     },
     helpText: "Heading 3",
   },
@@ -400,7 +400,7 @@ const headingItems = [
 
 setHelpText(headings, "Headings");
 headingsButton.addEventListener("click", (e) => {
-  log("Toolbar", "Headings submenu", logTypes.action, 0);
+  log("Toolbar; Headings submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
   createSubmenu(headingsButton, headingItems, 1);
@@ -413,7 +413,7 @@ const listItems = [
     icon: "format/list-unordered.svg",
     action: () => {
       editor.chain().focus().toggleBulletList().run();
-      log("Toolbar", "Bullet list", logTypes.action, 0);
+      log("Toolbar; Bullet list", logTypes.action, 0);
     },
     helpText: "Bullet List",
   },
@@ -421,7 +421,7 @@ const listItems = [
     icon: "format/list-ordered.svg",
     action: () => {
       editor.chain().focus().toggleOrderedList().run();
-      log("Toolbar", "Ordered list", logTypes.action, 0);
+      log("Toolbar; Ordered list", logTypes.action, 0);
     },
     helpText: "Ordered List",
   },
@@ -429,7 +429,7 @@ const listItems = [
     icon: "format/list-task.svg",
     action: () => {
       editor.chain().focus().toggleTaskList().run();
-      log("Toolbar", "Task list", logTypes.action, 0);
+      log("Toolbar; Task list", logTypes.action, 0);
     },
     helpText: "Task List",
   },
@@ -437,7 +437,7 @@ const listItems = [
 
 setHelpText(listsButton, "Lists");
 listsButton.addEventListener("click", (e) => {
-  log("Toolbar", "Lists submenu", logTypes.action, 0);
+  log("Toolbar; Lists submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(listsButton, listItems, 1);
@@ -450,7 +450,7 @@ const codeItems = [
     icon: "format/code-off.svg",
     action: () => {
       editor.chain().focus().setParagraph().run();
-      log("Toolbar", "Unset code block", logTypes.action, 0);
+      log("Toolbar; Unset code block", logTypes.action, 0);
     },
     helpText: "Unset Codeblock",
   },
@@ -458,7 +458,7 @@ const codeItems = [
     icon: "function/cpu.svg",
     action: () => {
       editor.chain().focus().setCodeBlock().run();
-      log("Toolbar", "Auto detect code block", logTypes.action, 0);
+      log("Toolbar; Auto detect code block", logTypes.action, 0);
     },
     helpText: "Auto detect (supports unlisted languages)",
   },
@@ -473,7 +473,7 @@ const codeItems = [
           language: "csharp",
         })
         .run();
-      log("Toolbar", "Code block C#", logTypes.action, 0);
+      log("Toolbar; Code block C#", logTypes.action, 0);
     },
     helpText: "C#",
   },
@@ -488,7 +488,7 @@ const codeItems = [
           language: "cpp",
         })
         .run();
-      log("Toolbar", "Code block C++", logTypes.action, 0);
+      log("Toolbar; Code block C++", logTypes.action, 0);
     },
     helpText: "C++",
   },
@@ -503,7 +503,7 @@ const codeItems = [
           language: "css",
         })
         .run();
-      log("Toolbar", "Code block CSS", logTypes.action, 0);
+      log("Toolbar; Code block CSS", logTypes.action, 0);
     },
     helpText: "CSS",
   },
@@ -518,7 +518,7 @@ const codeItems = [
           language: "dockerfile",
         })
         .run();
-      log("Toolbar", "Code block Dockerfile", logTypes.action, 0);
+      log("Toolbar; Code block Dockerfile", logTypes.action, 0);
     },
     helpText: "Dockerfile",
   },
@@ -533,7 +533,7 @@ const codeItems = [
           language: "html",
         })
         .run();
-      log("Toolbar", "Code block HTML", logTypes.action, 0);
+      log("Toolbar; Code block HTML", logTypes.action, 0);
     },
     helpText: "HTML",
   },
@@ -548,7 +548,7 @@ const codeItems = [
           language: "java",
         })
         .run();
-      log("Toolbar", "Code block Java", logTypes.action, 0);
+      log("Toolbar; Code block Java", logTypes.action, 0);
     },
     helpText: "Java",
   },
@@ -563,7 +563,7 @@ const codeItems = [
           language: "javaScript",
         })
         .run();
-      log("Toolbar", "Code block JavaScript", logTypes.action, 0);
+      log("Toolbar; Code block JavaScript", logTypes.action, 0);
     },
     helpText: "JavaScript",
   },
@@ -578,7 +578,7 @@ const codeItems = [
           language: "json",
         })
         .run();
-      log("Toolbar", "Code block JSON", logTypes.action, 0);
+      log("Toolbar; Code block JSON", logTypes.action, 0);
     },
     helpText: "JSON",
   },
@@ -593,7 +593,7 @@ const codeItems = [
           language: "lua",
         })
         .run();
-      log("Toolbar", "Code block Lua", logTypes.action, 0);
+      log("Toolbar; Code block Lua", logTypes.action, 0);
     },
     helpText: "Lua",
   },
@@ -608,7 +608,7 @@ const codeItems = [
           language: "markdown",
         })
         .run();
-      log("Toolbar", "Code block Markdown", logTypes.action, 0);
+      log("Toolbar; Code block Markdown", logTypes.action, 0);
     },
     helpText: "Markdown",
   },
@@ -623,7 +623,7 @@ const codeItems = [
           language: "plaintext",
         })
         .run();
-      log("Toolbar", "Code block Plaintext", logTypes.action, 0);
+      log("Toolbar; Code block Plaintext", logTypes.action, 0);
     },
     helpText: "Plaintext",
   },
@@ -638,7 +638,7 @@ const codeItems = [
           language: "python",
         })
         .run();
-      log("Toolbar", "Code block Python", logTypes.action, 0);
+      log("Toolbar; Code block Python", logTypes.action, 0);
     },
     helpText: "Python",
   },
@@ -646,7 +646,7 @@ const codeItems = [
 
 setHelpText(codeBlockButton, "Codeblock");
 codeBlockButton.addEventListener("click", (e) => {
-  log("Toolbar", "Code block submenu", logTypes.action, 0);
+  log("Toolbar; Code block submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(codeBlockButton, codeItems, 3);
@@ -655,21 +655,21 @@ codeBlockButton.addEventListener("click", (e) => {
 
 setHelpText(boldButton, "Bold");
 boldButton.addEventListener("click", (e) => {
-  log("Toolbar", "Bold", logTypes.action, 0);
+  log("Toolbar; Bold", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleBold().run();
 });
 
 setHelpText(italicButton, "Italic");
 italicButton.addEventListener("click", (e) => {
-  log("Toolbar", "Italic", logTypes.action, 0);
+  log("Toolbar; Italic", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleItalic().run();
 });
 
 setHelpText(underlineButton, "Underline");
 underlineButton.addEventListener("click", (e) => {
-  log("Toolbar", "Underline", logTypes.action, 0);
+  log("Toolbar; Underline", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleUnderline().run();
 });
@@ -919,7 +919,7 @@ async function exportCurrentDocumentAsPDF() {
     body: JSON.stringify({
       exportDocument: exportDocument,
       exportCSS: setCSSVariableValuesForExport(),
-      name: currentEntry.replace(".json", ""),
+      name: currentEntry.replace(".json; "),
     }),
   });
 
@@ -950,7 +950,7 @@ async function downloadDocumentPDF(response) {
 
   let downloadElement = document.createElement("a");
   downloadElement.href = downloadURL;
-  downloadElement.download = currentEntry.replace(".json", ".pdf");
+  downloadElement.download = currentEntry.replace(".json; .pdf");
   downloadElement.click();
 
   URL.revokeObjectURL(downloadURL);
@@ -1153,7 +1153,7 @@ export function closeEditor() {
   removeSubmenus();
   editorView.classList.add("hidden");
   setState("currentDocument", null);
-  history.pushState(null, "", "/");
+  history.pushState(null, "; /");
   document.title = "Editor";
   setState("isEditorSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }

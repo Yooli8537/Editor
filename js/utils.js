@@ -558,15 +558,15 @@ export const logTypes = {
   settings: "Settings",
 };
 // level = 0 -> log / 1 -> warning / 2 -> error
-export function log(operation, message, type, level) {
+export function log(message, type, level) {
   if (getState("clientSideLogging")) {
     if (getState(`client${type}Logging`)) {
       if (level === 2) {
-        console.error(`${operation}: ${message}`);
+        console.error(message);
       } else if (level === 1) {
-        console.warn(`${operation}: ${message}`);
+        console.warn(message);
       } else {
-        console.log(`${operation}: ${message}`);
+        console.log(message);
       }
     }
   } else {
