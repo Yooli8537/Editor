@@ -46,7 +46,7 @@ plaintext
 python,
 */
 // Example Import so that I can check if a certain language is supported easily.
-//import language from "highlight.js/lib/languages/language";
+//import xml from "highlight.js/lib/languages/xml";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
@@ -86,6 +86,7 @@ const extensions = [
     allowedMimeTypes: ["image/png; image/jpg; image/gif"],
     consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
+      console.log("PASTE");
       for (const file of files) {
         const url = await uploadImage(file);
         editor.chain().setImage({ src: url }).run();
@@ -115,6 +116,7 @@ const editor = new Editor({
 });
 
 async function uploadImage(file) {
+  console.log("IMAGE UPLOAD");
   const response = await fetch("/api/uploadImageFile", {
     method: "POST",
     headers: {
@@ -465,14 +467,7 @@ const codeItems = [
   {
     icon: "code-languages/chash.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "csharp",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "csharp" }).run();
       log("Toolbar; Code block C#", logTypes.action, 0);
     },
     helpText: "C#",
@@ -480,14 +475,7 @@ const codeItems = [
   {
     icon: "code-languages/cpp.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "cpp",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "cpp" }).run();
       log("Toolbar; Code block C++", logTypes.action, 0);
     },
     helpText: "C++",
@@ -495,14 +483,7 @@ const codeItems = [
   {
     icon: "code-languages/css.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "css",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "css" }).run();
       log("Toolbar; Code block CSS", logTypes.action, 0);
     },
     helpText: "CSS",
@@ -510,14 +491,7 @@ const codeItems = [
   {
     icon: "code-languages/docker.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "dockerfile",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "dockerfile" }).run();
       log("Toolbar; Code block Dockerfile", logTypes.action, 0);
     },
     helpText: "Dockerfile",
@@ -525,14 +499,7 @@ const codeItems = [
   {
     icon: "code-languages/html.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "html",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "html" }).run();
       log("Toolbar; Code block HTML", logTypes.action, 0);
     },
     helpText: "HTML",
@@ -540,14 +507,7 @@ const codeItems = [
   {
     icon: "code-languages/java.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "java",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "java" }).run();
       log("Toolbar; Code block Java", logTypes.action, 0);
     },
     helpText: "Java",
@@ -555,14 +515,7 @@ const codeItems = [
   {
     icon: "code-languages/javascript.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "javaScript",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "javaScript" }).run();
       log("Toolbar; Code block JavaScript", logTypes.action, 0);
     },
     helpText: "JavaScript",
@@ -570,14 +523,7 @@ const codeItems = [
   {
     icon: "code-languages/json.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "json",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "json" }).run();
       log("Toolbar; Code block JSON", logTypes.action, 0);
     },
     helpText: "JSON",
@@ -585,14 +531,7 @@ const codeItems = [
   {
     icon: "code-languages/lua.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "lua",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "lua" }).run();
       log("Toolbar; Code block Lua", logTypes.action, 0);
     },
     helpText: "Lua",
@@ -600,14 +539,7 @@ const codeItems = [
   {
     icon: "code-languages/markdown.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "markdown",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "markdown" }).run();
       log("Toolbar; Code block Markdown", logTypes.action, 0);
     },
     helpText: "Markdown",
@@ -615,14 +547,7 @@ const codeItems = [
   {
     icon: "code-languages/plaintext.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "plaintext",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "plaintext" }).run();
       log("Toolbar; Code block Plaintext", logTypes.action, 0);
     },
     helpText: "Plaintext",
@@ -630,17 +555,18 @@ const codeItems = [
   {
     icon: "code-languages/python.svg",
     action: () => {
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "python",
-        })
-        .run();
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "python" }).run();
       log("Toolbar; Code block Python", logTypes.action, 0);
     },
     helpText: "Python",
+  },
+  {
+    icon: "code-languages/xml.svg",
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "xml" }).run();
+      log("Toolbar; Code block XML", logTypes.action, 0);
+    },
+    helpText: "XML",
   },
 ];
 
