@@ -58,7 +58,6 @@ const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
-const clientHoverLogging = document.querySelector("#clientHoverLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 const clientErrorLogging = document.querySelector("#clientErrorLogging");
 
@@ -95,7 +94,6 @@ const allSettings = [
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
-  clientHoverLogging,
   clientSettingsLogging,
   clientErrorLogging,
 ];
@@ -135,7 +133,6 @@ const boolSettings = [
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
-  clientHoverLogging,
   clientSettingsLogging,
   clientErrorLogging,
 ];
@@ -338,7 +335,6 @@ function disableSettings() {
   const clientLoggingSettings = [
     clientActionLogging,
     clientProcessLogging,
-    clientHoverLogging,
     clientSettingsLogging,
     clientErrorLogging,
   ];

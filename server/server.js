@@ -56,7 +56,6 @@ const allProperties = {
   clientSideLogging: false,
   clientActionLogging: true,
   clientProcessLogging: false,
-  clientHoverLogging: false,
   clientSettingsLogging: true,
   clientErrorLogging: true,
 };
