@@ -71,7 +71,7 @@ for (let i = 0; i < userDataFolders.length; i++) {
 if (!fs.existsSync(GLOBAL.PATHS.FILES.MASTERFILE)) {
   try {
     const masterFileContent = `[${JSON.stringify(allProperties)}]`;
-    fs.writeFileSync(GLOBAL.PATHS.MASTERFILE, masterFileContent, "utf-8");
+    fs.writeFileSync(GLOBAL.PATHS.FILES.MASTERFILE, masterFileContent, "utf-8");
   } catch (err) {
     console.error("Server setup: Failed to create master.json.");
   }

@@ -1,4 +1,7 @@
+# Release Checklist
+
 - Name new version in changelog
+- Create fresh clone of newest commit and check if fresh install works.
 - Update version under Server -> server.js -> allProperties -> version
 - Update version under Settings -> Info -> Version
 - Commit changes & push
