@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
 ### Added
@@ -19,6 +21,7 @@
 - Image clear no longer reports nonsense errors.
 - Images can be pasted into the editor again.
 - Paths are now validated properly.
+- Fresh installs work again. I can't believe how fucking often I've broken them :/
 
 ## v1.6.4 - Autosave rework & Improvements
 
