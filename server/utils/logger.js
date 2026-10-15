@@ -31,15 +31,12 @@ if (seconds < 10) {
   seconds = `0${seconds}`;
 }
 
-const logPath = path.join(
-  GLOBAL.PATHS.FOLDERS.LOGS,
-  `${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`,
-);
+const logPath = path.join(GLOBAL.PATHS.FOLDERS.LOGS, `${year}-${month}-${day}-${hour}-${minutes}-${seconds}.log`);
 
 let logger;
 if (serverMaster.saveLogs) {
   const transport = pino.transport({
-targets: [
+    targets: [
       {
         target: "pino-pretty",
         options: {
@@ -78,4 +75,36 @@ targets: [
   });
 }
 
-module.exports = logger;
+function info(message, requestValues) {
+  if (!requestValues) {
+    logger.info(message);
+  } else {
+    logger.info(requestValues, message);
+  }
+}
+
+function detail(operation, message, requestValues) {
+  if (serverMaster.detailLogs && !requestValues) {
+    logger.info(`${operation}: ${message}`);
+  } else if (serverMaster.detailLogs) {
+    logger.info(requestValues, `${operation}: ${message}`);
+  }
+}
+
+function success(operation, message, requestValues) {
+  if (serverMaster.successLogs && !requestValues) {
+    logger.info(`${operation}: ${message}`);
+  } else if (serverMaster.successLogs) {
+    logger.info(requestValues, `${operation}: ${message}`);
+  }
+}
+
+function warn(operation, message, requestValues) {
+  if (serverMaster.warningLogs && !requestValues) {
+    logger.warn(`${operation}: ${message}`);
+  } else if (serverMaster.warningLogs) {
+    logger.warn(requestValues, `${operation}: ${message}`);
+  }
+}
+
+module.exports = { info, detail, success, warn };

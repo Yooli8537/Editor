@@ -3,7 +3,7 @@ import { handleServerErrors } from "./utils";
 
 let state = {
   currentDocument: null,
-  editorIsSaved: true,
+  isEditorSaved: true,
 };
 
 // Gets the given state's value.

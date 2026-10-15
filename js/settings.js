@@ -1,10 +1,5 @@
 // Settings Menu
-import {
-  checkForUpdate,
-  createErrorModal,
-  createInfoModal,
-  handleServerErrors,
-} from "./utils";
+import { checkForUpdate, createErrorModal, createInfoModal, handleServerErrors } from "./utils";
 
 // Save button
 const saveSettingsButton = document.querySelector("#saveSettingsButton");
@@ -30,17 +25,10 @@ const allTabs = [
   { name: "info", element: infoTab },
 ];
 
-// Every setting parent div element required for applying disabled settings
-const updateCollapsedFoldersDiv = document.querySelector(
-  "#updateCollapsedFoldersDiv",
-);
-
 // All the settings
 const autosaveInterval = document.querySelector("#autosaveInterval");
 const confirmSave = document.querySelector("#confirmSave");
-const updateCollapsedFolders = document.querySelector(
-  "#updateCollapsedFolders",
-);
+const updateCollapsedFolders = document.querySelector("#updateCollapsedFolders");
 const sliceIndex = document.querySelector("#sliceIndex");
 const maxCharacterLength = document.querySelector("#maxCharacterLength");
 const helpTextHoverTime = document.querySelector("#helpTextHoverTime");
@@ -50,13 +38,28 @@ const detailLogs = document.querySelector("#detailLogs");
 const saveLogs = document.querySelector("#saveLogs");
 const confirmExport = document.querySelector("#confirmExport");
 const logErrorDetails = document.querySelector("#logErrorDetails");
-//const clientActionLogging = document.querySelector("#clientActionLogging");
 const rateLimitMaxRequests = document.querySelector("#rateLimitMaxRequests");
 const rateLimitResetTime = document.querySelector("#rateLimitResetTime");
 const maxImageSize = document.querySelector("#maxImageSize");
-const collapsedFolderUpdateMethod = document.querySelector(
-  "#collapsedFolderUpdateMethod",
-);
+const collapsedFolderUpdateMethod = document.querySelector("#collapsedFolderUpdateMethod");
+const formatFontSizesDefault = document.querySelector("#formatFontSizesDefault");
+const formatFontSizesH1 = document.querySelector("#formatFontSizesH1");
+const formatFontSizesH2 = document.querySelector("#formatFontSizesH2");
+const formatFontSizesH3 = document.querySelector("#formatFontSizesH3");
+const formatFontSizesCode = document.querySelector("#formatFontSizesCode");
+const formatFontMarginsH1Top = document.querySelector("#formatFontMarginsH1Top");
+const formatFontMarginsH1Bottom = document.querySelector("#formatFontMarginsH1Bottom");
+const formatFontMarginsH2Top = document.querySelector("#formatFontMarginsH2Top");
+const formatFontMarginsH2Bottom = document.querySelector("#formatFontMarginsH2Bottom");
+const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bottom");
+const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
+const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
+const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");/*
+const clientSideLogging = document.querySelector("#clientSideLogging");
+const clientActionLogging = document.querySelector("#clientActionLogging");
+const clientProcessLogging = document.querySelector("#clientProcessLogging");
+const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
+const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -72,13 +75,28 @@ const allSettings = [
   saveLogs,
   confirmExport,
   logErrorDetails,
-  // clientActionLogging,
   rateLimitMaxRequests,
   rateLimitResetTime,
   maxImageSize,
   collapsedFolderUpdateMethod,
+  formatFontSizesDefault,
+  formatFontSizesH1,
+  formatFontSizesH2,
+  formatFontSizesH3,
+  formatFontSizesCode,
+  formatFontMarginsH1Top,
+  formatFontMarginsH1Bottom,
+  formatFontMarginsH2Top,
+  formatFontMarginsH2Bottom,
+  formatFontMarginsH3Bottom,
+  formatFontMarginsListMargin,
+  formatTablesCellPadding,/*
+  clientSideLogging,
+  clientActionLogging,
+  clientProcessLogging,
+  clientSettingsLogging,
+  clientErrorLogging,*/
 ];
-// All the settings which only accept full numbers.
 const intSettings = [
   updateCollapsedFolders,
   sliceIndex,
@@ -86,11 +104,24 @@ const intSettings = [
   rateLimitMaxRequests,
   rateLimitResetTime,
 ];
-// All the settings which accept any positive number.
-const decimalSettings = [autosaveInterval, helpTextHoverTime, maxImageSize];
-// All the settings which are a string value.
-const stringSettings = [collapsedFolderUpdateMethod];
-// All the settings which are a boolean value.
+const decimalSettings = [
+  autosaveInterval,
+  helpTextHoverTime,
+  maxImageSize,
+  formatFontSizesDefault,
+  formatFontSizesH1,
+  formatFontSizesH2,
+  formatFontSizesH3,
+  formatFontSizesCode,
+  formatFontMarginsH1Top,
+  formatFontMarginsH1Bottom,
+  formatFontMarginsH2Top,
+  formatFontMarginsH2Bottom,
+  formatFontMarginsH3Bottom,
+  formatFontMarginsListMargin,
+  formatTablesCellPadding,
+];
+const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign];
 const boolSettings = [
   confirmSave,
   warningLogs,
@@ -98,8 +129,12 @@ const boolSettings = [
   detailLogs,
   saveLogs,
   confirmExport,
-  logErrorDetails,
-  //clientActionLogging,
+  logErrorDetails,/*
+  clientSideLogging,
+  clientActionLogging,
+  clientProcessLogging,
+  clientSettingsLogging,
+  clientErrorLogging,*/
 ];
 
 // Getting the master file
@@ -131,9 +166,7 @@ async function updateMasterfile(updateData) {
   });
 
   if (masterUpdate.ok) {
-    createInfoModal(
-      "Successfully updated settings. Reload the Editor to apply.",
-    );
+    createInfoModal("Successfully updated settings. Reload the Editor to apply.");
     disableSettings();
   } else {
     const masterUpdateJSON = await masterUpdate.json();
@@ -156,18 +189,12 @@ function addTabListeners() {
 function hideAllPages() {
   for (let i = 0; i < allTabs.length; i++) {
     document.querySelector(`#${allTabs[i].name}`).classList.add("hidden");
-    document
-      .querySelector(`#${allTabs[i].name}Tab`)
-      .classList.remove("tabHighlight");
+    document.querySelector(`#${allTabs[i].name}Tab`).classList.remove("tabHighlight");
   }
 }
 
 function doesIncludeSettingInSettingsArray(setting) {
-  return (
-    intSettings.includes(setting) ||
-    decimalSettings.includes(setting) ||
-    stringSettings.includes(setting)
-  );
+  return intSettings.includes(setting) || decimalSettings.includes(setting) || stringSettings.includes(setting);
 }
 
 // Loads settings data before anything else is shown.
@@ -182,9 +209,9 @@ function preLoadSettingsData() {
       // Value of a boolean setting within the master.
       let settingMasterValue = master[setting.id];
       if (settingMasterValue === true) {
-        setting.value = "True";
+        setting.value = "On";
       } else {
-        setting.value = "False";
+        setting.value = "Off";
       }
     }
   }
@@ -197,16 +224,14 @@ function showPage(pageName) {
 }
 
 // Saving the settings
-saveSettingsButton.addEventListener("click", async (e) => {
+saveSettingsButton.addEventListener("click", async () => {
   // Looping through all the number settings and saving them to the master variable.
   for (let i = 0; i < intSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
     // Rounds to next highest number to get rid of decimals.
     const intValue = Math.ceil(Number(intSettings[i].value));
     if (intValue <= 0) {
-      createErrorModal(
-        `${intSettings[i].id} has a value of 0 or below. Cancelling save.`,
-      );
+      createErrorModal(`${intSettings[i].id} has a value of 0 or below. Cancelling save.`);
       return;
     } else {
       master[intSettings[i].id] = intValue;
@@ -216,10 +241,8 @@ saveSettingsButton.addEventListener("click", async (e) => {
   for (let i = 0; i < decimalSettings.length; i++) {
     // .value returns a string, so it has to be converted into a number first.
     const decValue = Number(decimalSettings[i].value);
-    if (decValue <= 0) {
-      createErrorModal(
-        `${decimalSettings[i].id} has a value of 0 or below. Cancelling save.`,
-      );
+    if (decValue < 0) {
+      createErrorModal(`${decimalSettings[i].id} has a value below 0. Cancelling save.`);
       return;
     } else {
       master[decimalSettings[i].id] = decValue;
@@ -233,7 +256,7 @@ saveSettingsButton.addEventListener("click", async (e) => {
 
   // Looping through all the boolean settings and saving them to the master variable.
   for (let i = 0; i < boolSettings.length; i++) {
-    if (boolSettings[i].value == "True") {
+    if (boolSettings[i].value == "On") {
       master[boolSettings[i].id] = true;
     } else {
       master[boolSettings[i].id] = false;
@@ -245,7 +268,7 @@ saveSettingsButton.addEventListener("click", async (e) => {
 
 // Buttons
 const clearImagesButton = document.querySelector("#clearImagesButton");
-clearImagesButton.addEventListener("click", async (e) => {
+clearImagesButton.addEventListener("click", async () => {
   const clear = await fetch("/api/cleanImages", {
     method: "DELETE",
   });
@@ -255,13 +278,9 @@ clearImagesButton.addEventListener("click", async (e) => {
     if (clearJSON.amount <= 0) {
       createInfoModal("No unused images found.");
     } else if (clearJSON.amount === 1) {
-      createInfoModal(
-        "Successfully cleared an unused image from Server storage.",
-      );
+      createInfoModal("Successfully cleared an unused image from Server storage.");
     } else {
-      createInfoModal(
-        `Successfully cleared ${clearJSON.amount} images from Server storage.`,
-      );
+      createInfoModal(`Successfully cleared ${clearJSON.amount} images from Server storage.`);
     }
   } else {
     handleServerErrors(clearJSON, clear.status);
@@ -269,7 +288,7 @@ clearImagesButton.addEventListener("click", async (e) => {
 });
 
 const clearLogsButton = document.querySelector("#clearLogsButton");
-clearLogsButton.addEventListener("click", async (e) => {
+clearLogsButton.addEventListener("click", async () => {
   const clear = await fetch("/api/clearLogs", {
     method: "DELETE",
   });
@@ -281,9 +300,7 @@ clearLogsButton.addEventListener("click", async (e) => {
     } else if (clearJSON.amount === 1) {
       createInfoModal("Successfully cleared a log file from Server storage.");
     } else {
-      createInfoModal(
-        `Successfully cleared ${clearJSON.amount} log files from Server storage.`,
-      );
+      createInfoModal(`Successfully cleared ${clearJSON.amount} log files from Server storage.`);
     }
   } else {
     handleServerErrors(clearJSON, clear.status);
@@ -298,11 +315,11 @@ versionCheckButton.addEventListener("click", () => {
 function applyDisabledOverlay(settingDivElement) {
   const overlay = document.createElement("div");
   overlay.classList.add("disabled");
-  settingDivElement.appendChild(overlay);
+  settingDivElement.parentElement.parentElement.appendChild(overlay);
 }
 
 function removeDisabledOverlay(settingDivElement) {
-  const overlay = document.querySelector(".disabled");
+  const overlay = settingDivElement.parentElement.parentElement.querySelector(".disabled");
   if (overlay) {
     overlay.remove();
   }
@@ -311,10 +328,23 @@ function removeDisabledOverlay(settingDivElement) {
 // Disables certain settings if another setting is active.
 function disableSettings() {
   if (master.collapsedFolderUpdateMethod !== "Auto") {
-    applyDisabledOverlay(updateCollapsedFoldersDiv);
+    applyDisabledOverlay(updateCollapsedFolders);
   } else {
     removeDisabledOverlay(updateCollapsedFolders);
-  }
+  }/*
+  const clientLoggingSettings = [
+    clientActionLogging,
+    clientProcessLogging,
+    clientSettingsLogging,
+    clientErrorLogging,
+  ];
+  for (let i = 0; i < clientLoggingSettings.length; i++) {
+    if (!master.clientSideLogging) {
+      applyDisabledOverlay(clientLoggingSettings[i]);
+    } else {
+      removeDisabledOverlay(clientLoggingSettings[i]);
+    }
+  }*/
 }
 
 // Waits for the masterfile before adding the event listeners for the tabs.

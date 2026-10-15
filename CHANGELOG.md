@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.6.5 - Formats, Fresh Install Fix & minor improvements
+
+### Added
+
+- Different Formats can now be customized ([Issue #32](https://github.com/Yooli8537/Editor/issues/32)).
+- Documents can now be exported as Markdown ([Issue #84](https://github.com/Yooli8537/Editor/issues/84)).
+- Error handling for client timeouts from the server.
+- Dedicated XML Codeblock.
+
+### Changed
+
+- Changed "True" and "False" in settings to "On" and "Off".
+- Reduced Code Block margins.
+
+### Fixed
+
+- Image clear no longer reports nonsense errors.
+- Images can be pasted into the editor again.
+- Paths are now validated properly.
+
 ## v1.6.4 - Autosave rework & Improvements
 
 ### Added

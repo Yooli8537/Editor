@@ -1,6 +1,7 @@
 body {
   font-family: "Calibri", sans-serif;
   font-weight: 500;
+  background-color: var(--defaultBackgroundColor);
 }
 
 a {
@@ -11,8 +12,8 @@ a {
 hr.vertical {
   width: 2px;
   height: inherit;
-  margin-left: 2px;
-  margin-right: 2px;
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
   border: none;
   background-color: #000000;
 }
@@ -26,7 +27,7 @@ hr.vertical {
   cursor: pointer;
 }
 .hoverClass:hover {
-  background-color: #3cb372cc !important;
+  background-color: var(--hoverColor);
 }
 
 /* Makes the entire app's parent display a flex. */
@@ -56,9 +57,9 @@ hr.vertical {
   transform: translate(-50%, -50%);
   width: fit-content;
   height: fit-content;
-  background-color: #eeeeee;
-  border: 3px solid #575757;
-  border-radius: 8px;
+  background-color: var(--darkerBackgroundColor);
+  border: var(--largeLightBorder);
+  border-radius: var(--roundedLarge);
   z-index: 17;
   padding: 10px;
 }
@@ -66,7 +67,7 @@ hr.vertical {
 /* Input field within a modal. */
 .inputField {
   margin: 5px;
-  background-color: #dddddd;
+  background-color: var(--darkerBackgroundColor);
   width: 90%;
 }
 
@@ -88,10 +89,10 @@ hr.vertical {
 .modalTextButton {
   cursor: pointer;
   vertical-align: middle;
-  border: 1px solid #000000;
-  border-radius: 3px;
-  margin: 3px;
-  padding: 2px;
+  border: var(--smallBorder);
+  border-radius: var(--roundedSmall);
+  margin: var(--smallMargin);
+  padding: var(--smallPadding);
 }
 
 /* The background that shows up when a modal is created. */
@@ -101,23 +102,23 @@ hr.vertical {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #000000aa;
+  background-color: var(--transBlack);
   z-index: 10;
 }
 
 /* Highlighting buttons within modals. */
 .highlight {
-  background-color: #3cb372cc;
+  background-color: var(--hoverColor);
 }
 
 /* Error message within modals. */
 .errorMsg {
-  color: #ff0000;
+  color: var(--red);
 }
 .errorMsg p {
   margin: 0;
 }
 .errorMsg h3 {
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
 }

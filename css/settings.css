@@ -16,8 +16,8 @@
   margin-right: 2%;
   height: auto;
   padding: 0.4%;
-  border: 2px solid #000000;
-  border-radius: 5px;
+  border: var(--mediumBorder);
+  border-radius: var(--roundedMedium);
 }
 #saveSettingsButton img {
   margin-right: 10px;
@@ -40,8 +40,8 @@ hr.separator {
   width: 19vw;
   max-width: 350px;
   height: inherit;
-  border: 3px solid #000000;
-  border-radius: 8px;
+  border: var(--largeBorder);
+  border-radius: var(--roundedLarge);
   overflow-y: auto;
   padding-bottom: 5px;
 }
@@ -50,8 +50,8 @@ hr.separator {
 #settingsPage {
   width: 80vw;
   height: inherit;
-  border: 3px solid #000000;
-  border-radius: 8px;
+  border: var(--largeBorder);
+  border-radius: var(--roundedLarge);
   overflow-y: auto;
   padding-bottom: 5px;
   overflow-y: auto;
@@ -65,9 +65,9 @@ hr.separator {
   height: 4%;
   margin-left: 10%;
   margin-top: 2%;
-  background-color: #eeeeee;
-  border: 3px solid #000000;
-  border-radius: 8px;
+  background-color: var(--darkerBackgroundColor);
+  border: var(--largeBorder);
+  border-radius: var(--roundedLarge);
 }
 
 .tabIcon {
@@ -81,13 +81,13 @@ hr.separator {
 }
 
 .tabHighlight {
-  background-color: #84ecb3;
+  background-color: var(--selectedColor);
 }
 
 /* The title of a group within the settings page */
 .settingGroup {
-  border: 2px solid #000000;
-  border-radius: 5px;
+  border: var(--mediumBorder);
+  border-radius: var(--roundedMedium);
   margin: 4px 12px;
   padding: 8px;
 }
@@ -112,8 +112,8 @@ hr.separator {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid #000000;
-  border-radius: 5px;
+  border: var(--mediumBorder);
+  border-radius: var(--roundedMedium);
   margin-top: 7px;
   padding: 3px;
 }
@@ -125,7 +125,7 @@ hr.separator {
   left: 0;
   width: 99.5%;
   height: 99.5%;
-  border-radius: 5px;
+  border-radius: var(--roundedMedium);
   padding: 3px;
 }
 
@@ -151,8 +151,8 @@ hr.separator {
   height: auto;
   width: max-content;
   padding: 5%;
-  border: 2px solid #000000;
-  border-radius: 5px;
+  border: var(--mediumBorder);
+  border-radius: var(--roundedMedium);
   cursor: pointer;
 }
 .button a {

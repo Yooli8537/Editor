@@ -1,4 +1,3 @@
-// Importing TipTap Extensions
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
@@ -10,7 +9,8 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, all } from "lowlight";
 import Highlight from "@tiptap/extension-highlight";
 
-// Importing custom functions
+import { NodeHtmlMarkdown } from "node-html-markdown";
+
 import {
   createConfirmModal,
   createSubmenu,
@@ -21,16 +21,18 @@ import {
   removeSubmenus,
   checkForUpdate,
   handleServerErrors,
+  log,
+  logTypes,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { addState, checkState, getState, rmState, setState } from "./state";
+import { getState, setState } from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
 const lowlightLanguages = lowlight.listLanguages();
 // Specifically supported languages:
 /*
-chash (csharp),
+chash,
 cpp,
 css,
 dockerfile,
@@ -44,14 +46,13 @@ plaintext
 python,
 */
 // Example Import so that I can check if a certain language is supported easily.
-//import language from "highlight.js/lib/languages/language";
+//import xml from "highlight.js/lib/languages/xml";
 
 // HTML Elements
 const wrapper = document.querySelector("#wrapper");
 const documentTitle = document.querySelector("#documentTitle");
 const editTitleButton = document.querySelector("#editTitleButton");
 
-// Defining and configuring extensions
 const extensions = [
   StarterKit.configure({
     codeBlock: false, // Disabling codeBlock so that Syntax Highlighting works properly
@@ -82,7 +83,7 @@ const extensions = [
     },
   }),
   FileHandler.configure({
-    allowedMimeTypes: ["image/png", "image/jpg", "image/gif"],
+    allowedMimeTypes: ["image/png", "image/jpeg", "image/gif"],
     consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
       for (const file of files) {
@@ -102,7 +103,6 @@ const extensions = [
   }),
 ];
 
-// Creating the TipTap Editor
 const editor = new Editor({
   element: wrapper, // Parent Element
   extensions: extensions,
@@ -110,11 +110,10 @@ const editor = new Editor({
   autofocus: true,
   injectCSS: true,
   onUpdate: () => {
-    setState("editorIsSaved", false);
+    setState("isEditorSaved", false);
   },
 });
 
-// Uploading Images to the Server.
 async function uploadImage(file) {
   const response = await fetch("/api/uploadImageFile", {
     method: "POST",
@@ -133,11 +132,10 @@ async function uploadImage(file) {
   }
 }
 
-// Warns before reloading / closing a Tab
 window.addEventListener("beforeunload", (e) => {
-  if (!getState("editorIsSaved")) {
+  if (!getState("isEditorSaved")) {
+    log("Prevented reload; Editor unsaved.", logTypes.process, 1);
     e.preventDefault();
-    e.returnValue = "";
   }
 });
 
@@ -147,15 +145,17 @@ let currentPreviousEntry;
 
 // Checks for an autosave
 async function checkForAutosave(document, path) {
-  const response = await fetch(
-    `/api/checkForAutosave?name=${document}&folderPath=${path}`,
-    { method: "GET" },
-  );
+  log("checkForAutosave(); Checking for autosave...", logTypes.process, 0);
+  const response = await fetch(`/api/checkForAutosave?name=${document}&folderPath=${path}`, { method: "GET" });
 
+  log("checkForAutosave(); Building response JSON...", logTypes.process, 0);
   const responseJSON = await response.json();
   if (response.ok) {
-    return responseJSON.autosaveExists;
+    const exists = responseJSON.autosaveExists;
+    log(`checkForAutosave(); Exists: ${exists}`, logTypes.process, 0);
+    return exists;
   } else {
+    log("checkForAutosave(); Error", logTypes.process, 2);
     handleServerErrors(responseJSON, response.status);
     return false;
   }
@@ -164,33 +164,36 @@ async function checkForAutosave(document, path) {
 // Prompts the user to restore the autosave
 export async function loadAutosave(fileData, document, path) {
   if (await checkForAutosave(document, path)) {
+    log("loadAutosave(); Autosave found. Prompting user to restore...", logTypes.process, 0);
     createConfirmModal(
       "It appears that you left this document without saving. Would you like to restore the autosave?",
       "Continue without restoring",
       "Restore autosave & continue to editor",
       () => {
         // Loads document with Data from the file if restoration is cancelled.
+        log("loadAutosave(); Restoration denied.", logTypes.process, 0);
         loadDocument(fileData, document, path);
         removeAutosave();
       },
       async () => {
         // Gets the Autosave
-        const autosave = await fetch(
-          `api/getAutosave?name=${document}&folderPath=${path}`,
-          {
-            method: "GET",
-          },
-        );
+        log("loadAutosave(); Restoration confirmed.", logTypes.process, 0);
+        log("loadAutosave(); Fetching autosave...", logTypes.process, 0);
+        const autosave = await fetch(`api/getAutosave?name=${document}&folderPath=${path}`, {
+          method: "GET",
+        });
 
+        log("loadAutosave(); Building document JSON...", logTypes.process, 0);
+        const autosaveData = await autosave.json();
         if (autosave.ok) {
-          const autosaveData = await autosave.json();
           loadDocument(autosaveData, document, path); // Loads document with autosave data.
           // Unsaves the editor so that saveEditor() saves the autosave the actual file instead of saying that no changes were made.
-          setState("editorIsSaved", false);
+          setState("isEditorSaved", false);
           saveEditor(true); // Saves editor which also deletes autosaves.
+          log("loadAutosave(); Success", logTypes.process, 0);
         } else {
-          const autosaveJSON = await autosave.json();
-          handleServerErrors(autosaveJSON, autosave.status);
+          log("loadAutosave(); Error", logTypes.process, 0);
+          handleServerErrors(autosaveData, autosave.status);
         }
       },
     );
@@ -201,7 +204,12 @@ export async function loadAutosave(fileData, document, path) {
 
 // Unhides editor and inserts a document's data.
 // This function does not perform any kind of checks for unsaved documents.
-function loadEditor(documentData, entry, previousEntry) {
+function loadDocument(documentData, entry, previousEntry) {
+  if (!getState("isEditorSaved")) {
+    log("loadDocument(); Cancelled: Unsaved document", logTypes.process, 1);
+    return;
+  }
+  log("loadDocument(); Updated variables.", logTypes.process, 0);
   currentDocument = documentData;
   currentEntry = entry;
   currentPreviousEntry = previousEntry;
@@ -211,39 +219,22 @@ function loadEditor(documentData, entry, previousEntry) {
   editTitleButton.style.display = "flex";
 
   // Sets the Title of the Page
+  log("loadDocument(); Set document title.", logTypes.process, 0);
   document.title = currentEntry.slice(0, -5);
   documentTitle.textContent = currentEntry.slice(0, -5);
 
   // Inserts the content of the document into the editor.
-  editor.commands.setContent(
-    documentData[0].content || "<p>Content failed to load.</p>",
-  );
+  log("loadDocument(); Loaded document content.", logTypes.process, 0);
+  editor.commands.setContent(documentData[0].content || "<p>Content failed to load.</p>");
 
   // Rename Button Event listener
   editTitleButton.addEventListener("click", (e) => {
     e.stopPropagation();
-    renameHandler();
+    addRenameElements();
   });
 
-  setState("editorIsSaved", true);
-}
-
-// Loads Document into the Editor
-function loadDocument(documentData, entry, previousEntry) {
-  // When loading another Document (by clicking it on the sidebar), the action must be confirmed.
-  if (!getState("editorIsSaved")) {
-    createConfirmModal(
-      "Leaving this Document will discard Changes!",
-      "Back",
-      "Discard Changes & Continue",
-      () => {},
-      () => {
-        loadEditor(documentData, entry, previousEntry);
-      },
-    );
-  } else {
-    loadEditor(documentData, entry, previousEntry);
-  }
+  setState("isEditorSaved", true);
+  log("loadDocument(); Success", logTypes.process, 0);
 }
 
 // Handles the rename request
@@ -253,10 +244,12 @@ async function renameFile(newName, div) {
 
   // Prevents Server Requests for identical Names. Slice removes .json
   if (newName === oldName.slice(0, -5)) {
-    createErrorModal("Current and previous File names are identical.");
+    createErrorModal("Current and previous file names are identical.");
+    log("renameFile(); Error - Identical names", logTypes.process, 2);
     return;
   }
 
+  log("renameFile(); Sending rename request to server...", logTypes.process, 0);
   const response = await fetch("/api/documents/renameFile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -269,15 +262,17 @@ async function renameFile(newName, div) {
 
   // Resetting after successful rename
   if (response.ok) {
+    log("renameFile(); Success.", logTypes.process, 0);
     if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
 
+    log("renameFile(); Updated variables.", logTypes.process, 0);
     currentEntry = `${newName}.json`;
     currentDocument[0].title = newName;
     documentTitle.textContent = newName;
     div.remove();
-    setState("currentDocument", folderPath + newName + ".json");
+    setState("currentDocument", `${folderPath}${newName}.json`);
     buildSidebar();
     editTitleButton.style.display = "flex";
     history.pushState(null, "", `?path=${folderPath}&document=${newName}.json`);
@@ -289,13 +284,14 @@ async function renameFile(newName, div) {
 
 setHelpText(editTitleButton, "Rename Document");
 // Creates the buttons to cancel / confirm and hides the initial one.
-async function renameHandler() {
+function addRenameElements() {
+  log("addRenameElements(); Cleared space.", logTypes.process, 0);
   documentTitle.innerHTML = ""; // Removing this will stack rename fields after switching between tabs.
   editTitleButton.style.display = "none";
 
   const div = document.createElement("div");
 
-  // Input Field
+  log("addRenameElements(); Created input field.", logTypes.process, 0);
   const titleRenameInput = document.createElement("input");
   titleRenameInput.classList.add("renameInput");
   titleRenameInput.value = currentDocument[0].title;
@@ -309,7 +305,7 @@ async function renameHandler() {
     }
   });
 
-  // Confirm Rename
+  log("addRenameElements(); Created confirm button.", logTypes.process, 0);
   const confirmButton = document.createElement("img");
   confirmButton.src = "../assets/function/checkmark.svg";
   confirmButton.classList.add("borderlessButton");
@@ -319,7 +315,7 @@ async function renameHandler() {
     renameFile(titleRenameInput.value, div);
   });
 
-  // Cancel Rename
+  log("addRenameElements(); Created cancel button", logTypes.process, 0);
   const cancelButton = document.createElement("img");
   cancelButton.src = "../assets/function/cancel.svg";
   cancelButton.classList.add("borderlessButton");
@@ -330,12 +326,14 @@ async function renameHandler() {
     documentTitle.textContent = currentDocument[0].title; // Updates Document Title
   });
 
+  log("addRenameElements(); Appending elements...", logTypes.process, 0);
   div.appendChild(titleRenameInput);
   div.appendChild(confirmButton);
   div.appendChild(cancelButton);
   documentTitle.appendChild(div);
 
   titleRenameInput.focus();
+  log("addRenameElements(); Success", logTypes.process, 0);
 }
 
 // Toolbar Buttons
@@ -360,12 +358,14 @@ const discardButton = document.querySelector("#discard");
 // Format Buttons
 setHelpText(undoButton, "Undo");
 undoButton.addEventListener("click", (e) => {
+  log("Toolbar; Undo", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().undo().run();
 });
 
 setHelpText(redoButton, "Redo");
 redoButton.addEventListener("click", (e) => {
+  log("Toolbar; Redo", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().redo().run();
 });
@@ -374,23 +374,33 @@ redoButton.addEventListener("click", (e) => {
 const headingItems = [
   {
     icon: "format/heading-1.svg",
-    action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    action: () => {
+      editor.chain().focus().toggleHeading({ level: 1 }).run();
+      log("Toolbar; Heading 1", logTypes.action, 0);
+    },
     helpText: "Heading 1",
   },
   {
     icon: "format/heading-2.svg",
-    action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    action: () => {
+      editor.chain().focus().toggleHeading({ level: 2 }).run();
+      log("Toolbar; Heading 2", logTypes.action, 0);
+    },
     helpText: "Heading 2",
   },
   {
     icon: "format/heading-3.svg",
-    action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+    action: () => {
+      editor.chain().focus().toggleHeading({ level: 3 }).run();
+      log("Toolbar; Heading 3", logTypes.action, 0);
+    },
     helpText: "Heading 3",
   },
 ];
 
 setHelpText(headings, "Headings");
 headingsButton.addEventListener("click", (e) => {
+  log("Toolbar; Headings submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation(); // Stops Submenu from disappearing instantly
   createSubmenu(headingsButton, headingItems, 1);
@@ -401,23 +411,33 @@ headingsButton.addEventListener("click", (e) => {
 const listItems = [
   {
     icon: "format/list-unordered.svg",
-    action: () => editor.chain().focus().toggleBulletList().run(),
+    action: () => {
+      editor.chain().focus().toggleBulletList().run();
+      log("Toolbar; Bullet list", logTypes.action, 0);
+    },
     helpText: "Bullet List",
   },
   {
     icon: "format/list-ordered.svg",
-    action: () => editor.chain().focus().toggleOrderedList().run(),
+    action: () => {
+      editor.chain().focus().toggleOrderedList().run();
+      log("Toolbar; Ordered list", logTypes.action, 0);
+    },
     helpText: "Ordered List",
   },
   {
     icon: "format/list-task.svg",
-    action: () => editor.chain().focus().toggleTaskList().run(),
+    action: () => {
+      editor.chain().focus().toggleTaskList().run();
+      log("Toolbar; Task list", logTypes.action, 0);
+    },
     helpText: "Task List",
   },
 ];
 
 setHelpText(listsButton, "Lists");
 listsButton.addEventListener("click", (e) => {
+  log("Toolbar; Lists submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(listsButton, listItems, 1);
@@ -428,174 +448,129 @@ listsButton.addEventListener("click", (e) => {
 const codeItems = [
   {
     icon: "format/code-off.svg",
-    action: () => editor.chain().focus().setParagraph().run(),
+    action: () => {
+      editor.chain().focus().setParagraph().run();
+      log("Toolbar; Unset code block", logTypes.action, 0);
+    },
     helpText: "Unset Codeblock",
   },
   {
     icon: "function/cpu.svg",
-    action: () => editor.chain().focus().setCodeBlock().run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().run();
+      log("Toolbar; Auto detect code block", logTypes.action, 0);
+    },
     helpText: "Auto detect (supports unlisted languages)",
   },
   {
     icon: "code-languages/chash.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "csharp",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "csharp" }).run();
+      log("Toolbar; Code block C#", logTypes.action, 0);
+    },
     helpText: "C#",
   },
   {
     icon: "code-languages/cpp.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "cpp",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "cpp" }).run();
+      log("Toolbar; Code block C++", logTypes.action, 0);
+    },
     helpText: "C++",
   },
   {
     icon: "code-languages/css.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "css",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "css" }).run();
+      log("Toolbar; Code block CSS", logTypes.action, 0);
+    },
     helpText: "CSS",
   },
   {
     icon: "code-languages/docker.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "dockerfile",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "dockerfile" }).run();
+      log("Toolbar; Code block Dockerfile", logTypes.action, 0);
+    },
     helpText: "Dockerfile",
   },
   {
     icon: "code-languages/html.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "html",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "html" }).run();
+      log("Toolbar; Code block HTML", logTypes.action, 0);
+    },
     helpText: "HTML",
   },
   {
     icon: "code-languages/java.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "java",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "java" }).run();
+      log("Toolbar; Code block Java", logTypes.action, 0);
+    },
     helpText: "Java",
   },
   {
     icon: "code-languages/javascript.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "javaScript",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "javaScript" }).run();
+      log("Toolbar; Code block JavaScript", logTypes.action, 0);
+    },
     helpText: "JavaScript",
   },
   {
     icon: "code-languages/json.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "json",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "json" }).run();
+      log("Toolbar; Code block JSON", logTypes.action, 0);
+    },
     helpText: "JSON",
   },
   {
     icon: "code-languages/lua.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "lua",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "lua" }).run();
+      log("Toolbar; Code block Lua", logTypes.action, 0);
+    },
     helpText: "Lua",
   },
   {
     icon: "code-languages/markdown.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "markdown",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "markdown" }).run();
+      log("Toolbar; Code block Markdown", logTypes.action, 0);
+    },
     helpText: "Markdown",
   },
   {
     icon: "code-languages/plaintext.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "plaintext",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "plaintext" }).run();
+      log("Toolbar; Code block Plaintext", logTypes.action, 0);
+    },
     helpText: "Plaintext",
   },
   {
     icon: "code-languages/python.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .setCodeBlock()
-        .updateAttributes("codeBlock", {
-          language: "python",
-        })
-        .run(),
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "python" }).run();
+      log("Toolbar; Code block Python", logTypes.action, 0);
+    },
     helpText: "Python",
+  },
+  {
+    icon: "code-languages/xml.svg",
+    action: () => {
+      editor.chain().focus().setCodeBlock().updateAttributes("codeBlock", { language: "xml" }).run();
+      log("Toolbar; Code block XML", logTypes.action, 0);
+    },
+    helpText: "XML",
   },
 ];
 
 setHelpText(codeBlockButton, "Codeblock");
 codeBlockButton.addEventListener("click", (e) => {
+  log("Toolbar; Code block submenu", logTypes.action, 0);
   e.preventDefault();
   e.stopPropagation();
   createSubmenu(codeBlockButton, codeItems, 3);
@@ -604,18 +579,21 @@ codeBlockButton.addEventListener("click", (e) => {
 
 setHelpText(boldButton, "Bold");
 boldButton.addEventListener("click", (e) => {
+  log("Toolbar; Bold", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleBold().run();
 });
 
 setHelpText(italicButton, "Italic");
 italicButton.addEventListener("click", (e) => {
+  log("Toolbar; Italic", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleItalic().run();
 });
 
 setHelpText(underlineButton, "Underline");
 underlineButton.addEventListener("click", (e) => {
+  log("Toolbar; Underline", logTypes.action, 0);
   e.preventDefault();
   editor.chain().focus().toggleUnderline().run();
 });
@@ -623,74 +601,62 @@ underlineButton.addEventListener("click", (e) => {
 const highlightItems = [
   {
     icon: "color/yellow.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run(),
     helpText: "Yellow",
   },
   {
     icon: "color/orange.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#ff6600" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#ff6600" }).run(),
     helpText: "Orange",
   },
   {
     icon: "color/red.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#ff0000" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#ff0000" }).run(),
     helpText: "Red",
   },
   {
     icon: "color/pink.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#ff70f3" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#ff70f3" }).run(),
     helpText: "Pink",
   },
   {
     icon: "color/magenta.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#ff00ea" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#ff00ea" }).run(),
     helpText: "Magenta",
   },
   {
     icon: "color/purple.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#8000ff" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#8000ff" }).run(),
     helpText: "Purple",
   },
   {
     icon: "color/blue.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#0000ff" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#0000ff" }).run(),
     helpText: "Blue",
   },
   {
     icon: "color/light-blue.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#007bff" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#007bff" }).run(),
     helpText: "Light Blue",
   },
   {
     icon: "color/aqua.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#00ffd5" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#00ffd5" }).run(),
     helpText: "Aqua",
   },
   {
     icon: "color/lime.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#00ff4c" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#00ff4c" }).run(),
     helpText: "Lime",
   },
   {
     icon: "color/dark-green.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#026b00" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#026b00" }).run(),
     helpText: "Dark Green",
   },
   {
     icon: "color/brown.svg",
-    action: () =>
-      editor.chain().focus().toggleHighlight({ color: "#803900" }).run(),
+    action: () => editor.chain().focus().toggleHighlight({ color: "#803900" }).run(),
     helpText: "Brown",
   },
 ];
@@ -711,12 +677,7 @@ inlineCodeButton.addEventListener("click", (e) => {
 const tableCreateItems = [
   {
     icon: "format/table-create.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-        .run(),
+    action: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
     helpText: "Create Table",
   },
   {
@@ -809,12 +770,26 @@ linkButton.addEventListener("click", (e) => {
 const exportButtonItems = [
   {
     icon: "function/pdf.svg",
-    action: () => exportCurrentDocumentAsPDF(),
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsPDF();
+      }),
     helpText: "Export as PDF",
   },
   {
+    icon: "code-languages/markdown.svg",
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsMD();
+      }),
+    helpText: "Export as Markdown",
+  },
+  {
     icon: "function/json.svg",
-    action: () => exportCurrentDocumentAsJSON(),
+    action: () =>
+      confirmDocumentExport(() => {
+        exportCurrentDocumentAsJSON();
+      }),
     helpText: "Export as JSON",
   },
 ];
@@ -827,7 +802,7 @@ exportButton.addEventListener("click", (e) => {
   editor.chain().focus();
 });
 
-function exportCurrentDocumentAsPDF() {
+function getEditorHTML() {
   // Location of the Editor within the Webapp
   const editorLocation = document.querySelectorAll(".ProseMirror");
 
@@ -836,12 +811,15 @@ function exportCurrentDocumentAsPDF() {
   const rawDocHTML = editorLocation[0].cloneNode(true);
   const documentImages = rawDocHTML.querySelectorAll("img");
   for (let i = 0; i < documentImages.length; i++) {
+    // Yes this is required.
+    // If it isn't set, the src will be incorrect and thus, images won't render in the export.
     documentImages[i].src = documentImages[i].src;
   }
 
-  const exportDocument = rawDocHTML.outerHTML;
+  return rawDocHTML.outerHTML;
+}
 
-  // Checks if the export should be confirmed.
+function confirmDocumentExport(onSubmit) {
   if (getState("confirmExport")) {
     createConfirmModal(
       "Are you sure you want to Export the current Document?",
@@ -849,22 +827,23 @@ function exportCurrentDocumentAsPDF() {
       "Export as PDF",
       () => {},
       () => {
-        getDocumentPDF(exportDocument);
+        onSubmit();
       },
     );
   } else {
-    getDocumentPDF(exportDocument);
+    onSubmit();
   }
 }
 
-// Gets the PDF export of a file.
-async function getDocumentPDF(exportDocument) {
+async function exportCurrentDocumentAsPDF() {
+  const exportDocument = getEditorHTML();
   const response = await fetch("/api/export/pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       exportDocument: exportDocument,
-      name: currentEntry.replace(".json", ""),
+      exportCSS: setCSSVariableValuesForExport(),
+      name: currentEntry.replace(".json; "),
     }),
   });
 
@@ -876,6 +855,17 @@ async function getDocumentPDF(exportDocument) {
   }
 }
 
+function setCSSVariableValuesForExport() {
+  let CSSstring = `:root {\n`;
+  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
+    let newValue = getState(customFormatPairs.masterValue[i]);
+    newValue = correctCSSVariableValue(newValue);
+    CSSstring += `  ${customFormatPairs.cssVariable[i]}: ${newValue};\n`;
+  }
+  CSSstring += `}`;
+  return CSSstring;
+}
+
 // Downloads the PDF export from a URL.
 async function downloadDocumentPDF(response) {
   // Sends the response to the client, which then downloads it automatically.
@@ -884,7 +874,7 @@ async function downloadDocumentPDF(response) {
 
   let downloadElement = document.createElement("a");
   downloadElement.href = downloadURL;
-  downloadElement.download = currentEntry.replace(".json", ".pdf");
+  downloadElement.download = currentEntry.replace(".json; .pdf");
   downloadElement.click();
 
   URL.revokeObjectURL(downloadURL);
@@ -892,26 +882,8 @@ async function downloadDocumentPDF(response) {
 
 function exportCurrentDocumentAsJSON() {
   const editorJSON = editor.getJSON();
-  const exportDocument = [
-    { title: currentEntry.slice(0, -5), content: editorJSON },
-  ];
+  const exportDocument = [{ title: currentEntry.slice(0, -5), content: editorJSON }];
 
-  if (getState("confirmExport")) {
-    createConfirmModal(
-      "Are you sure you want to Export the current Document?",
-      "Back to Editor",
-      "Export as JSON",
-      () => {},
-      () => {
-        downloadDocumentJSON(exportDocument);
-      },
-    );
-  } else {
-    downloadDocumentJSON(exportDocument);
-  }
-}
-
-function downloadDocumentJSON(exportDocument) {
   const blob = new Blob([JSON.stringify(exportDocument, null, 2)], {
     type: "application/json",
   });
@@ -923,6 +895,21 @@ function downloadDocumentJSON(exportDocument) {
   downloadElement.click();
 
   URL.revokeObjectURL(downloadURL); // Deletes download Element
+}
+
+function exportCurrentDocumentAsMD() {
+  const exportDocument = getEditorHTML();
+  const exportMD = NodeHtmlMarkdown.translate(exportDocument);
+
+  const blob = new Blob([exportMD], { type: "text/markdown;charset=utf-8" });
+  const downloadURL = URL.createObjectURL(blob);
+
+  let downloadElement = document.createElement("a");
+  downloadElement.href = downloadURL;
+  downloadElement.download = currentEntry.slice(0, -5) + ".md";
+  downloadElement.click();
+
+  URL.revokeObjectURL(downloadURL);
 }
 
 setHelpText(saveButton, "Save Document");
@@ -937,7 +924,7 @@ saveButton.addEventListener("click", async (e) => {
 discardButton.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  if (!getState("editorIsSaved")) {
+  if (!getState("isEditorSaved")) {
     createConfirmModal(
       "Discard Changes? This cannot be undone.",
       "Cancel",
@@ -968,7 +955,7 @@ async function pushSaveData() {
 
   // Error handling
   if (response.ok) {
-    setState("editorIsSaved", true);
+    setState("isEditorSaved", true);
     if (checkForAutosave(currentEntry, currentPreviousEntry)) {
       removeAutosave();
     }
@@ -981,7 +968,7 @@ async function pushSaveData() {
 
 let saveData;
 function saveEditor(isRestoration) {
-  if (!getState("editorIsSaved")) {
+  if (!getState("isEditorSaved")) {
     saveData = editor.getJSON();
     // Directly pushes changes if it's an autosave restoration, without creating a prompt.
     if (isRestoration || !getState("confirmSave")) {
@@ -1013,7 +1000,7 @@ let isSavedIcon = true;
 
 // Updates the Save & Discard Icons to be correct with the current state.
 function updateSaveIcons() {
-  if (getState("editorIsSaved")) {
+  if (getState("isEditorSaved")) {
     if (isDiscardIcon) {
       discardIcon.src = closeIconPath;
       setHelpText(discardButton, "Close Document");
@@ -1049,7 +1036,7 @@ async function initAutosave(autosaveInterval) {
   autosave = setInterval(async () => {
     const saveData = editor.getJSON();
 
-    if (!getState("editorIsSaved")) {
+    if (!getState("isEditorSaved")) {
       const createAutosave = await fetch("/api/autosave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1090,24 +1077,28 @@ export function closeEditor() {
   removeSubmenus();
   editorView.classList.add("hidden");
   setState("currentDocument", null);
-  history.pushState(null, "", "/");
+  history.pushState(null, "; /");
   document.title = "Editor";
-  setState("editorIsSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
+  setState("isEditorSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
 
 // Periodically pings the backend and starts the app properly if an answer is recieved.
 let ping = null;
 async function pingBackend() {
-  const response = await fetch("/api/", {
-    method: "GET",
-  });
+  try {
+    const response = await fetch("/api/", {
+      method: "GET",
+    });
 
-  if (response.ok) {
-    clearInterval(ping);
-    onFirstStart();
-  } else {
-    const responseJSON = await response.json();
-    handleServerErrors(responseJSON, response.status);
+    if (response.ok) {
+      clearInterval(ping);
+      onFirstStart();
+    } else {
+      const responseJSON = await response.json();
+      handleServerErrors(responseJSON, response.status);
+    }
+  } catch (err) {
+    handleServerErrors({}, 429);
   }
 }
 
@@ -1116,6 +1107,60 @@ function initPing() {
   ping = setInterval(() => {
     pingBackend();
   }, 250);
+}
+
+const customFormatPairs = {
+  cssVariable: [
+    "--defaultFontSize",
+    "--h1FontSize",
+    "--h2FontSize",
+    "--h3FontSize",
+    "--codeFontSize",
+    "--h1MarginTop",
+    "--h1MarginBottom",
+    "--h2MarginTop",
+    "--h2MarginBottom",
+    "--h3MarginBottom",
+    "--listMargin",
+    "--tableCellPadding",
+    "--tableTextAlign",
+    "--tableHeadColor",
+    "--codeBlockBackgroundColor",
+    "--codeBlockDefaultFontColor",
+  ],
+  masterValue: [
+    "formatFontSizesDefault",
+    "formatFontSizesH1",
+    "formatFontSizesH2",
+    "formatFontSizesH3",
+    "formatFontSizesCode",
+    "formatFontMarginsH1Top",
+    "formatFontMarginsH1Bottom",
+    "formatFontMarginsH2Top",
+    "formatFontMarginsH2Bottom",
+    "formatFontMarginsH3Bottom",
+    "formatFontMarginsListMargin",
+    "formatTablesCellPadding",
+    "formatTablesTextAlign",
+    "formatTablesHeadColor",
+    "formatCodeBlocksBackgroundColor",
+    "formatCodeBlocksDefaultFontColor",
+  ],
+};
+
+function correctCSSVariableValue(value) {
+  if (typeof value === "number") {
+    value += "px";
+  }
+  return value;
+}
+
+function applyCustomFormats() {
+  for (let i = 0; i < customFormatPairs.cssVariable.length; i++) {
+    let newValue = getState(customFormatPairs.masterValue[i]);
+    newValue = correctCSSVariableValue(newValue);
+    document.documentElement.style.setProperty(customFormatPairs.cssVariable[i], newValue);
+  }
 }
 
 // Opens Document from URL if one is present.
@@ -1133,10 +1178,7 @@ export async function onFirstStart() {
   if (document === null) {
   } else {
     // Getting the Document from the URL.
-    const response = await fetch(
-      `api/documents/getFile?folderPath=${path}&name=${document}`,
-      { method: "GET" },
-    );
+    const response = await fetch(`api/documents/getFile?folderPath=${path}&name=${document}`, { method: "GET" });
 
     if (response.ok) {
       const fileData = await response.json();
@@ -1148,6 +1190,7 @@ export async function onFirstStart() {
     }
   }
   buildSidebar();
+  applyCustomFormats();
   createCollapsedFoldersUpdateInterval();
   checkForUpdate(false);
 }

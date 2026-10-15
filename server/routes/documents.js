@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
-const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const log = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const validatePath = require(GLOBAL.PATHS.UTILS.VALIDATE_PATH);
 
@@ -39,12 +39,7 @@ async function readDirRecursive(dir) {
       }),
     );
   } catch (err) {
-    error(
-      "Get directory recursively",
-      "Failed to read specified directory.",
-      { Directory: dir },
-      err,
-    );
+    error("Get directory recursively", "Failed to read specified directory.", { Directory: dir }, err);
   }
 }
 
@@ -69,23 +64,12 @@ async function searchNotebooks(dir, key, searchResults) {
         } else {
           const file = await fs.promises.readFile(fullPath, "utf-8");
           const praseFile = JSON.parse(file);
-          return findText(
-            praseFile[0].content,
-            lowerKey,
-            fullPath,
-            searchResults,
-            praseFile[0].title,
-          );
+          return findText(praseFile[0].content, lowerKey, fullPath, searchResults, praseFile[0].title);
         }
       }),
     );
   } catch (err) {
-    error(
-      "Search notebooks",
-      "Failed to read specified directory.",
-      { Directory: dir, Key: key },
-      err,
-    );
+    error("Search notebooks", "Failed to read specified directory.", { Directory: dir, Key: key }, err);
   }
 }
 
@@ -104,10 +88,7 @@ function findText(node, key, file, searchResults, fileTitle) {
 
   // Only searches through text nodes, ensuring that other nodes (like src attributes) are ignored.
   if (node.type === "text") {
-    if (
-      node.text.toLowerCase().includes(key) &&
-      !searchResults.includes(file)
-    ) {
+    if (node.text.toLowerCase().includes(key) && !searchResults.includes(file)) {
       searchResults.push(file);
     }
   }
@@ -122,52 +103,37 @@ function findText(node, key, file, searchResults, fileTitle) {
 
 // Gets all documents & folders.
 router.get("/api/documents", async (req, res) => {
-  if (serverMaster.detailLogs) {
-    logger.info("Notebooks get: Recieved request.");
-  }
+  log.detail("Notebooks get", "Recieved request.");
   const resposneArray = await readDirRecursive(GLOBAL.PATHS.FOLDERS.NOTEBOOKS);
 
-  if (serverMaster.successLogs) {
-    logger.info("Notebooks get: Sent notebooks to Client.");
-  }
+  log.success("Notebooks get", "Sent notebooks to Client.");
   res.json(resposneArray);
 });
 
 // Processes search requests.
 router.get("/api/documents/search", async (req, res) => {
   const { key } = req.query;
-  if (serverMaster.detailLogs) {
-    logger.info("Search: Recieved request.");
-  }
+  log.detail("Search", "Recieved request.");
   // This array saves all the files which include the search key.
   const searchResults = [];
-  if (serverMaster.detailLogs) {
-    logger.info("Search: Searching notebooks...");
-  }
+  log.detail("Search", "Searching notebooks...");
   await searchNotebooks(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, key, searchResults);
 
   // Results that can be used by the Sidebar loading function (requires paths for the event listeners to open the documents).
   const adjustedResults = searchResults.map((fullPath) => ({
     path: path.relative(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, fullPath),
     name: path.basename(fullPath),
-    folderPath: path.relative(
-      GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-      path.dirname(fullPath),
-    ),
+    folderPath: path.relative(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, path.dirname(fullPath)),
   }));
 
-  if (serverMaster.successLogs) {
-    logger.info({ Key: key }, "Search: Sent search results to Client.");
-  }
+  log.success("Search", "Sent search results to Client.", { Key: key });
   res.json(adjustedResults);
 });
 
 // Creates a new notebook
 router.post("/api/documents/newNotebook", async (req, res) => {
   const { name } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info("Notebook create: Recieved request.");
-  }
+  log.detail("Notebook create", "Recieved request.");
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, name);
 
@@ -178,33 +144,15 @@ router.post("/api/documents/newNotebook", async (req, res) => {
   try {
     // Makes the directory
     fs.mkdirSync(path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, name));
-    if (serverMaster.successLogs) {
-      logger.info({ Name: name }, "Notebook create: Created new notebook.");
-    }
+    log.success("Notebook create", "Created new notebook.", { Name: name });
     res.json({ success: true });
   } catch (err) {
     if (err.code === "EEXIST") {
       res
         .status(409)
-        .json(
-          error(
-            "Notebook create",
-            "A notebook with that name already exists.",
-            { Name: name },
-            err,
-          ),
-        );
+        .json(error("Notebook create", "A notebook with that name already exists.", { Name: name }, err));
     } else {
-      res
-        .status(500)
-        .json(
-          error(
-            "Notebook create",
-            "Failed to create new notebook.",
-            { Name: name },
-            err,
-          ),
-        );
+      res.status(500).json(error("Notebook create", "Failed to create new notebook.", { Name: name }, err));
     }
   }
 });
@@ -212,12 +160,7 @@ router.post("/api/documents/newNotebook", async (req, res) => {
 // Creates a new file
 router.post("/api/documents/newFile", async (req, res) => {
   const { name, folderPath } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "File create: Recieved request.",
-    );
-  }
+  log.detail("File create", "Recieved request.", { Name: name, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -245,11 +188,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 
   try {
     if (name && folderPath) {
-      location = path.join(
-        GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-        folderPath,
-        name + ".json",
-      );
+      location = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name + ".json");
       // Causing an error on purpose. If this fails, the file is created (or there's a genuine failure, then nothing happens).
       // If it doesn't fail, the file already exists and isn't overwritten.
       if (fs.readFileSync(location)) {
@@ -268,37 +207,16 @@ router.post("/api/documents/newFile", async (req, res) => {
     } else {
       res
         .status(404)
-        .json(
-          error(
-            "File create",
-            "No path or name found to create file.",
-            { Name: name, Path: folderPath },
-            null,
-          ),
-        );
+        .json(error("File create", "No path or name found to create file.", { Name: name, Path: folderPath }, null));
     }
   } catch (err) {
     // If the error is a "not found" error, the file is created.
     if (err.code === "ENOENT") {
       fs.writeFileSync(location, defaultContent, "utf8");
-      if (serverMaster.successLogs) {
-        logger.info(
-          { Name: name, Path: folderPath },
-          "File create: Created file.",
-        );
-      }
+      log.success("File create", "Created file.", { Name: name, Path: folderPath });
       res.json({ success: true });
     } else {
-      res
-        .status(500)
-        .json(
-          error(
-            "File create",
-            "Failed to create file.",
-            { Name: name, Path: folderPath },
-            err,
-          ),
-        );
+      res.status(500).json(error("File create", "Failed to create file.", { Name: name, Path: folderPath }, err));
     }
   }
 });
@@ -306,12 +224,7 @@ router.post("/api/documents/newFile", async (req, res) => {
 // Creates a new folder, pretty much the same procedure as above.
 router.post("/api/documents/newFolder", async (req, res) => {
   const { name, folderPath } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "Folder create: Recieved request.",
-    );
-  }
+  log.detail("Folder create", "Recieved request.", { Name: name, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -322,24 +235,10 @@ router.post("/api/documents/newFolder", async (req, res) => {
   try {
     if (name && folderPath) {
       fs.mkdirSync(path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name));
-      if (serverMaster.successLogs) {
-        logger.info(
-          { Name: name, Path: folderPath },
-          "Folder create: Created folder.",
-        );
-      }
+      log.success("Folder create", "Created folder.", { Name: name, Path: folderPath });
       res.json({ success: true });
     } else {
-      res
-        .status(404)
-        .json(
-          error(
-            "Folder create",
-            "No path or name found.",
-            { Name: name, Path: folderPath },
-            null,
-          ),
-        );
+      res.status(404).json(error("Folder create", "No path or name found.", { Name: name, Path: folderPath }, null));
     }
   } catch (err) {
     if (err.code === "EEXIST") {
@@ -354,17 +253,9 @@ router.post("/api/documents/newFolder", async (req, res) => {
           ),
         );
     } else {
-      res.status(500).json(
-        error(
-          "Folder create",
-          "Failed to create folder.",
-          {
-            Name: name,
-            Path: folderPath,
-          },
-          err,
-        ),
-      );
+      res
+        .status(500)
+        .json(error("Folder create", "Failed to create folder.", { Name: name, Path: folderPath }, err));
     }
   }
 });
@@ -373,9 +264,7 @@ router.post("/api/documents/newFolder", async (req, res) => {
 router.delete("/api/documents/deletePath", async (req, res) => {
   // Originally only meant for folders but works for files too... happy accidents :)
   const { folderPath } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info({ Path: folderPath }, "Path delete: Recieved request.");
-  }
+  log.detail("Path delete", "Recieved request.", { Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath);
 
@@ -387,45 +276,20 @@ router.delete("/api/documents/deletePath", async (req, res) => {
     if (folderPath) {
       const fullPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath);
       await fs.promises.rm(fullPath, { recursive: true, force: true });
-      if (serverMaster.successLogs) {
-        logger.info({ Path: folderPath }, "Path delete: Deleted path.");
-      }
+      log.success("Path delete", "Deleted path.", { Path: folderPath });
       res.json({ success: true });
     } else {
-      res
-        .status(404)
-        .json(
-          error(
-            "Path delete",
-            "Failed to find path to be deleted.",
-            { Path: folderPath },
-            null,
-          ),
-        );
+      res.status(404).json(error("Path delete", "Failed to find path to be deleted.", { Path: folderPath }, null));
     }
   } catch (err) {
-    res
-      .status(500)
-      .json(
-        error(
-          "Path delete",
-          "Failed to delete path.",
-          { Path: folderPath },
-          err,
-        ),
-      );
+    res.status(500).json(error("Path delete", "Failed to delete path.", { Path: folderPath }, err));
   }
 });
 
 // Gets a file
 router.get("/api/documents/getFile", async (req, res) => {
   const { name, folderPath } = req.query;
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "File get: Recieved request.",
-    );
-  }
+  log.detail("File get", "Recieved request.", { Name: name, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -434,42 +298,16 @@ router.get("/api/documents/getFile", async (req, res) => {
   }
 
   try {
-    const fullPath = path.join(
-      GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-      folderPath,
-      name,
-    );
-    const file = fs.readFileSync(fullPath, "utf-8"); // Reads out file data
-    if (serverMaster.successLogs) {
-      logger.info("File get: Got file.");
-    }
-    if (serverMaster.detailLogs) {
-      logger.info("File get: Sent file to Client.");
-    }
+    const fullPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
+    const file = fs.readFileSync(fullPath, "utf-8");
+    log.success("File get", "Got file.");
+    log.detail("File get", "Sent file to Client.");
     res.send(JSON.parse(file));
   } catch (err) {
     if (err.code === "ENOENT") {
-      res
-        .status(404)
-        .json(
-          error(
-            "File get",
-            "Failed to find file.",
-            { Name: name, Path: folderPath },
-            err,
-          ),
-        );
+      res.status(404).json(error("File get", "Failed to find file.", { Name: name, Path: folderPath }, err));
     } else {
-      res
-        .status(500)
-        .json(
-          error(
-            "File get",
-            "Failed to get file.",
-            { Name: name, Path: folderPath },
-            err,
-          ),
-        );
+      res.status(500).json(error("File get", "Failed to get file.", { Name: name, Path: folderPath }, err));
     }
   }
 });
@@ -477,12 +315,7 @@ router.get("/api/documents/getFile", async (req, res) => {
 // Renames a file, which is surprisingly annoying to do without tons of glitches.
 router.post("/api/documents/renameFile", async (req, res) => {
   const { newName, folderPath, name } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { "Old name": name, "New name": newName, Path: folderPath },
-      "File rename: Recieved request.",
-    );
-  }
+  log.detail("File rename", "Recieved request.", { "Old name": name, "New name": newName, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -490,20 +323,15 @@ router.post("/api/documents/renameFile", async (req, res) => {
     return;
   }
 
-  if (serverMaster.detailLogs) {
-    logger.info("File rename: Building old and new file path.");
-  }
+  log.detail("File rename", "Building old and new file path.");
   const baseName = path.parse(name).name; // 19.09.26 - WTF
-  const filePath = path.join(
-    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    folderPath,
-    baseName + ".json",
-  );
-  const newFilePath = path.join(
-    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    folderPath,
-    newName + ".json",
-  );
+  const filePath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, baseName + ".json");
+  const newFilePath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, newName + ".json");
+
+  // The destination must be inside notebooks too, not just the source.
+  if (!validatePath(newFilePath, "File rename", res)) {
+    return;
+  }
 
   try {
     // Checks for a missing newName first.
@@ -520,31 +348,20 @@ router.post("/api/documents/renameFile", async (req, res) => {
           ),
         );
     } else if (newName && folderPath && name) {
-      if (serverMaster.detailLogs) {
-        logger.info("File rename: Renaming file...");
-      }
+      log.detail("File rename", "Renaming file...");
       // Rename operation on the filesystem
       await fs.promises.rename(filePath, newFilePath);
 
       // Changing title inside document
-      if (serverMaster.detailLogs) {
-        logger.info("File rename: Changing document title inside JSON...");
-      }
+      log.detail("File rename", "Changing document title inside JSON...");
       const fileContent = await fs.promises.readFile(newFilePath, "utf-8");
       const fileData = JSON.parse(fileContent);
       fileData[0].title = newName;
 
-      if (serverMaster.detailLogs) {
-        logger.info("File rename: Writing file info.");
-      }
+      log.detail("File rename", "Writing file info.");
       fs.writeFileSync(newFilePath, JSON.stringify(fileData, null, 2), "utf-8");
 
-      if (serverMaster.successLogs) {
-        logger.info(
-          { "Old name": name, "New name": newName, Path: folderPath },
-          "File rename: Renamed file.",
-        );
-      }
+      log.success("File rename", "Renamed file.", { "Old name": name, "New name": newName, Path: folderPath });
       res.json({ success: true });
     } else {
       res
@@ -574,17 +391,10 @@ router.post("/api/documents/renameFile", async (req, res) => {
 
 // Builds the full path for each of a folder's children.
 // Expects the output to look like the output from readDirRecursive().
-function childDocumentIsOpen(
-  directoryContents,
-  directoryFolderPath,
-  currentlyOpenDocument,
-) {
+function childDocumentIsOpen(directoryContents, directoryFolderPath, currentlyOpenDocument) {
   for (let i = 0; i < directoryContents.length; i++) {
     if (!directoryContents[i].isFolder) {
-      const pathToFile = path.join(
-        directoryFolderPath,
-        directoryContents[i].name,
-      );
+      const pathToFile = path.join(directoryFolderPath, directoryContents[i].name);
 
       // Compares the file path to the currently open document.
       // Returning true will cancel the renaming operation.
@@ -593,18 +403,9 @@ function childDocumentIsOpen(
       }
     } else {
       // Checks any child folders of the folder being renamed.
-      const childPath = path.join(
-        directoryFolderPath,
-        directoryContents[i].name,
-      );
+      const childPath = path.join(directoryFolderPath, directoryContents[i].name);
 
-      if (
-        childDocumentIsOpen(
-          directoryContents[i].children,
-          childPath,
-          currentlyOpenDocument,
-        )
-      ) {
+      if (childDocumentIsOpen(directoryContents[i].children, childPath, currentlyOpenDocument)) {
         return true;
       }
     }
@@ -621,12 +422,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
     currentlyOpenDocument = "";
   }
 
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { "Old name": name, "New name": newName, Path: folderPath },
-      "Folder rename: Recieved request.",
-    );
-  }
+  log.detail("Folder rename", "Recieved request.", { "Old name": name, "New name": newName, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -634,16 +430,13 @@ router.post("/api/documents/renameFolder", async (req, res) => {
     return;
   }
 
-  const currentPath = path.join(
-    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    folderPath,
-    name,
-  );
-  const newPath = path.join(
-    GLOBAL.PATHS.FOLDERS.NOTEBOOKS,
-    folderPath,
-    newName,
-  );
+  const currentPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
+  const newPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, newName);
+
+  // The destination must be inside notebooks too, not just the source.
+  if (!validatePath(newPath, "Folder rename", res)) {
+    return;
+  }
 
   const folderContents = await readDirRecursive(currentPath);
 
@@ -669,34 +462,27 @@ router.post("/api/documents/renameFolder", async (req, res) => {
             ),
           );
       } else if (newName && folderPath && name) {
-        if (serverMaster.detailLogs) {
-          logger.info("Folder rename: Renaming folder...");
-        }
+        log.detail("Folder rename", "Renaming folder...");
         fs.renameSync(currentPath, newPath);
 
         if (serverMaster.successLogs) {
-          logger.info("Folder rename: Renamed folder.");
+          log.success("Folder rename: Renamed folder.");
         }
         res.json({ success: true });
         return;
       } else if (newName && name) {
-        if (serverMaster.detailLogs) {
-          logger.info(
-            "Notebook rename: To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
-          );
-          logger.info(
-            "Notebook rename: Copying notebook contents to new directory...",
-          );
-        }
+        log.detail(
+          "Notebook rename",
+          "To avoid permission issues, a notebook must be fully duplicated under its new name and have its old version removed.",
+        );
+        log.detail("Notebook rename", "Copying notebook contents to new directory...");
         // Copies the entire directory under the new name, after which the directory of the previous name will be deleted.
         // This has to be done because Windows doesn't like me messing with direct children of the data/ folder for some reason.
         // Fuck Microslop. I wish Linux supported everything I use. :/
         await fs.promises.cp(currentPath, newPath, { recursive: true });
         await fs.promises.rm(currentPath, { recursive: true, force: true });
 
-        if (serverMaster.successLogs) {
-          logger.info("Notebook rename: Renamed notebook.");
-        }
+        log.success("Notebook rename", "Renamed notebook.");
         res.json({ success: true });
         return;
       } else if (!folderPath || !name) {
@@ -746,13 +532,7 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 // Updates a file with new content.
 router.put("/api/documents/updateFile", async (req, res) => {
   const { saveData, name, folderPath } = req.body;
-
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "File update: Recieved request.",
-    );
-  }
+  log.detail("File update", "Recieved request.", { Name: name, Path: folderPath });
 
   const dirPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
 
@@ -760,31 +540,17 @@ router.put("/api/documents/updateFile", async (req, res) => {
     return;
   }
 
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "File update: Reading file to save to...",
-    );
-  }
-
+  log.detail("File update", "Reading file to save to...", { Name: name, Path: folderPath });
   const file = fs.readFileSync(dirPath, "utf-8");
 
   const fileData = JSON.parse(file);
   // fileData[0] since everything in JSON is stored in one array.
   fileData[0].content = saveData;
 
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { Name: name, Path: folderPath },
-      "File update: Writing updated file...",
-    );
-  }
-
+  log.detail("File update", "Writing updated file...", { Name: name, Path: folderPath });
   fs.writeFileSync(dirPath, JSON.stringify(fileData, null, 2), "utf-8");
 
-  if (serverMaster.successLogs) {
-    logger.info({ Name: name, Path: folderPath }, "File update: Updated file.");
-  }
+  log.success("File update", "Updated file.", { Name: name, Path: folderPath });
   res.json({ success: true });
 });
 
@@ -794,57 +560,31 @@ router.post(
   express.raw({ type: "image/*", limit: `${serverMaster.maxImageSize}mb` }),
   async (req, res) => {
     const imgType = req.headers["content-type"];
-    if (serverMaster.detailLogs) {
-      logger.info({ "Image type": imgType }, "Image upload: Recieved request.");
-    }
-
-    if (serverMaster.detailLogs) {
-      logger.info(
-        { "Image type": imgType },
-        "Image upload: Assigning file ending...",
-      );
-    }
+    log.detail("Image upload", "Recieved request.", { "Image type": imgType });
+    log.detail("Image upload", "Assigning file ending...", { "Image type": imgType });
 
     let fileEnding;
     if (imgType === "image/png") {
       fileEnding = ".png";
-    } else if (imgType === "image/jpg") {
+    } else if (imgType === "image/jpeg") {
       fileEnding = ".jpg";
     } else if (imgType === "image/gif") {
       fileEnding = ".gif";
     }
 
-    if (serverMaster.detailLogs) {
-      logger.info(
-        { "Image type": imgType },
-        "Image upload: Setting image ID...",
-      );
-    }
+    log.detail("Image upload", "Setting image ID...", { "Image type": imgType });
     // Sets the image's name to a completely random ID.
     const fileName = imageName() + fileEnding;
     let location = path.join(GLOBAL.PATHS.FOLDERS.IMAGES, fileName);
 
-    if (serverMaster.detailLogs) {
-      logger.info(
-        { "Image type": imgType, Name: fileName },
-        "Image upload: Writing image to image folder...",
-      );
-    }
-
+    log.detail("Image upload", "Writing image to image folder...", { "Image type": imgType, Name: fileName });
     fs.writeFileSync(location, req.body);
 
-    if (serverMaster.successLogs) {
-      logger.info(
-        { "Image type": imgType, Name: fileName },
-        "Image upload: Saved image to Server.",
-      );
-    }
-    if (serverMaster.detailLogs) {
-      logger.info(
-        { "Image type": imgType, Name: fileName },
-        "Image upload: Sending image URL to Client...",
-      );
-    }
+    log.success("Image upload", "Saved image to Server.");
+    log.detail({ "Image type": imgType, Name: fileName }, "Image upload: Sending image URL to Client...", {
+      "Image type": imgType,
+      Name: fileName,
+    });
     // Sends the URL back so that TipTap can set it as the src.
     res.json({
       url: `/data/images/${fileName}`,
@@ -853,11 +593,9 @@ router.post(
 );
 
 // Generates a completely random image name, starting with Y and followed by 20 random symbols.
-// Y functions as a sort of backup identifier. If the image src doesn't start with "Y", there must be an issue.
 function imageName() {
   let name = "Y";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
   for (let i = 0; i < 21; i++) {
     name += characters.charAt(Math.floor(Math.random() * characters.length));
   }

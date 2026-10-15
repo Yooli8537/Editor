@@ -6,13 +6,13 @@
 
 /* Wraps around the toolbar */
 #wrapper {
-  border: 3px solid #000000;
-  border-radius: 8px;
+  border: var(--largeBorder);
+  border-radius: var(--roundedLarge);
 }
 
 /* Editor toolbar */
 #toolbar {
-  border-bottom: 3px solid #000000;
+  border-bottom: var(--largeBorder);
   padding: 3px;
   display: flex;
   justify-content: space-between;
@@ -38,7 +38,7 @@
 .renameInput {
   border: none;
   outline: none;
-  background-color: #ffffff;
+  background-color: var(--defaultBackgroundColor);
   font-size: x-large;
   font-weight: bold;
   color: #000000;
@@ -49,22 +49,22 @@
   vertical-align: middle;
   height: 10%;
   padding: 3px;
-  border-radius: 25%;
+  border-radius: var(--roundedQuarterPercent);
   cursor: pointer;
 }
 .borderlessButton:hover {
-  background-color: #3cb372cc;
+  background-color: var(--hoverColor);
 }
 
 /* Buttons on the toolbar. */
 .toolbarButton {
   width: 35px;
   height: 35px;
-  margin: 2px;
+  margin: var(--smallMargin);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #eeeeee;
+  background-color: var(--darkerBackgroundColor);
   cursor: pointer;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .toolbarButton:hover {
-  background-color: #3cb372cc;
+  background-color: var(--hoverColor);
 }
 .toolbarButton:hover > .toolbarIcon {
   width: 31px;
@@ -85,17 +85,17 @@
 /* Submenu & helptext styling. */
 .submenu,
 .helpText {
-  border: 2px solid #000000;
-  border-radius: 5px;
-  background-color: #eeeeee;
-  padding: 2px;
+  border: var(--mediumBorder);
+  border-radius: var(--roundedMedium);
+  background-color: var(--darkerBackgroundColor);
+  padding: var(--smallPadding);
   display: flex;
   flex-wrap: wrap;
 }
 
 /* A button is active when its not hovered over but its submenu is open. */
 .activeButton {
-  background-color: #84ecb3;
+  background-color: var(--selectedColor);
 }
 
 /* The prosemirror is TipTap's editor class. */

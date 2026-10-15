@@ -4,19 +4,14 @@ const GLOBAL = require("../utils/global");
 const express = require("express");
 const router = express.Router();
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
-const logger = require(GLOBAL.PATHS.UTILS.LOGGER);
+const log = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
 const puppeteer = require("puppeteer"); // Puppeteer converts HTML into PDF.
 
 // Processes HTML and converts it into PDF
 router.post("/api/export/pdf", async (req, res) => {
-  const { exportDocument, name } = req.body;
-  if (serverMaster.detailLogs) {
-    logger.info(
-      { "Document name": name },
-      "Document PDF export: Recived request.",
-    );
-  }
+  const { exportDocument, exportCSS, name } = req.body;
+  log.detail("Document PDF export", "Recived request.", { "Document name": name });
 
   // Basic HTML structure.
   // The HTML from the request only includes the editor data, so stylesheets and stuff have to be set here.
@@ -25,6 +20,9 @@ router.post("/api/export/pdf", async (req, res) => {
   <head>
     <link rel="stylesheet" href="http://localhost:8511/css/format.css" />
     <link rel="stylesheet" href="http://localhost:8511/css/syntax.css" />
+    <style>
+      ${exportCSS}
+    </style>
   </head>
   <body>
     <div class="export-content">
@@ -34,9 +32,7 @@ router.post("/api/export/pdf", async (req, res) => {
   </html>
   `;
   try {
-    if (serverMaster.detailLogs) {
-      logger.info("Document PDF export: Launching simulated browser.");
-    }
+    log.detail("Document PDF export", "Launching simulated browser.");
     // Simulated browser which Puppeteer uses to generate the PDF.
     const browser = await puppeteer.launch({
       args: ["--allow-file-access-from-files"],
@@ -49,9 +45,7 @@ router.post("/api/export/pdf", async (req, res) => {
       waitUntil: "networkidle0",
     });
 
-    if (serverMaster.detailLogs) {
-      logger.info("Document PDF export: Converting HTML to PDF.");
-    }
+    log.detail("Document PDF export", "Converting HTML to PDF.");
     // Converts the page into a PDF with specifications.
     const pdf = await page.pdf({
       format: "A4",
@@ -59,40 +53,18 @@ router.post("/api/export/pdf", async (req, res) => {
       margin: { top: "75px", bottom: "75px", left: "75px", right: "75px" },
     });
 
-    if (serverMaster.detailLogs) {
-      logger.info("Document PDF export: Closing simulated browser.");
-    }
+    log.detail("Document PDF export", "Closing simulated browser.");
     // Closes the simulated browser.
     await browser.close();
 
     // Sends the PDF back to the client.
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${req.body.name}.pdf`,
-    );
+    res.setHeader("Content-Disposition", `attachment; filename=${req.body.name}.pdf`);
+    log.success("Document PDF export", "Sent PDF-Export to Client.");
     res.send(pdf);
-    if (serverMaster.successLogs) {
-      logger.info("Document PDF export: Sent PDF-Export to Client.");
-    }
   } catch (err) {
-    res
-      .status(500)
-      .json(
-        error(
-          "Document PDF export",
-          "Failed to export PDF.",
-          { Name: name },
-          err,
-        ),
-      );
+    res.status(500).json(error("Document PDF export", "Failed to export PDF.", { Name: name }, err));
   }
-});
-
-router.post("/api/export/json", async (req, res) => {
-  const { documentJSON } = req.body;
-  console.log(documentJSON);
-  res.json({ success: true });
 });
 
 module.exports = router;

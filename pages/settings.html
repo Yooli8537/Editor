@@ -7,6 +7,7 @@
     <title>Editor Settings</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/settings.css">
+    <link rel="stylesheet" href="../css/variables.css" />
     <script type="module" src="../js/settings.js" defer></script>
     <link rel="icon" href="../assets/icons/settings.svg">
 </head>
@@ -95,12 +96,12 @@
                             <div class="settingDescription">
                                 Whether or not clicking the save button will make you confirm your action.
                             </div>
-                            <div class="settingDefault">Default: True</div>
+                            <div class="settingDefault">Default: On</div>
                         </div>
                         <div class="settingValue">
                             <select id="confirmSave">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -116,12 +117,12 @@
                             <div class="settingDescription">
                                 Whether or not exporting a document should require a confirmation.
                             </div>
-                            <div class="settingDefault">Default: False</div>
+                            <div class="settingDefault">Default: Off</div>
                         </div>
                         <div class="settingValue">
                             <select id="confirmExport">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -207,11 +208,189 @@
             <div id="formats" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
+                        <img src="../assets/icons/warning.svg" class="groupIcon">
                         <p>
-                            <del>Formats</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
+                            Format settings affect only formats within the editor itself. All changes affect every
+                            document.
                         </p>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/format.svg" class="groupIcon">
+                        <p>Format Sizes</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Default Format size (pixels)</div>
+                            <div class="settingDescription">
+                                The default font size is used by most formats in the Editor.
+                            </div>
+                            <div class="settingDefault">Default: 16 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontSizesDefault">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H1 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 32 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontSizesH1">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H2 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 24 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontSizesH2">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 3 Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Font size of the H3 Heading.
+                            </div>
+                            <div class="settingDefault">Default: 20 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontSizesH3">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Code Format size (pixels)</div>
+                            <div class="settingDescription">
+                                Size of the text within inline code and code blocks.
+                            </div>
+                            <div class="settingDefault">Default: 12 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontSizesCode">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/margins.svg" class="groupIcon">
+                        <p>Format Margins</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 top margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin above a Heading 1 block.
+                            </div>
+                            <div class="settingDefault">Default: 2 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsH1Top">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 1 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 1 block.
+                            </div>
+                            <div class="settingDefault">Default: 5 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsH1Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 top margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin above a Heading 2 block.
+                            </div>
+                            <div class="settingDefault">Default: 1 pixel</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsH2Top">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 2 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 2 block.
+                            </div>
+                            <div class="settingDefault">Default: 3 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsH2Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Heading 3 bottom margin (pixels)</div>
+                            <div class="settingDescription">
+                                The margin below a Heading 3 block.
+                            </div>
+                            <div class="settingDefault">Default: 1 pixel</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsH3Bottom">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">List margins (pixels)</div>
+                            <div class="settingDescription">
+                                The margins above and below any list element.
+                            </div>
+                            <div class="settingDefault">Default: 0 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatFontMarginsListMargin">
+                        </div>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/table.svg" class="groupIcon">
+                        <p>Tables</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Cell padding (pixels)</div>
+                            <div class="settingDescription">
+                                The distance between an element within a table to the borders of a cell.
+                            </div>
+                            <div class="settingDefault">Default: 8 pixels</div>
+                        </div>
+                        <div class="settingValue">
+                            <input type="number" id="formatTablesCellPadding">
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Text alignment</div>
+                            <div class="settingDescription">
+                                How text is aligned within a table cell.
+                            </div>
+                            <div class="settingDefault">Default: Left</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="formatTablesTextAlign">
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -359,12 +538,12 @@
                             <div class="settingDescription">
                                 Controls if Server Logs are also saved to files under the "Editor/logs/" directory.
                             </div>
-                            <div class="settingDefault">Default: False</div>
+                            <div class="settingDefault">Default: Off</div>
                         </div>
                         <div class="settingValue">
                             <select id="saveLogs">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -378,7 +557,7 @@
                         </div>
                         <div class="settingValue">
                             <select>
-                                <option value="True">True</option>
+                                <option value="On">On</option>
                             </select>
                         </div>
                     </div>
@@ -389,12 +568,12 @@
                                 Gives out more detail from errors. Note that not every error will have additional
                                 details.
                             </div>
-                            <div class="settingDefault">Default: False</div>
+                            <div class="settingDefault">Default: Off</div>
                         </div>
                         <div class="settingValue">
                             <select id="logErrorDetails">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -404,12 +583,12 @@
                             <div class="settingDescription">
                                 Logs which warn you if something could be going wrong.
                             </div>
-                            <div class="settingDefault">Default: True</div>
+                            <div class="settingDefault">Default: On</div>
                         </div>
                         <div class="settingValue">
                             <select id="warningLogs">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -420,12 +599,12 @@
                                 Logs which come out whenever an operation is completed successfully (such as renaming,
                                 creating a new file, etc.).
                             </div>
-                            <div class="settingDefault">Default: True</div>
+                            <div class="settingDefault">Default: On</div>
                         </div>
                         <div class="settingValue">
                             <select id="successLogs">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -435,12 +614,12 @@
                             <div class="settingDescription">
                                 Extra logs which give you additional information about what's going on under the hood.
                             </div>
-                            <div class="settingDefault">Default: False</div>
+                            <div class="settingDefault">Default: Off</div>
                         </div>
                         <div class="settingValue">
                             <select id="detailLogs">
-                                <option value="True">True</option>
-                                <option value="False">False</option>
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
                             </select>
                         </div>
                     </div>
@@ -452,11 +631,93 @@
                     <div class="settingGroupTitle">
                         <img src="../assets/icons/construction.svg" class="groupIcon">
                         <p>
-                            <del>Developer</del> This area is under construction! Please be patient while I figure this
-                            feature out... 🤔
+                            This area is under construction! Please be patient while I figure this feature out... 🤔
                         </p>
                     </div>
                 </div>
+
+                <!--
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/server-logs.svg" class="groupIcon">
+                        <p>Client side logging</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client side logging</div>
+                            <div class="settingDescription">
+                                Enable / disable client side logging entirely.
+                            </div>
+                            <div class="settingDefault">Default: Off</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientSideLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client action logging</div>
+                            <div class="settingDescription">
+                                Log client side actions / clicks.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientActionLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client process logging</div>
+                            <div class="settingDescription">
+                                Log client side processes (functions).
+                            </div>
+                            <div class="settingDefault">Default: Off</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientProcessLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client server error logging</div>
+                            <div class="settingDescription">
+                                Log errors from server errors in addition to the modal.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientErrorLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Client settings logging</div>
+                            <div class="settingDescription">
+                                Log the full array of settings upon saving them.
+                            </div>
+                            <div class="settingDefault">Default: On</div>
+                        </div>
+                        <div class="settingValue">
+                            <select id="clientSettingsLogging">
+                                <option value="On">On</option>
+                                <option value="Off">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>-->
             </div>
 
             <div id="info" class="hidden">
@@ -468,7 +729,7 @@
                     <div class="setting">
                         <div class="settingInfo">
                             <div class="settingTitle">Version</div>
-                            <div>You are currently on Editor version <i>v1.6.4</i>.</div>
+                            <div>You are currently on Editor version <i>v1.6.5</i>.</div>
                         </div>
                         <div class="settingValue">
                             <button type="submit" id="versionCheckButton" class="button hoverClass">
@@ -488,7 +749,7 @@
                             </div>
                         </div>
                         <div class="settingValue">
-                            <a href="https://github.com/Yooli8537/Editor/issues/new/choose" target="_blank">
+                            <a href="https://githubCom/Yooli8537/Editor/issues/new/choose" target="_blank">
                                 <button type="submit" class="button hoverClass">Open an Issue</button>
                             </a>
                         </div>
@@ -502,7 +763,7 @@
                             </div>
                         </div>
                         <div class="settingValue">
-                            <a href="https://github.com/stars/Yooli8537/lists/web-app-ecosystem" target="_blank">
+                            <a href="https://githubCom/stars/Yooli8537/lists/web-app-ecosystem" target="_blank">
                                 <button type="submit" class="button hoverClass">Check out more Apps!</button>
                             </a>
                         </div>
@@ -522,7 +783,7 @@
                             </div>
                         </div>
                         <div class="settingValue">
-                            <a href="https://tiptap.dev/" target="_blank">
+                            <a href="https://tiptapDev/" target="_blank">
                                 <button type="submit" class="button hoverClass">Visit TipTap!</button>
                             </a>
                         </div>
@@ -537,7 +798,7 @@
                             </div>
                         </div>
                         <div class="settingValue">
-                            <a href="https://lucide.dev/" target="_blank">
+                            <a href="https://lucideDev/" target="_blank">
                                 <button type="submit" class="button hoverClass">Visit Lucide!</button>
                             </a>
                         </div>
