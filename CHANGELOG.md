@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
 ### Added
 
