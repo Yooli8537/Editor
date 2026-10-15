@@ -328,6 +328,11 @@ router.post("/api/documents/renameFile", async (req, res) => {
   const filePath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, baseName + ".json");
   const newFilePath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, newName + ".json");
 
+  // The destination must be inside notebooks too, not just the source.
+  if (!validatePath(newFilePath, "File rename", res)) {
+    return;
+  }
+
   try {
     // Checks for a missing newName first.
     // If the operation goes through even though the name is empty, there will be issues.
@@ -427,6 +432,11 @@ router.post("/api/documents/renameFolder", async (req, res) => {
 
   const currentPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, name);
   const newPath = path.join(GLOBAL.PATHS.FOLDERS.NOTEBOOKS, folderPath, newName);
+
+  // The destination must be inside notebooks too, not just the source.
+  if (!validatePath(newPath, "Folder rename", res)) {
+    return;
+  }
 
   const folderContents = await readDirRecursive(currentPath);
 

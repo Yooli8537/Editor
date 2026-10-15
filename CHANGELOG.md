@@ -18,6 +18,7 @@
 
 - Image clear no longer reports nonsense errors.
 - Images can be pasted into the editor again.
+- Paths are now validated properly.
 
 ## v1.6.4 - Autosave rework & Improvements
 
