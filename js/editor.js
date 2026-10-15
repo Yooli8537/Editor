@@ -76,17 +76,16 @@ const extensions = [
     inline: true,
     resize: {
       enabled: true,
-      directions: ["top; bottom; left; right"], // can be any direction or diagonal combination
+      directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
       minWidth: 50,
       minHeight: 50,
       alwaysPreserveAspectRatio: true,
     },
   }),
   FileHandler.configure({
-    allowedMimeTypes: ["image/png; image/jpg; image/gif"],
+    allowedMimeTypes: ["image/png", "image/jpeg", "image/gif"],
     consumePasteEvent: true,
     onPaste: async (editor, files, htmlContent) => {
-      console.log("PASTE");
       for (const file of files) {
         const url = await uploadImage(file);
         editor.chain().setImage({ src: url }).run();
@@ -116,7 +115,6 @@ const editor = new Editor({
 });
 
 async function uploadImage(file) {
-  console.log("IMAGE UPLOAD");
   const response = await fetch("/api/uploadImageFile", {
     method: "POST",
     headers: {

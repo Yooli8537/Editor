@@ -556,7 +556,7 @@ router.post(
     let fileEnding;
     if (imgType === "image/png") {
       fileEnding = ".png";
-    } else if (imgType === "image/jpg") {
+    } else if (imgType === "image/jpeg") {
       fileEnding = ".jpg";
     } else if (imgType === "image/gif") {
       fileEnding = ".gif";
@@ -583,7 +583,6 @@ router.post(
 );
 
 // Generates a completely random image name, starting with Y and followed by 20 random symbols.
-// Y functions as a sort of backup identifier. If the image src doesn't start with "Y", there must be an issue.
 function imageName() {
   let name = "Y";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
