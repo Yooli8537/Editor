@@ -54,12 +54,12 @@ const formatFontMarginsH2Bottom = document.querySelector("#formatFontMarginsH2Bo
 const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bottom");
 const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
 const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
-const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");
+const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");/*
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
-const clientErrorLogging = document.querySelector("#clientErrorLogging");
+const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -90,12 +90,12 @@ const allSettings = [
   formatFontMarginsH2Bottom,
   formatFontMarginsH3Bottom,
   formatFontMarginsListMargin,
-  formatTablesCellPadding,
+  formatTablesCellPadding,/*
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,
+  clientErrorLogging,*/
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -129,12 +129,12 @@ const boolSettings = [
   detailLogs,
   saveLogs,
   confirmExport,
-  logErrorDetails,
+  logErrorDetails,/*
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,
+  clientErrorLogging,*/
 ];
 
 // Getting the master file
@@ -331,7 +331,7 @@ function disableSettings() {
     applyDisabledOverlay(updateCollapsedFolders);
   } else {
     removeDisabledOverlay(updateCollapsedFolders);
-  }
+  }/*
   const clientLoggingSettings = [
     clientActionLogging,
     clientProcessLogging,
@@ -344,7 +344,7 @@ function disableSettings() {
     } else {
       removeDisabledOverlay(clientLoggingSettings[i]);
     }
-  }
+  }*/
 }
 
 // Waits for the masterfile before adding the event listeners for the tabs.
