@@ -62,6 +62,7 @@ const allProperties = {
   clientProcessLogging: false,
   clientSettingsLogging: true,
   clientErrorLogging: true,
+  backupEnabled: true,
   backupTime: "05:00",
   backupIntervalDays: 1,
   backupRetainDuration: 30,

@@ -63,7 +63,11 @@ const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
+const backupEnabled = document.querySelector("#backupEnabled");
 const backupTime = document.querySelector("#backupTime");
+const backupIntervalDays = document.querySelector("#backupIntervalDays");
+const backupRetainDuration = document.querySelector("#backupRetainDuration");
+const backupMaxAmount = document.querySelector("#backupMaxAmount");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -102,7 +106,11 @@ const allSettings = [
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,*/ backupTime,
+  clientErrorLogging,*/ backupEnabled,
+  backupTime,
+  backupIntervalDays,
+  backupRetainDuration,
+  backupMaxAmount,
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -110,6 +118,9 @@ const intSettings = [
   maxCharacterLength,
   rateLimitMaxRequests,
   rateLimitResetTime,
+  backupIntervalDays,
+  backupRetainDuration,
+  backupMaxAmount,
 ];
 const decimalSettings = [
   autosaveInterval,
@@ -145,6 +156,7 @@ const boolSettings = [
   clientProcessLogging,
   clientSettingsLogging,
   clientErrorLogging,*/,
+  backupEnabled,
 ];
 
 // Getting the master file
