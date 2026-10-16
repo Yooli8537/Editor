@@ -42,10 +42,6 @@
                 <img src="../assets/settings/storage-traffic.svg" class="tabIcon">
                 <p>Storage</p>
             </div>
-            <div id="backupsTab" class="tab hoverClass">
-                <img src="../assets/settings/backup.svg" class="tabIcon">
-                <p>Backups</p>
-            </div>
             <div id="serverTab" class="tab hoverClass">
                 <img src="../assets/settings/server.svg" class="tabIcon">
                 <p>Server</p>
@@ -474,17 +470,6 @@
                 </div>
             </div>
 
-            <div id="backups" class="hidden">
-                <div class="settingGroup">
-                    <div class="settingGroupTitle">
-                        <img src="../assets/icons/construction.svg" class="groupIcon">
-                        <p>
-                            This area is under construction! Please be patient while I figure this feature out... 🤔
-                        </p>
-                    </div>
-                </div>
-            </div>
-
             <div id="server" class="hidden">
                 <div class="settingGroup">
                     <div class="settingGroupTitle">
@@ -492,6 +477,23 @@
                         <p>
                             Welcome to the Server settings! In order to apply any updates, you must restart your server.
                         </p>
+                    </div>
+                </div>
+                <div class="settingGroup">
+                    <div class="settingGroupTitle">
+                        <img src="../assets/settings/backup.svg" class="groupIcon">
+                        <p>Automatic Backups</p>
+                    </div>
+                    <div class="setting">
+                        <div class="settingInfo">
+                            <div class="settingTitle">Back up now</div>
+                            <div class="settingDescription">
+                                Backs up the data folder.
+                            </div>
+                        </div>
+                        <div class="settingValue">
+                            <button type="submit" id="backUpNowButton" class="button hoverClass">Back up now</button>
+                        </div>
                     </div>
                 </div>
                 <div class="settingGroup">
