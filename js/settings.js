@@ -57,12 +57,13 @@ const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bo
 const formatFontMarginsH4Bottom = document.querySelector("#formatFontMarginsH4Bottom");
 const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
 const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
-const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");/*
+const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign"); /*
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
+const backupTime = document.querySelector("#backupTime");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -96,12 +97,12 @@ const allSettings = [
   formatFontMarginsH3Bottom,
   formatFontMarginsH4Bottom,
   formatFontMarginsListMargin,
-  formatTablesCellPadding,/*
-  clientSideLogging,
+  formatTablesCellPadding,
+  /* clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,*/
+  clientErrorLogging,*/ backupTime,
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -130,7 +131,7 @@ const decimalSettings = [
   formatFontMarginsListMargin,
   formatTablesCellPadding,
 ];
-const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign];
+const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign, backupTime];
 const boolSettings = [
   confirmSave,
   warningLogs,
@@ -138,12 +139,12 @@ const boolSettings = [
   detailLogs,
   saveLogs,
   confirmExport,
-  logErrorDetails,/*
+  logErrorDetails /*
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,*/
+  clientErrorLogging,*/,
 ];
 
 // Getting the master file
@@ -340,7 +341,7 @@ function disableSettings() {
     applyDisabledOverlay(updateCollapsedFolders);
   } else {
     removeDisabledOverlay(updateCollapsedFolders);
-  }/*
+  } /*
   const clientLoggingSettings = [
     clientActionLogging,
     clientProcessLogging,
