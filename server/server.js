@@ -18,6 +18,7 @@ const userDataFolders = [
   { name: "Image", path: GLOBAL.PATHS.FOLDERS.IMAGES },
   { name: "Attachments", path: GLOBAL.PATHS.FOLDERS.ATTACHMENTS },
   { name: "Profiles", path: GLOBAL.PATHS.FOLDERS.PROFILES },
+  { name: "Backup", path: GLOBAL.PATHS.FOLDERS.BACKUP },
 ];
 
 // Every property and default value which should be in master.json.
