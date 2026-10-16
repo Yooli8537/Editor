@@ -874,7 +874,7 @@ async function downloadDocumentPDF(response) {
 
   let downloadElement = document.createElement("a");
   downloadElement.href = downloadURL;
-  downloadElement.download = currentEntry.replace(".json; .pdf");
+  downloadElement.download = `${currentEntry.slice(0, -5)}.pdf`; // .slice() removes .json
   downloadElement.click();
 
   URL.revokeObjectURL(downloadURL);
