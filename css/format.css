@@ -3,15 +3,18 @@
   /* Font sizes */
   --defaultFontSize: 16px;
   --h1FontSize: 32px;
-  --h2FontSize: 24px;
-  --h3FontSize: 20px;
+  --h2FontSize: 26px;
+  --h3FontSize: 22px;
+  --h4FontSize: 18px;
   --codeFontSize: 12px;
   /* Font margins */
-  --h1MarginTop: 2px;
+  --h1MarginTop: 3px;
   --h1MarginBottom: 5px;
-  --h2MarginTop: 1px;
-  --h2MarginBottom: 3px;
-  --h3MarginBottom: 1px;
+  --h2MarginTop: 2px;
+  --h2MarginBottom: 5px;
+  --h3MarginTop: 1px;
+  --h3MarginBottom: 3px;
+  --h4MarginBottom: 1px;
   --listMargin: 0px;
   /* Tables */
   --tableCellPadding: 8px;
@@ -46,7 +49,12 @@
 .export-content h3,
 .ProseMirror h3 {
   font-size: var(--h3FontSize) !important;
-  margin: 0, 0, var(--h3MarginBottom), 0;
+  margin: var(--h3MarginTop), 0, var(--h3MarginBottom), 0;
+}
+.export-content h4,
+.ProseMirror h4 {
+  font-size: var(--h4FontSize) !important;
+  margin: 0, 0, var(--h4MarginBottom), 0;
 }
 
 .export-content p,

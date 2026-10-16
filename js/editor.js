@@ -396,6 +396,14 @@ const headingItems = [
     },
     helpText: "Heading 3",
   },
+  {
+    icon: "format/heading-4.svg",
+    action: () => {
+      editor.chain().focus().toggleHeading({ level: 4 }).run();
+      log("Toolbar; Heading 4", logTypes.action, 0);
+    },
+    helpText: "Heading 4",
+  },
 ];
 
 setHelpText(headings, "Headings");
