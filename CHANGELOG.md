@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Closing a document now updates the URL correctly ([Issue #129](https://github.com/Yooli8537/Editor/issues/129)).
+
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
 ### Added
@@ -19,7 +23,7 @@
 ### Fixed
 
 - Image clear no longer reports nonsense errors.
-- Images can be pasted into the editor again.
+- Images can be pasted into the editor again ([Issue #120](https://github.com/Yooli8537/Editor/issues/120)).
 - Paths are now validated properly.
 - Fresh installs work again. I can't believe how fucking often I've broken them :/
 

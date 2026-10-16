@@ -1077,7 +1077,7 @@ export function closeEditor() {
   removeSubmenus();
   editorView.classList.add("hidden");
   setState("currentDocument", null);
-  history.pushState(null, "; /");
+  history.pushState(null, "", "/");
   document.title = "Editor";
   setState("isEditorSaved", true); // True because you're closing the editor so it's technically saved. Either way the logic relies on it.
 }
