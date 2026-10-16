@@ -59,6 +59,11 @@ const allProperties = {
   clientProcessLogging: false,
   clientSettingsLogging: true,
   clientErrorLogging: true,
+  backupTime: "05:00",
+  backupIntervalDays: 1,
+  backupRetainDuration: 30,
+  backupImages: true,
+  backupMaxAmount: 30,
 };
 
 // Creates any missing data folders.
