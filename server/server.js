@@ -63,10 +63,10 @@ const allProperties = {
   clientSettingsLogging: true,
   clientErrorLogging: true,
   backupEnabled: true,
+  backupImages: true,
   backupTime: "05:00",
   backupIntervalDays: 1,
   backupRetainDuration: 30,
-  backupImages: true,
   backupMaxAmount: 30,
 };
 

@@ -64,6 +64,7 @@ const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
 const backupEnabled = document.querySelector("#backupEnabled");
+const backupImages = document.querySelector("#backupImages");
 const backupTime = document.querySelector("#backupTime");
 const backupIntervalDays = document.querySelector("#backupIntervalDays");
 const backupRetainDuration = document.querySelector("#backupRetainDuration");
@@ -107,6 +108,7 @@ const allSettings = [
   clientProcessLogging,
   clientSettingsLogging,
   clientErrorLogging,*/ backupEnabled,
+  backupImages,
   backupTime,
   backupIntervalDays,
   backupRetainDuration,
@@ -157,6 +159,7 @@ const boolSettings = [
   clientSettingsLogging,
   clientErrorLogging,*/,
   backupEnabled,
+  backupImages,
 ];
 
 // Getting the master file
@@ -367,6 +370,14 @@ function disableSettings() {
       removeDisabledOverlay(clientLoggingSettings[i]);
     }
   }*/
+  const backupSettings = [backupImages, backupTime, backupIntervalDays, backupRetainDuration, backupMaxAmount];
+  for (let i = 0; i < backupSettings.length; i++) {
+    if (!master.backupEnabled) {
+      applyDisabledOverlay(backupSettings[i]);
+    } else {
+      removeDisabledOverlay(backupSettings[i]);
+    }
+  }
 }
 
 // Waits for the masterfile before adding the event listeners for the tabs.
