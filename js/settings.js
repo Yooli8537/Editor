@@ -46,12 +46,15 @@ const formatFontSizesDefault = document.querySelector("#formatFontSizesDefault")
 const formatFontSizesH1 = document.querySelector("#formatFontSizesH1");
 const formatFontSizesH2 = document.querySelector("#formatFontSizesH2");
 const formatFontSizesH3 = document.querySelector("#formatFontSizesH3");
+const formatFontSizesH4 = document.querySelector("#formatFontSizesH4");
 const formatFontSizesCode = document.querySelector("#formatFontSizesCode");
 const formatFontMarginsH1Top = document.querySelector("#formatFontMarginsH1Top");
 const formatFontMarginsH1Bottom = document.querySelector("#formatFontMarginsH1Bottom");
 const formatFontMarginsH2Top = document.querySelector("#formatFontMarginsH2Top");
 const formatFontMarginsH2Bottom = document.querySelector("#formatFontMarginsH2Bottom");
+const formatFontMarginsH3Top = document.querySelector("#formatFontMarginsH3Top");
 const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bottom");
+const formatFontMarginsH4Bottom = document.querySelector("#formatFontMarginsH4Bottom");
 const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
 const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
 const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");/*
@@ -83,12 +86,15 @@ const allSettings = [
   formatFontSizesH1,
   formatFontSizesH2,
   formatFontSizesH3,
+  formatFontSizesH4,
   formatFontSizesCode,
   formatFontMarginsH1Top,
   formatFontMarginsH1Bottom,
   formatFontMarginsH2Top,
   formatFontMarginsH2Bottom,
+  formatFontMarginsH3Top,
   formatFontMarginsH3Bottom,
+  formatFontMarginsH4Bottom,
   formatFontMarginsListMargin,
   formatTablesCellPadding,/*
   clientSideLogging,
@@ -112,12 +118,15 @@ const decimalSettings = [
   formatFontSizesH1,
   formatFontSizesH2,
   formatFontSizesH3,
+  formatFontSizesH4,
   formatFontSizesCode,
   formatFontMarginsH1Top,
   formatFontMarginsH1Bottom,
   formatFontMarginsH2Top,
   formatFontMarginsH2Bottom,
+  formatFontMarginsH3Top,
   formatFontMarginsH3Bottom,
+  formatFontMarginsH4Bottom,
   formatFontMarginsListMargin,
   formatTablesCellPadding,
 ];

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Heading level 4 ([Issue #126](https://github.com/Yooli8537/Editor/issues/126)).
+
 ### Fixed
 
 - Closing a document now updates the URL correctly ([Issue #129](https://github.com/Yooli8537/Editor/issues/129)).
