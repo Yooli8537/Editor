@@ -25,8 +25,8 @@ import {
   logTypes,
   createPromptModal,
 } from "./utils";
-import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
-import { getState, setState } from "./state";
+import { buildSidebar } from "./sidebar";
+import { getState, sendState, setState } from "./state";
 
 // Setting up lowlight extension for Syntax Highlighting
 const lowlight = createLowlight(all);
@@ -1167,36 +1167,46 @@ function applyCustomFormats() {
   }
 }
 
+async function createCollapsedFoldersUpdateInterval() {
+  if (getState("collapsedFolderUpdateMethod") === "Auto") {
+    setInterval(
+      () => {
+        sendState("collapsedFolders");
+      },
+      getState("updateCollapsedFolders") * 1000,
+    );
+  }
+}
+
 // Opens Document from URL if one is present.
 export async function onFirstStart() {
-  // Loads Data from master.json and activates autosave upon success.
   if (await getMaster()) {
     initAutosave(getState("autosaveInterval") * 1000);
-  }
 
-  const params = new URLSearchParams(window.location.search);
-  const path = params.get("path");
-  const document = params.get("document");
+    const params = new URLSearchParams(window.location.search);
+    const path = params.get("path");
+    const document = params.get("document");
 
-  // Stops auto-open if no document is provided.
-  if (document === null) {
-  } else {
-    // Getting the Document from the URL.
-    const response = await fetch(`api/documents/getFile?folderPath=${path}&name=${document}`, { method: "GET" });
-
-    if (response.ok) {
-      const fileData = await response.json();
-      setState("currentDocument", path + document);
-      loadAutosave(fileData, document, path);
+    // Stops auto-open if no document is provided.
+    if (document === null) {
     } else {
-      const responseJSON = await response.json();
-      handleServerErrors(responseJSON, response.status);
+      // Getting the Document from the URL.
+      const response = await fetch(`api/documents/getFile?folderPath=${path}&name=${document}`, { method: "GET" });
+
+      if (response.ok) {
+        const fileData = await response.json();
+        setState("currentDocument", path + document);
+        loadAutosave(fileData, document, path);
+      } else {
+        const responseJSON = await response.json();
+        handleServerErrors(responseJSON, response.status);
+      }
     }
+    buildSidebar();
+    applyCustomFormats();
+    createCollapsedFoldersUpdateInterval();
+    checkForUpdate(false);
   }
-  buildSidebar();
-  applyCustomFormats();
-  createCollapsedFoldersUpdateInterval();
-  checkForUpdate(false);
 }
 
 initPing();

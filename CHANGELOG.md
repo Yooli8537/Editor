@@ -12,6 +12,7 @@
 - Exporting a document as a PDF appends the correct file extension ([Issue #127](https://github.com/Yooli8537/Editor/issues/127)).
 - Fixed links which don't include `http://` or `https://` ([Issue #11](https://github.com/Yooli8537/Editor/issues/11)).
 - Saving a saved editor no longer creates a modal telling you that it's saved ([Issue #113](https://github.com/Yooli8537/Editor/issues/113)).
+- Server requests are no longer doubled by the client ([Issue #106](https://github.com/Yooli8537/Editor/issues/106)).
 
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
