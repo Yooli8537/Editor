@@ -10,6 +10,7 @@
 
 - Closing a document now updates the URL correctly ([Issue #129](https://github.com/Yooli8537/Editor/issues/129)).
 - Exporting a document as a PDF appends the correct file extension ([Issue #127](https://github.com/Yooli8537/Editor/issues/127)).
+- Fixed links which don't include http:// or https:// ([Issue #11](https://github.com/Yooli8537/Editor/issues/11)).
 
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 

@@ -748,19 +748,20 @@ tableDeleteButton.addEventListener("click", (e) => {
 const linkEditItems = [
   {
     icon: "format/link.svg",
-    action: () =>
-      editor
-        .chain()
-        .focus()
-        .toggleLink({
-          href: () => {
-            const link = prompt("Please Input your Link below.");
-            if (link.slice(0, 8) !== "https://" || "http://") {
-              link = `https://${link}`;
-            }
-          },
-        })
-        .run(),
+    action: () => {
+      createPromptModal("Please Input your Link below.", "", (link) => {
+        if (!/^https?:\/\//i.test(link)) {
+          link = `https://${link}`;
+        }
+        editor
+          .chain()
+          .focus()
+          .toggleLink({
+            href: link,
+          })
+          .run();
+      });
+    },
     helpText: "Add new Link",
   },
   {
