@@ -23,6 +23,7 @@ import {
   handleServerErrors,
   log,
   logTypes,
+  createPromptModal,
 } from "./utils";
 import { buildSidebar, createCollapsedFoldersUpdateInterval } from "./sidebar";
 import { getState, setState } from "./state";
@@ -752,9 +753,12 @@ const linkEditItems = [
         .chain()
         .focus()
         .toggleLink({
-          href: prompt(
-            'Please Input your Link below. Make sure it begins with "http://" or "https://", otherwise it will not work.',
-          ),
+          href: () => {
+            const link = prompt("Please Input your Link below.");
+            if (link.slice(0, 8) !== "https://" || "http://") {
+              link = `https://${link}`;
+            }
+          },
         })
         .run(),
     helpText: "Add new Link",
