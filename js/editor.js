@@ -753,13 +753,7 @@ const linkEditItems = [
         if (!/^https?:\/\//i.test(link)) {
           link = `https://${link}`;
         }
-        editor
-          .chain()
-          .focus()
-          .toggleLink({
-            href: link,
-          })
-          .run();
+        editor.chain().focus().setLink({ href: link }).run();
       });
     },
     helpText: "Add new Link",
