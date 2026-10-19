@@ -989,9 +989,6 @@ function saveEditor(isRestoration) {
         pushSaveData,
       );
     }
-  } else {
-    // No changes = no need to update
-    createInfoModal("No changes were made.");
   }
 }
 
