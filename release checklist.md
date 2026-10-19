@@ -4,6 +4,7 @@
 - Name new version in Changelog
 - Update version under Server -> server.js -> allProperties -> version
 - Update version under Settings -> Info -> Version
+- Update link under Settings -> Info -> Version
 - Commit changes & push
 - Delete "version" property in master.json
 - Merge & Delete Branch
