@@ -4,6 +4,10 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
+const crypto = require("crypto");
+const { promisify } = require("util");
+const scryptAsync = promisify(crypto.scrypt);
+
 const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 const log = require(GLOBAL.PATHS.UTILS.LOGGER);
 const error = require(GLOBAL.PATHS.UTILS.ERROR);
@@ -581,10 +585,7 @@ router.post(
     fs.writeFileSync(location, req.body);
 
     log.success("Image upload", "Saved image to Server.");
-    log.detail({ "Image type": imgType, Name: fileName }, "Image upload: Sending image URL to Client...", {
-      "Image type": imgType,
-      Name: fileName,
-    });
+    log.detail("Image upload", "Sending image URL to Client...", { "Image type": imgType, Name: fileName });
     // Sends the URL back so that TipTap can set it as the src.
     res.json({
       url: `/data/images/${fileName}`,
@@ -594,12 +595,35 @@ router.post(
 
 // Generates a completely random image name, starting with Y and followed by 20 random symbols.
 function imageName() {
-  let name = "Y";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-  for (let i = 0; i < 21; i++) {
-    name += characters.charAt(Math.floor(Math.random() * characters.length));
+  // Gets date and time of server start.
+  const currentdate = new Date();
+  let year = currentdate.getFullYear();
+  let month = currentdate.getMonth() + 1;
+  let day = currentdate.getDate();
+  let hour = currentdate.getHours();
+  let minutes = currentdate.getMinutes();
+  let seconds = currentdate.getSeconds();
+
+  // Adding a 0 whenever there's no
+  if (month < 10) {
+    month = `0${month}`;
   }
-  return name;
+  if (day < 10) {
+    day = `0${day}`;
+  }
+  if (hour < 10) {
+    hour = `0${hour}`;
+  }
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+  if (seconds < 10) {
+    seconds = `0${seconds}`;
+  }
+
+  const id = crypto.randomBytes(8).toString("hex");
+
+  return `IMG-${id}-${year}_${month}_${day}-${hour}-${minutes}-${seconds}`;
 }
 
 module.exports = router;
