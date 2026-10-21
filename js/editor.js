@@ -749,7 +749,7 @@ const linkEditItems = [
   {
     icon: "format/link.svg",
     action: () => {
-      createPromptModal("Please Input your Link below.", "", (link) => {
+      createPromptModal("Please Input your Link below.", 1000, "", (link) => {
         if (!/^https?:\/\//i.test(link)) {
           link = `https://${link}`;
         }

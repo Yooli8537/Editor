@@ -277,7 +277,7 @@ function createFolderActions(path, previousEntry) {
   renameButton.classList.add("hoverButton", "sidebarIcon");
   renameButton.src = "../assets/function/edit.svg";
   renameButton.addEventListener("click", async (e) => {
-    createPromptModal("Please Input the new Folder Name.", path, async (newName) => {
+    createPromptModal("Please Input the new Folder Name.", getState("maxCharacterLength"), path, async (newName) => {
       const response = await fetch("/api/documents/renameFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -481,7 +481,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
-    createPromptModal("Please Name your File.", "", async (name) => {
+    createPromptModal("Please Name your File.", getState("maxCharacterLength"), "", async (name) => {
       const response = await fetch("/api/documents/newFile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -504,7 +504,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
-    createPromptModal("Please Name your Folder.", "", async (name) => {
+    createPromptModal("Please Name your Folder.", getState("maxCharacterLength"), "", async (name) => {
       const response = await fetch("/api/documents/newFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -537,7 +537,7 @@ function createCreationDropdown(parent, path, previousEntry) {
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  createPromptModal("Please name your Notebook.", "", async (notebookName) => {
+  createPromptModal("Please name your Notebook.", getState("maxCharacterLength"), "", async (notebookName) => {
     const response = await fetch("/api/documents/newNotebook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
