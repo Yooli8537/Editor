@@ -16,7 +16,6 @@ import {
   createSubmenu,
   createErrorModal,
   setHelpText,
-  createInfoModal,
   getMaster,
   removeSubmenus,
   checkForUpdate,
