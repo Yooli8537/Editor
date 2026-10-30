@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## v1.6.6 - Many bug fixes
 
 ### Added
