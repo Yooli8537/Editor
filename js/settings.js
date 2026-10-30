@@ -46,20 +46,29 @@ const formatFontSizesDefault = document.querySelector("#formatFontSizesDefault")
 const formatFontSizesH1 = document.querySelector("#formatFontSizesH1");
 const formatFontSizesH2 = document.querySelector("#formatFontSizesH2");
 const formatFontSizesH3 = document.querySelector("#formatFontSizesH3");
+const formatFontSizesH4 = document.querySelector("#formatFontSizesH4");
 const formatFontSizesCode = document.querySelector("#formatFontSizesCode");
 const formatFontMarginsH1Top = document.querySelector("#formatFontMarginsH1Top");
 const formatFontMarginsH1Bottom = document.querySelector("#formatFontMarginsH1Bottom");
 const formatFontMarginsH2Top = document.querySelector("#formatFontMarginsH2Top");
 const formatFontMarginsH2Bottom = document.querySelector("#formatFontMarginsH2Bottom");
+const formatFontMarginsH3Top = document.querySelector("#formatFontMarginsH3Top");
 const formatFontMarginsH3Bottom = document.querySelector("#formatFontMarginsH3Bottom");
+const formatFontMarginsH4Bottom = document.querySelector("#formatFontMarginsH4Bottom");
 const formatFontMarginsListMargin = document.querySelector("#formatFontMarginsListMargin");
 const formatTablesCellPadding = document.querySelector("#formatTablesCellPadding");
-const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign");/*
+const formatTablesTextAlign = document.querySelector("#formatTablesTextAlign"); /*
 const clientSideLogging = document.querySelector("#clientSideLogging");
 const clientActionLogging = document.querySelector("#clientActionLogging");
 const clientProcessLogging = document.querySelector("#clientProcessLogging");
 const clientSettingsLogging = document.querySelector("#clientSettingsLogging");
 const clientErrorLogging = document.querySelector("#clientErrorLogging");*/
+const backupEnabled = document.querySelector("#backupEnabled");
+const backupImages = document.querySelector("#backupImages");
+const backupTime = document.querySelector("#backupTime");
+const backupIntervalDays = document.querySelector("#backupIntervalDays");
+const backupRetainDuration = document.querySelector("#backupRetainDuration");
+const backupMaxAmount = document.querySelector("#backupMaxAmount");
 
 // Array of every setting which can be set (so it excludes one-time actions like the image clear).
 const allSettings = [
@@ -83,19 +92,27 @@ const allSettings = [
   formatFontSizesH1,
   formatFontSizesH2,
   formatFontSizesH3,
+  formatFontSizesH4,
   formatFontSizesCode,
   formatFontMarginsH1Top,
   formatFontMarginsH1Bottom,
   formatFontMarginsH2Top,
   formatFontMarginsH2Bottom,
+  formatFontMarginsH3Top,
   formatFontMarginsH3Bottom,
+  formatFontMarginsH4Bottom,
   formatFontMarginsListMargin,
-  formatTablesCellPadding,/*
-  clientSideLogging,
+  formatTablesCellPadding,
+  /* clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,*/
+  clientErrorLogging,*/ backupEnabled,
+  backupImages,
+  backupTime,
+  backupIntervalDays,
+  backupRetainDuration,
+  backupMaxAmount,
 ];
 const intSettings = [
   updateCollapsedFolders,
@@ -103,6 +120,9 @@ const intSettings = [
   maxCharacterLength,
   rateLimitMaxRequests,
   rateLimitResetTime,
+  backupIntervalDays,
+  backupRetainDuration,
+  backupMaxAmount,
 ];
 const decimalSettings = [
   autosaveInterval,
@@ -112,16 +132,19 @@ const decimalSettings = [
   formatFontSizesH1,
   formatFontSizesH2,
   formatFontSizesH3,
+  formatFontSizesH4,
   formatFontSizesCode,
   formatFontMarginsH1Top,
   formatFontMarginsH1Bottom,
   formatFontMarginsH2Top,
   formatFontMarginsH2Bottom,
+  formatFontMarginsH3Top,
   formatFontMarginsH3Bottom,
+  formatFontMarginsH4Bottom,
   formatFontMarginsListMargin,
   formatTablesCellPadding,
 ];
-const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign];
+const stringSettings = [collapsedFolderUpdateMethod, formatTablesTextAlign, backupTime];
 const boolSettings = [
   confirmSave,
   warningLogs,
@@ -129,12 +152,14 @@ const boolSettings = [
   detailLogs,
   saveLogs,
   confirmExport,
-  logErrorDetails,/*
+  logErrorDetails /*
   clientSideLogging,
   clientActionLogging,
   clientProcessLogging,
   clientSettingsLogging,
-  clientErrorLogging,*/
+  clientErrorLogging,*/,
+  backupEnabled,
+  backupImages,
 ];
 
 // Getting the master file
@@ -331,7 +356,7 @@ function disableSettings() {
     applyDisabledOverlay(updateCollapsedFolders);
   } else {
     removeDisabledOverlay(updateCollapsedFolders);
-  }/*
+  } /*
   const clientLoggingSettings = [
     clientActionLogging,
     clientProcessLogging,
@@ -345,6 +370,14 @@ function disableSettings() {
       removeDisabledOverlay(clientLoggingSettings[i]);
     }
   }*/
+  const backupSettings = [backupImages, backupTime, backupIntervalDays, backupRetainDuration, backupMaxAmount];
+  for (let i = 0; i < backupSettings.length; i++) {
+    if (!master.backupEnabled) {
+      applyDisabledOverlay(backupSettings[i]);
+    } else {
+      removeDisabledOverlay(backupSettings[i]);
+    }
+  }
 }
 
 // Waits for the masterfile before adding the event listeners for the tabs.

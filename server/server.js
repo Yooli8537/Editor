@@ -18,6 +18,7 @@ const userDataFolders = [
   { name: "Image", path: GLOBAL.PATHS.FOLDERS.IMAGES },
   { name: "Attachments", path: GLOBAL.PATHS.FOLDERS.ATTACHMENTS },
   { name: "Profiles", path: GLOBAL.PATHS.FOLDERS.PROFILES },
+  { name: "Backups", path: GLOBAL.PATHS.FOLDERS.BACKUPS },
 ];
 
 // Every property and default value which should be in master.json.
@@ -34,7 +35,7 @@ const allProperties = {
   successLogs: true,
   saveLogs: false,
   confirmExport: false,
-  version: "v1.6.5",
+  version: "v1.6.6",
   deniedVersion: null,
   rateLimitResetTime: 5,
   rateLimitMaxRequests: 300,
@@ -42,14 +43,17 @@ const allProperties = {
   collapsedFolderUpdateMethod: "Auto",
   formatFontSizesDefault: 16,
   formatFontSizesH1: 32,
-  formatFontSizesH2: 24,
-  formatFontSizesH3: 20,
+  formatFontSizesH2: 26,
+  formatFontSizesH3: 22,
+  formatFontSizesH4: 18,
   formatFontSizesCode: 12,
   formatFontMarginsH1Top: 3,
   formatFontMarginsH1Bottom: 5,
   formatFontMarginsH2Top: 2,
-  formatFontMarginsH2Bottom: 3,
-  formatFontMarginsH3Bottom: 1,
+  formatFontMarginsH2Bottom: 5,
+  formatFontMarginsH3Top: 1,
+  formatFontMarginsH3Bottom: 3,
+  formatFontMarginsH4Bottom: 1,
   formatFontMarginsListMargin: 0,
   formatTablesCellPadding: 8,
   formatTablesTextAlign: "left",
@@ -58,6 +62,12 @@ const allProperties = {
   clientProcessLogging: false,
   clientSettingsLogging: true,
   clientErrorLogging: true,
+  backupEnabled: true,
+  backupImages: true,
+  backupTime: "05:00",
+  backupIntervalDays: 1,
+  backupRetainDuration: 30,
+  backupMaxAmount: 30,
 };
 
 // Creates any missing data folders.

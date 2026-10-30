@@ -1,20 +1,7 @@
 // Importing Required functions
-import {
-  createConfirmModal,
-  createPromptModal,
-  getMaster,
-  createInfoModal,
-  handleServerErrors,
-} from "./utils";
+import { createConfirmModal, createPromptModal, createInfoModal, handleServerErrors } from "./utils";
 import { closeEditor, loadAutosave } from "./editor";
-import {
-  addState,
-  checkState,
-  getState,
-  rmState,
-  sendState,
-  setState,
-} from "./state";
+import { addState, checkState, getState, rmState, setState } from "./state";
 
 const folderStructure = document.querySelector("#folderStructure");
 const rootButton = document.querySelector("#rootButton");
@@ -48,10 +35,7 @@ async function doSearch(input) {
     // Replacing Sidebar with Results
     results.forEach((result) => {
       const wrapper = createWrapper();
-      const file = createFile(
-        { name: result.name, isFolder: false },
-        result.folderPath + "/",
-      );
+      const file = createFile({ name: result.name, isFolder: false }, result.folderPath + "/");
       file.appendChild(createFileActions(result.name, result.folderPath + "/"));
       wrapper.appendChild(setIcon("../assets/function/file.svg"));
       wrapper.appendChild(file);
@@ -159,24 +143,15 @@ function createFile(entry, previousEntry) {
       return;
     } else if (!getState("isEditorSaved")) {
       // Prevents the document from loading entirely if the document isn't saved.
-      createInfoModal(
-        "You must save your document before changing to a different one.",
-      );
+      createInfoModal("You must save your document before changing to a different one.");
       return;
     }
 
-    const response = await fetch(
-      `api/documents/getFile?folderPath=${previousEntry}&name=${entry.name}`,
-      {
-        method: "GET",
-      },
-    );
+    const response = await fetch(`api/documents/getFile?folderPath=${previousEntry}&name=${entry.name}`, {
+      method: "GET",
+    });
     if (response.ok) {
-      history.pushState(
-        null,
-        "",
-        `?path=${previousEntry}&document=${entry.name}`,
-      ); // Sets the Query Parameters into the URL
+      history.pushState(null, "", `?path=${previousEntry}&document=${entry.name}`); // Sets the Query Parameters into the URL
       const fileData = await response.json(); // Data from GET request
       loadAutosave(fileData, entry.name, previousEntry); // Checks for an autosave, which then loads the document.
       setState("currentDocument", previousEntry + entry.name);
@@ -295,38 +270,32 @@ function createFolderActions(path, previousEntry) {
 
   document.addEventListener("click", () => {
     // Removes the creationDropdown when clicking anywhere.
-    document
-      .querySelectorAll(".creationDropdown")
-      .forEach((creationDropdown) => creationDropdown.remove());
+    document.querySelectorAll(".creationDropdown").forEach((creationDropdown) => creationDropdown.remove());
   });
 
   const renameButton = document.createElement("img");
   renameButton.classList.add("hoverButton", "sidebarIcon");
   renameButton.src = "../assets/function/edit.svg";
   renameButton.addEventListener("click", async (e) => {
-    createPromptModal(
-      "Please Input the new Folder Name.",
-      path,
-      async (newName) => {
-        const response = await fetch("/api/documents/renameFolder", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            newName: newName,
-            folderPath: previousEntry,
-            name: path,
-            currentlyOpenDocument: getState("currentDocument"),
-          }),
-        });
+    createPromptModal("Please Input the new Folder Name.", getState("maxCharacterLength"), path, async (newName) => {
+      const response = await fetch("/api/documents/renameFolder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          newName: newName,
+          folderPath: previousEntry,
+          name: path,
+          currentlyOpenDocument: getState("currentDocument"),
+        }),
+      });
 
-        if (response.ok) {
-          buildSidebar();
-        } else {
-          const responseJSON = await response.json();
-          handleServerErrors(responseJSON, response.status);
-        }
-      },
-    );
+      if (response.ok) {
+        buildSidebar();
+      } else {
+        const responseJSON = await response.json();
+        handleServerErrors(responseJSON, response.status);
+      }
+    });
   });
 
   const deleteButton = document.createElement("img");
@@ -436,19 +405,9 @@ function renderEntries(entries, indentlevel, previousEntry) {
       folder.appendChild(createFolderActions(entries[i].name, previousEntry));
 
       if (indentlevel === 0) {
-        wrapper.appendChild(
-          setIcon(
-            "../assets/function/notebook.svg",
-            previousEntry + entries[i].name,
-          ),
-        );
+        wrapper.appendChild(setIcon("../assets/function/notebook.svg", previousEntry + entries[i].name));
       } else {
-        wrapper.appendChild(
-          setIcon(
-            "../assets/function/folder.svg",
-            previousEntry + entries[i].name,
-          ),
-        );
+        wrapper.appendChild(setIcon("../assets/function/folder.svg", previousEntry + entries[i].name));
       }
 
       wrapper.appendChild(folder);
@@ -522,7 +481,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   fileButton.textContent = "Create File";
 
   fileButton.addEventListener("click", () => {
-    createPromptModal("Please Name your File.", "", async (name) => {
+    createPromptModal("Please Name your File.", getState("maxCharacterLength"), "", async (name) => {
       const response = await fetch("/api/documents/newFile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -545,7 +504,7 @@ function createCreationDropdown(parent, path, previousEntry) {
   folderButton.textContent = "Create Folder";
 
   folderButton.addEventListener("click", () => {
-    createPromptModal("Please Name your Folder.", "", async (name) => {
+    createPromptModal("Please Name your Folder.", getState("maxCharacterLength"), "", async (name) => {
       const response = await fetch("/api/documents/newFolder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -578,7 +537,7 @@ function createCreationDropdown(parent, path, previousEntry) {
 rootButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  createPromptModal("Please name your Notebook.", "", async (notebookName) => {
+  createPromptModal("Please name your Notebook.", getState("maxCharacterLength"), "", async (notebookName) => {
     const response = await fetch("/api/documents/newNotebook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -593,17 +552,3 @@ rootButton.addEventListener("click", async (e) => {
     }
   });
 });
-
-// Updates master.json property "collapsedFolders" every 10s.
-export async function createCollapsedFoldersUpdateInterval() {
-  if (await getMaster()) {
-    if (getState("collapsedFolderUpdateMethod") === "Auto") {
-      setInterval(
-        () => {
-          sendState("collapsedFolders");
-        },
-        getState("updateCollapsedFolders") * 1000,
-      );
-    }
-  }
-}

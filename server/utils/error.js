@@ -6,12 +6,12 @@ const serverMaster = require(GLOBAL.PATHS.UTILS.MASTER);
 
 function createErrorJSON(operation, errorMsg, reqestValues, detailError) {
   if (!detailError || !serverMaster.logErrorDetails) {
-    logger.error(
+    logger.logger.error(
       { "Request values": reqestValues },
       `${operation}: ${errorMsg}`,
     );
   } else {
-    logger.error(
+    logger.logger.error(
       { "Request values": reqestValues, "Detailed Error": detailError },
       `${operation}: ${errorMsg}`,
     );

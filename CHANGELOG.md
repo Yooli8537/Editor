@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.6.6 - Many bug fixes
+
+### Added
+
+- Heading level 4 ([Issue #126](https://github.com/Yooli8537/Editor/issues/126)).
+
+### Fixed
+
+- Closing a document now updates the URL correctly ([Issue #129](https://github.com/Yooli8537/Editor/issues/129)).
+- Exporting a document as a PDF appends the correct file extension ([Issue #127](https://github.com/Yooli8537/Editor/issues/127)).
+- Fixed links which don't include `http://` or `https://` ([Issue #11](https://github.com/Yooli8537/Editor/issues/11)).
+- Saving a saved editor no longer creates a modal telling you that it's saved ([Issue #113](https://github.com/Yooli8537/Editor/issues/113)).
+- Server requests are no longer doubled by the client ([Issue #106](https://github.com/Yooli8537/Editor/issues/106)).
+- Image upload "Sending image URL to Client..." log message.
+- Image name duplicates are now essentially impossible to occur ([Issue #103]([https://github.com/Yooli8537/Editor/issues/103)).
+- Server error messages get logged out and processed correctly.
+- All folder rename operations now use the copy-and-delete pattern because Windows still just does not like giving rename permissions.
+
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
 ### Added
@@ -17,8 +35,9 @@
 ### Fixed
 
 - Image clear no longer reports nonsense errors.
-- Images can be pasted into the editor again.
+- Images can be pasted into the editor again ([Issue #120](https://github.com/Yooli8537/Editor/issues/120)).
 - Paths are now validated properly.
+- Fresh installs work again. I can't believe how fucking often I've broken them :/
 
 ## v1.6.4 - Autosave rework & Improvements
 

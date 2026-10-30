@@ -106,7 +106,7 @@ function verifyInput(inputField, onSubmit, prevValue) {
 }
 
 // Creates a prompt for the user to fill out.
-export function createPromptModal(prompt, inputContent, onSubmit) {
+export function createPromptModal(prompt, maxLength, inputContent, onSubmit) {
   const clickable = createClickable();
   const modal = createModalBody();
   const modalButtons = createModalButtonsDiv();
@@ -117,7 +117,7 @@ export function createPromptModal(prompt, inputContent, onSubmit) {
   const inputField = document.createElement("input");
   inputField.classList.add("inputField");
   inputField.type = "text";
-  inputField.maxLength = getState("maxCharacterLength");
+  inputField.maxLength = maxLength;
   inputField.value = inputContent; // Adds the previous value to the input field.
 
   // Confirm with enter key
