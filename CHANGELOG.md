@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.6.6
 
 ### Added
 
@@ -15,6 +15,8 @@
 - Server requests are no longer doubled by the client ([Issue #106](https://github.com/Yooli8537/Editor/issues/106)).
 - Image upload "Sending image URL to Client..." log message.
 - Image name duplicates are now essentially impossible to occur ([Issue #103]([https://github.com/Yooli8537/Editor/issues/103)).
+- Server error messages get logged out and processed correctly.
+- All folder rename operations now use the copy-and-delete pattern because Windows still just does not like giving rename permissions.
 
 ## v1.6.5 - Formats, Fresh Install Fix & minor improvements
 
