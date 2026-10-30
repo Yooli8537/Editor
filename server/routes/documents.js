@@ -635,17 +635,6 @@ router.post("/api/documents/renameFolder", async (req, res) => {
               null,
             ),
           );
-      } else if (!folderPath || folderPath == "") {
-        res
-          .status(404)
-          .json(
-            error(
-              "Folder rename",
-              "No folder path found.",
-              { "Old name": name, "New name": newName, Path: folderPath },
-              null,
-            ),
-          );
       } else if (!name || name == "") {
         res
           .status(404)
