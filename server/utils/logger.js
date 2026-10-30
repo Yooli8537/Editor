@@ -107,4 +107,4 @@ function warn(operation, message, requestValues) {
   }
 }
 
-module.exports = { info, detail, success, warn };
+module.exports = { info, detail, success, warn, logger };
